@@ -1,10 +1,12 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TamaguiProvider, Theme } from 'tamagui';
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 
 import config from '~/tamagui.config';
+import { LocaleProvider } from '~/hooks/localeProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,22 +22,41 @@ const RootLayout = () => {
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
 
+  const [locale, setLocale] = useState("zh-Hant")
+  const [isInitializing, setIsInitializing] = useState(true)
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
 
-  if (!loaded) return null;
+  useEffect(() => {
+    (async () => {
+      const locale = await AsyncStorage.getItem('locale')
+      if (locale) {
+        setLocale(locale)
+      }
+      setIsInitializing(false)
+    })()
+  }, [])
+
+  if (!loaded || isInitializing) {
+    return (
+      <></>
+    )
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <TamaguiProvider config={config}>
         <Theme name="primary">
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
+          <LocaleProvider initialLocale={locale}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+          </LocaleProvider>
         </Theme>
       </TamaguiProvider>
     </QueryClientProvider>

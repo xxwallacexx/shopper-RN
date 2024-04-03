@@ -13,7 +13,8 @@ const listCategories = async () => {
       status: "ACTIVE",
     },
   };
-  return await axios(options);
+  let res: Category[] = await axios(options).then((res) => { return res.data }).catch((e) => { throw e })
+  return res
 }
 
 const listProducts = async (

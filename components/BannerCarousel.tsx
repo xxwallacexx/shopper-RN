@@ -41,7 +41,7 @@ export default function AdsBanners({ banners }: { banners: string[] }) {
       <XStack position='absolute' bottom={10} left={"20%"} width={"60%"} justifyContent='center' padding="$2" space="$4" >
         {banners.map((_, index) => {
           return (
-            <Circle size={10} backgroundColor={index == slideIndex ? "$color.primary" : "ghostwhite"} elevation={4} />
+            <Circle key={`activeSlide_${index}`} size={10} backgroundColor={index == slideIndex ? "$color.primary" : "ghostwhite"} elevation={4} />
           )
         })}
       </XStack>
