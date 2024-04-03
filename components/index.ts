@@ -1,5 +1,7 @@
-import Gallery from './gallery'
+import ImageGallery from './ImageGallery'
+import BannerCarousel from './BannerCarousel'
 
 export {
-  Gallery
+  ImageGallery,
+  BannerCarousel
 }

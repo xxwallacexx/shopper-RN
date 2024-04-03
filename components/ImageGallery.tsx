@@ -33,7 +33,7 @@ const wrap = (min: number, max: number, v: number) => {
 }
 
 
-const Gallery = ({ photos }: { photos: string[] }) => {
+const ImageGallery = ({ photos }: { photos: string[] }) => {
   const [[page, going], setPage] = useState([0, 0])
 
   const imageIndex = wrap(0, photos.length, page)
@@ -82,4 +82,4 @@ const Gallery = ({ photos }: { photos: string[] }) => {
   )
 }
 
-export default Gallery
+export default ImageGallery
