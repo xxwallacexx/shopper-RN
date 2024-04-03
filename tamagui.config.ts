@@ -2,7 +2,8 @@ import { createAnimations } from '@tamagui/animations-react-native';
 import { createInterFont } from '@tamagui/font-inter';
 import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
-import { themes, tokens } from '@tamagui/themes';
+import { size, themes, tokens } from '@tamagui/themes';
+import { XStack } from 'tamagui';
 import { createTamagui, styled, SizableText, H1, YStack } from 'tamagui';
 
 const primary = process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#000"
@@ -26,9 +27,10 @@ const animations = createAnimations({
   },
 });
 
-const headingFont = createInterFont();
+const headingFont = createInterFont({});
 
 const bodyFont = createInterFont();
+
 
 export const Container = styled(YStack, {
   flex: 1,
@@ -50,6 +52,15 @@ export const Subtitle = styled(SizableText, {
   color: '#38434D',
   size: '$9',
 });
+
+
+export const Badge = styled(XStack, {
+  display: "flex",
+  alignSelf: "flex-start",
+  paddingHorizontal: 8,
+  backgroundColor: "$color.primary",
+  borderRadius: 4
+})
 
 const config = createTamagui({
   light: {
