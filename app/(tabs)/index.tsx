@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { YStack, H2, Separator } from 'tamagui';
 import { listAdsBanners } from '~/api/adsBanner';
-import { Gallery } from '~/components';
+import { BannerCarousel } from '~/components';
 
 import EditScreenInfo from '~/components/edit-screen-info';
 
@@ -11,8 +11,8 @@ const Home = () => {
 
   return (
     <YStack flex={1} alignItems="center" >
-      <Gallery
-        photos={adsBanners.map((p) => { return p.photo })}
+      <BannerCarousel
+        banners={adsBanners.map((p) => { return p.photo })}
       />
       <H2>Tab One</H2>
       <Separator />
