@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FlatList, RefreshControl, SectionList } from 'react-native';
-import { YStack, Image, Text, SizableText } from 'tamagui';
+import { YStack, Image, Text, SizableText, Spinner } from 'tamagui';
 import { listAdsBanners } from '~/api/adsBanner';
 import { listCategories, listProducts } from '~/api/product';
 import { BannerCarousel } from '~/components';
@@ -16,21 +16,21 @@ const Home = () => {
   const { data: adsBanners = [], isFetching: isAdsBannersFetching } = useQuery({ queryKey: ['adsBanners'], queryFn: listAdsBanners })
   const { data: categories = [], isFetching: isCategoriesFetching } = useQuery({ queryKey: ['categories'], queryFn: listCategories })
 
-  const { data: products, isFetching: isProductFetching, isFetchingNextPage: isFetchingProductsNextPage } = useInfiniteQuery({
+  const { data: products,
+    isFetching: isProductFetching,
+    isFetchingNextPage: isFetchingMoreProducts,
+    fetchNextPage: fetchMoreProducts
+  } = useInfiniteQuery({
     queryKey: ['products', selectedCategoryId],
     initialPageParam: 0,
-    queryFn: (context) => {
-      console.log(context)
-      return listProducts(true, 0, undefined, undefined, undefined, undefined, undefined)
+    queryFn: ({ pageParam }: { pageParam: number }) => {
+      return listProducts(true, pageParam, undefined, undefined, undefined, undefined, undefined)
     },
-    getNextPageParam: (lastPage, pages) => (
-      lastPage.nextCursor
-    ),
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage.length) return null
+      return pages.flat().length
+    },
   })
-
-  if (isProductFetching) {
-    return <></>
-  }
 
   const productsData = products?.pages
     ? products.pages.flat()
@@ -90,6 +90,14 @@ const Home = () => {
               flex: 1,
               justifyContent: "space-between"
             }}
+            ListFooterComponent={() => {
+              if (!isProductFetching && !isFetchingMoreProducts) {
+                return null
+              }
+              return (
+                <Spinner color="$color.primary"/>
+              )
+            }}
           />
         )
       default:
@@ -100,7 +108,7 @@ const Home = () => {
   }
 
   const onEndReached = () => {
-    console.log('end')
+    fetchMoreProducts()
   }
   console.log(products)
   return (
