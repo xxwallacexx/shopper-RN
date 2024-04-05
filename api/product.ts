@@ -20,7 +20,7 @@ const listCategories = async () => {
 const listProducts = async (
   isRecommended: true,
   skip: number,
-  category?: string,
+  category?: string[],
   sort?: string,
   name?: string,
   group?: string,
@@ -42,7 +42,12 @@ const listProducts = async (
       shopType,
     },
   };
-  let res: Product[] = await axios(options).then((res) => { return res.data.products }).catch((e) => { throw e })
+  let res: Product[] = await axios(options)
+    .then((res) => { 
+      console.log(res)
+    return res.data.products
+    })
+    .catch((e) => { throw e })
 
   return res;
 }

@@ -18,6 +18,7 @@ type Category = {
   createdAt: Date
   updatedAt: Date
   children: Category[]
+  parent?: string
 }
 
 type Photo = {
