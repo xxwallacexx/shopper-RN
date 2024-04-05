@@ -119,7 +119,6 @@ export const messages = {
     contactInfo: "Contact Info",
     name: "Name",
     enterName: "Enter Name",
-    addressDetail: "Address",
     deliveryMethod: "Delivery Method",
     freeShippingDiff:
       "Free Shipping After Get More $ {{diff}} Items, Otherwise Pay $ {{fee}} Shipping Fee.",
@@ -583,7 +582,6 @@ export const messages = {
     discount: "折扣金額: HK$ {{discount}}",
     businessHour: "營業時間",
     map: "地圖",
-    addressDetail: "詳細地址",
     searchAddress: "搜索地址",
     locationPermissionAlertHeading: "位置存取",
     locationPermissionAlert: "請到 設置 -> Shopper -> 位置 設定存取",
