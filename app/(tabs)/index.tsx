@@ -10,12 +10,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { useLocale } from '~/hooks/useLocale';
 import { Badge, Container, StyledButton, Title } from '~/tamagui.config';
+import { ScrollView } from 'tamagui';
 
 const Home = () => {
   const { t } = useLocale()
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>()
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string>()
-
 
   const { data: adsBanners = [] } = useQuery({ queryKey: ['adsBanners'], queryFn: listAdsBanners })
   const { data: categories = [] } = useQuery({
@@ -32,9 +32,16 @@ const Home = () => {
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false)
   const [sheetPosition, setSheetPosition] = useState(0)
 
+  const subCategories = categories.find((c) => { return c.value == selectedCategoryId })?.children ?? []
+
   let categoriesQuery = () => {
     let res = []
 
+    if (selectedSubCategoryId) {
+      res.push(selectedSubCategoryId)
+      let subSubCategories = categories.find((c) => { return c.value == selectedSubCategoryId })?.children.map((c) => { return c._id }) || []
+      return [...res,...subSubCategories]
+    }
     if (selectedCategoryId) {
       res.push(selectedCategoryId)
     }
@@ -45,7 +52,6 @@ const Home = () => {
     return res
   }
 
-  console.log(categories)
   const {
     data: products,
     isFetching: isProductFetching,
@@ -99,6 +105,11 @@ const Home = () => {
     )
   }
 
+  const onSubCategoryPress = (value: string) => {
+    if (selectedSubCategoryId == value) return setSelectedSubCategoryId(undefined)
+    setSelectedSubCategoryId(value)
+  }
+
   const renderItem = ({ item, index, section }) => {
     const categoryName = categories.find((f) => { return f.value == selectedCategoryId })?.buttonText
     const categoryLabel = categories.find((f) => { return f.value == selectedCategoryId })?.label
@@ -112,16 +123,34 @@ const Home = () => {
         )
       case 'menu':
         return (
-          <XStack justifyContent='space-between' p={"$2"}>
-            <Title maxWidth={"60%"} numberOfLines={1} ellipsizeMode='tail'>{categoryLabel}</Title>
-            <StyledButton
-              elevation={"$0.5"}
-              onPress={() => setIsCategorySheetOpen(true)}
-              maxWidth={"$10"}
+          <YStack space="$space.4" p="$2">
+            <XStack justifyContent='space-between'>
+              <Title maxWidth={"60%"} numberOfLines={1} ellipsizeMode='tail'>{categoryLabel}</Title>
+              <StyledButton
+                onPress={() => setIsCategorySheetOpen(true)}
+                maxWidth={"$10"}
+              >
+                {categoryName}
+              </StyledButton>
+            </XStack>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              space="$space.2"
             >
-              {categoryName}
-            </StyledButton>
-          </XStack>
+              {subCategories.map((sc) => {
+                return (
+                  <StyledButton
+                    key={sc._id}
+                    backgroundColor={selectedSubCategoryId == sc._id ? "$color.primary" : "lightslategrey"}
+                    onPress={() => onSubCategoryPress(sc._id)}
+                  >
+                    {sc.name}
+                  </StyledButton>
+                )
+              })}
+            </ScrollView>
+          </YStack>
         )
       case 'recommendedProducts':
         return (
@@ -171,7 +200,7 @@ const Home = () => {
   const onCategoryPress = (value?: string) => {
     setIsCategorySheetOpen(false)
     setSelectedCategoryId(value)
-
+    setSelectedSubCategoryId(undefined)
   }
 
   return (
@@ -215,14 +244,13 @@ const Home = () => {
         <Sheet.Handle backgroundColor={"ghostwhite"} />
 
         <Sheet.Frame padding="$4" justifyContent="center" alignItems="center" space="$5" backgroundColor={"ghostwhite"} >
-          {categories.filter((c) => { return !c.parent }).map((category) => {
+          {categories.filter((c) => { return !c.parent }).map((category,index) => {
             const isSelected = category.value == selectedCategoryId
             return (
               <StyledButton
                 onPress={() => onCategoryPress(category.value)}
-                key={category.value}
+                key={category.value + index.toString()}
                 width={"100%"}
-                elevation={"$0.5"}
                 backgroundColor={isSelected ? "$color.primary" : "lightslategrey"}
               >
                 {category.buttonText}
