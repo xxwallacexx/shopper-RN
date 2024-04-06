@@ -61,7 +61,8 @@ export const StyledButton = styled(Button, {
   backgroundColor: "$color.primary",
   color: "#fff",
   size: "$2",
-  pressStyle:{opacity:0.8}
+  pressStyle: { opacity: 0.8 },
+  elevation: 0.5
 })
 
 export const Badge = styled(XStack, {
