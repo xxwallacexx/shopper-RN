@@ -14,11 +14,12 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: 'black',
+        headerStyle: { backgroundColor: "#12baa6" }
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
+          headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -39,14 +40,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: 'Tab Two',
+          headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
-        <Tabs.Screen
+      <Tabs.Screen
         name="cart"
         options={{
-          title: 'Cart',
+          headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />

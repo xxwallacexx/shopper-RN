@@ -1,16 +1,17 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { FlatList, RefreshControl, SectionList } from 'react-native';
+import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
 import { Sheet, XStack } from 'tamagui';
-import { YStack, Image, Text, SizableText, Spinner } from 'tamagui';
+import { YStack, Spinner } from 'tamagui';
 import { listAdsBanners } from '~/api/adsBanner';
 import { listCategories, listProducts } from '~/api/product';
-import { BannerCarousel } from '~/components';
+import { BannerCarousel, ProductCard } from '~/components';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { useLocale } from '~/hooks/useLocale';
-import { Badge, Container, StyledButton, Title } from '~/tamagui.config';
+import { Container, StyledButton, Title } from '~/tamagui.config';
 import { ScrollView } from 'tamagui';
+import { Link } from 'expo-router';
 
 const Home = () => {
   const { t } = useLocale()
@@ -40,7 +41,7 @@ const Home = () => {
     if (selectedSubCategoryId) {
       res.push(selectedSubCategoryId)
       let subSubCategories = categories.find((c) => { return c.value == selectedSubCategoryId })?.children.map((c) => { return c._id }) || []
-      return [...res,...subSubCategories]
+      return [...res, ...subSubCategories]
     }
     if (selectedCategoryId) {
       res.push(selectedCategoryId)
@@ -77,31 +78,22 @@ const Home = () => {
     : []
 
   const renderRecommendedProductsView = ({ item }) => {
-    const { price, category, name, introduction } = item
+    const { _id, price, category, name, introduction } = item
 
     const uri = item.photos[0].path
 
     return (
-      <YStack
-        flex={0.5}
-        p="$4"
-
-      >
-        <Image
-          aspectRatio={1}
-          source={{ uri }}
-          width={"100%"}
-          borderRadius={4}
-        />
-        <Badge position='absolute' top={22} right={22}>
-          <SizableText fontSize={8} color="#fff">
-            $ {price.toFixed(2)} 起
-          </SizableText>
-        </Badge>
-        <SizableText size={"$1"} color="lightslategray">{category.name}</SizableText>
-        <Text numberOfLines={1} ellipsizeMode='tail'>{name}</Text>
-        <Text numberOfLines={1} ellipsizeMode='tail'>{introduction}</Text>
-      </YStack>
+      <Link href={`/product/${_id}`} asChild >
+        <TouchableOpacity style={{ flex: 0.5 }} >
+          <ProductCard
+            imageUri={uri}
+            price={price}
+            categoryName={category.name}
+            name={name}
+            introduction={introduction}
+          />
+        </TouchableOpacity>
+      </Link>
     )
   }
 
@@ -244,7 +236,7 @@ const Home = () => {
         <Sheet.Handle backgroundColor={"ghostwhite"} />
 
         <Sheet.Frame padding="$4" justifyContent="center" alignItems="center" space="$5" backgroundColor={"ghostwhite"} >
-          {categories.filter((c) => { return !c.parent }).map((category,index) => {
+          {categories.filter((c) => { return !c.parent }).map((category, index) => {
             const isSelected = category.value == selectedCategoryId
             return (
               <StyledButton
