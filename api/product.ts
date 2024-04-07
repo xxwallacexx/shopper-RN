@@ -43,9 +43,9 @@ const listProducts = async (
     },
   };
   let res: Product[] = await axios(options)
-    .then((res) => { 
+    .then((res) => {
       console.log(res)
-    return res.data.products
+      return res.data.products
     })
     .catch((e) => { throw e })
 
@@ -56,7 +56,11 @@ const getProduct = async (id: string) => {
     method: "get",
     url: `${baseUrl}/product/${id}`,
   };
-  return await axios(options);
+
+  let res: Product = await axios(options).then((res) => {
+    return res.data
+  })
+  return res;
 }
 
 

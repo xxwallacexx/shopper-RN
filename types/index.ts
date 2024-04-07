@@ -30,8 +30,26 @@ type ProductRating = {
   count: number
   rating: number
 }
+
+enum DeliveryMethodEnum {
+  SFEXPRESS = "SFEXPRESS",
+  SELF_PICK_UP = "SELF_PICK_UP"
+}
+
+type Shop = {
+  address: string,
+  deliveryMethods: DeliveryMethodEnum[],
+  feedCover: string,
+  logo: string,
+  name: string,
+  phoneNumber: string
+
+}
+
 type Product = {
+  name: string,
   category: { name: string, status: "ACTIVE" | "INACTIVE" }
+  shop: Shop,
   cost: number
   description: string
   group: string,

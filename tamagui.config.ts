@@ -38,7 +38,8 @@ const bodyFont = createInterFont();
 
 export const Container = styled(YStack, {
   flex: 1,
-  padding: 24,
+  paddingHorizontal: 24,
+  paddingVertical: 12
 });
 
 export const Main = styled(YStack, {
@@ -53,7 +54,7 @@ export const Title = styled(H1, {
 });
 
 export const Subtitle = styled(SizableText, {
-  color: '#38434D',
+  color: '#8c8c8c',
   size: '$1',
 });
 
