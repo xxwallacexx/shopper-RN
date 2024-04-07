@@ -1,4 +1,5 @@
 import { Image, SizableText, Text, YStack } from "tamagui"
+import { useLocale } from "~/hooks/useLocale"
 import { Badge } from "~/tamagui.config"
 
 const ProductCard = ({
@@ -15,6 +16,8 @@ const ProductCard = ({
   introduction: string
 
 }) => {
+  const { t } = useLocale()
+
   return (
     <YStack
       flex={1}
@@ -28,7 +31,7 @@ const ProductCard = ({
       />
       <Badge position='absolute' top={22} right={22}>
         <SizableText fontSize={8} color="#fff">
-          $ {price.toFixed(2)} 起
+          $ {price.toFixed(2)} {t('up')}
         </SizableText>
       </Badge>
       <SizableText size={"$1"} color="lightslategray">{categoryName}</SizableText>

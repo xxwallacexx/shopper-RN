@@ -7,6 +7,8 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 import config from '~/tamagui.config';
 import { LocaleProvider } from '~/hooks/localeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { AntDesign } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,10 +54,33 @@ const RootLayout = () => {
       <TamaguiProvider config={config}>
         <Theme name="primary">
           <LocaleProvider initialLocale={locale}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="product" options={{ headerShown: true, headerStyle: { backgroundColor: "#12baa6" } }} />
+            <Stack screenOptions={({ navigation }) => ({
+              title: "",
+              headerLeft: () => {
+                return (
+                  <TouchableOpacity onPress={() => { return navigation.goBack() }}>
+                    <AntDesign name="arrowleft" size={24} />
+                  </TouchableOpacity>
+                )
+              },
+              headerStyle: { backgroundColor: "#12baa6" }
+            })}>
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false
+                }}
+              />
+              <Stack.Screen
+                name="modal"
+                options={{ presentation: 'modal' }}
+              />
+              <Stack.Screen
+                name="product"
+                options={{
+                  headerShown: true,
+                }}
+              />
             </Stack>
           </LocaleProvider>
         </Theme>

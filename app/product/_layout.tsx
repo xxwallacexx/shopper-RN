@@ -4,13 +4,13 @@ const ProductLayout = () => {
   return (
     <Stack
       screenOptions={{
-        headerShown:false,
+        headerShown: false,
       }}>
       <Stack.Screen
+        name="index"
+      />
+      <Stack.Screen
         name="[productId]"
-        options={{
-          headerTitle: ""
-        }}
       />
 
 
