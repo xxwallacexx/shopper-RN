@@ -63,9 +63,25 @@ const getProduct = async (id: string) => {
   return res;
 }
 
+const listOptions = async (id: string) => {
+  const options = {
+    method: "get",
+    params: {
+      status: ["ACTIVE"],
+      suboptionStatus: ["ACTIVE"],
+    },
+    url: `${baseUrl}/product/${id}/options`,
+  };
+
+  let res: Option[] = await axios(options).then((res) => {
+    return res.data
+  })
+  return res;
+}
 
 export {
   listCategories,
   listProducts,
-  getProduct
+  getProduct,
+  listOptions
 }

@@ -74,6 +74,17 @@ export const Badge = styled(XStack, {
   borderRadius: 4
 })
 
+export const BottomAction = styled(XStack, {
+  w: "100%",
+  h: "$4",
+  p: "$2",
+  btw: 0.5,
+  borderColor: "lightslategrey",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  space: "$2"
+})
+
 const config = createTamagui({
   light: {
     color: {
