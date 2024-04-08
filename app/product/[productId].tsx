@@ -2,12 +2,12 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons"
 import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
-import { SectionList, RefreshControl, Dimensions } from "react-native"
+import { SectionList, RefreshControl, Dimensions, SafeAreaView } from "react-native"
 import { Section, Separator, SizableText, Stack, Text, XStack, YStack } from "tamagui"
-import { getProduct } from "~/api/product"
+import { getProduct, listOptions } from "~/api/product"
 import { BannerCarousel } from "~/components"
 import { useLocale } from "~/hooks/useLocale"
-import { Badge, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
+import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
 
 const ProductDetail = () => {
@@ -18,8 +18,18 @@ const ProductDetail = () => {
     queryFn: async () => { return await getProduct(`${productId}`) },
   })
 
-  if (!product || isProductFetching) {
+  const { data: options = [], isFetching: isOptionsFetching } = useQuery({
+    queryKey: ['productOption', productId],
+    queryFn: async () => { return await listOptions(`${productId}`) }
+  })
+  console.log('options')
+  console.log(options)
+  if (!product || isProductFetching || isOptionsFetching) {
     return <></>
+  }
+
+  const onPurchasePress = () => {
+    console.log('purchase')
   }
 
   const renderItem = ({ item, index, section }) => {
@@ -89,25 +99,32 @@ const ProductDetail = () => {
     }
   }
   return (
-    <YStack flex={1} alignItems="center">
-      <SectionList
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => { console.log('on refresh') }}
-          />
-        }
-        renderItem={renderItem}
-        sections={[
-          { key: 'photos', data: [''] },
-          { key: 'primary', data: [''] },
-          { key: 'productRating', data: [''] },
-          { key: 'secondary', data: [''] },
-        ]}
-        keyExtractor={(item, index) => item + index.toString()}
-      />
-
-    </YStack>
+    <SafeAreaView style={{ flex: 1 }}>
+      <YStack flex={1} alignItems="center">
+        <SectionList
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={() => { console.log('on refresh') }}
+            />
+          }
+          renderItem={renderItem}
+          sections={[
+            { key: 'photos', data: [''] },
+            { key: 'primary', data: [''] },
+            { key: 'productRating', data: [''] },
+            { key: 'secondary', data: [''] },
+          ]}
+          keyExtractor={(item, index) => item + index.toString()}
+        />
+        <BottomAction>
+          <StyledButton onPress={onPurchasePress}>
+            {t('addToCart')}
+            <AntDesign name="shoppingcart" color="#fff" />
+          </StyledButton>
+        </BottomAction>
+      </YStack>
+    </SafeAreaView>
   )
 }
 

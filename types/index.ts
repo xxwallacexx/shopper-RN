@@ -66,3 +66,19 @@ type Product = {
   createdAt: Date
   updatedAt: Date
 }
+
+type Choice = {
+  _id: string,
+  name: string,
+  photo: string,
+  productOption: string,
+  subchoices: Choice[]
+}
+
+type Option = {
+  _id: string,
+  fieldName: string,
+  priority: number,
+  remark: string,
+  choices: Choice[]
+}
