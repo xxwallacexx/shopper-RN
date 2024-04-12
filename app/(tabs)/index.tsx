@@ -1,8 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
-import { Sheet, XStack } from 'tamagui';
-import { YStack, Spinner } from 'tamagui';
+import { YStack, XStack, ScrollView, Spinner } from 'tamagui';
 import { listAdsBanners } from '~/api/adsBanner';
 import { listCategories, listProducts } from '~/api/product';
 import { BannerCarousel, ProductCard } from '~/components';
@@ -10,8 +9,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { useLocale } from '~/hooks/useLocale';
 import { Container, StyledButton, Title } from '~/tamagui.config';
-import { ScrollView } from 'tamagui';
 import { Link } from 'expo-router';
+import ActionSheet from '~/components/ActionSheet';
 
 const Home = () => {
   const { t } = useLocale()
@@ -66,7 +65,6 @@ const Home = () => {
       return listProducts(true, pageParam, categoriesQuery(), undefined, undefined, undefined, undefined)
     },
     getNextPageParam: (lastPage, pages) => {
-      console.log(lastPage)
       if (!lastPage) return null
       if (!lastPage.length) return null
       return pages.flat().length
@@ -214,43 +212,30 @@ const Home = () => {
         style={{ backgroundColor: '#fff' }}
         keyExtractor={(item, index) => item + index}
       />
-      <Sheet
-        forceRemoveScrollEnabled={isCategorySheetOpen}
-        modal={true}
-        open={isCategorySheetOpen}
-        onOpenChange={setIsCategorySheetOpen}
-        snapPointsMode={"percent"}
-        snapPoints={[60]}
-        dismissOnSnapToBottom
-        position={sheetPosition}
-        onPositionChange={setSheetPosition}
-        zIndex={100_000}
-        animation="quick"
+      <ActionSheet
+        isSheetOpen={isCategorySheetOpen}
+        setIsSheetOpen={setIsCategorySheetOpen}
+        sheetPosition={sheetPosition}
+        setSheetPosition={setSheetPosition}
       >
-        <Sheet.Overlay
-          style={{ opacity: 0.8, backgroundColor: "lightslategrey" }}
-          animation="lazy"
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-        <Sheet.Handle backgroundColor={"ghostwhite"} />
-
-        <Sheet.Frame padding="$4" justifyContent="center" alignItems="center" space="$5" backgroundColor={"ghostwhite"} >
-          {categories.filter((c) => { return !c.parent }).map((category, index) => {
-            const isSelected = category.value == selectedCategoryId
-            return (
-              <StyledButton
-                onPress={() => onCategoryPress(category.value)}
-                key={category.value + index.toString()}
-                width={"100%"}
-                backgroundColor={isSelected ? "$color.primary" : "lightslategrey"}
-              >
-                {category.buttonText}
-              </StyledButton>
-            )
-          })}
-        </Sheet.Frame>
-      </Sheet>
+        <ScrollView>
+          <YStack space={"$4"}>
+            {categories.filter((c) => { return !c.parent }).map((category, index) => {
+              const isSelected = category.value == selectedCategoryId
+              return (
+                <StyledButton
+                  onPress={() => onCategoryPress(category.value)}
+                  key={category.value + index.toString()}
+                  width={"100%"}
+                  backgroundColor={isSelected ? "$color.primary" : "lightslategrey"}
+                >
+                  {category.buttonText}
+                </StyledButton>
+              )
+            })}
+          </YStack>
+        </ScrollView>
+      </ActionSheet>
     </YStack>
   );
 }

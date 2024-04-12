@@ -44,7 +44,6 @@ const listProducts = async (
   };
   let res: Product[] = await axios(options)
     .then((res) => {
-      console.log(res)
       return res.data.products
     })
     .catch((e) => { throw e })
@@ -79,9 +78,26 @@ const listOptions = async (id: string) => {
   return res;
 }
 
+const getProductPriceDetail = async (token: string, productId: string, orderContent: OrderContent, currentCouponId?: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${productId}/priceDetail`,
+    params: {
+      orderContent: JSON.stringify(orderContent),
+      currentCouponId: currentCouponId,
+    },
+  };
+  let res = axios(options).then((res)=>{return res.data})
+  return res
+}
+
 export {
   listCategories,
   listProducts,
   getProduct,
-  listOptions
+  listOptions,
+  getProductPriceDetail
 }
