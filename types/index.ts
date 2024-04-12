@@ -82,3 +82,9 @@ type Option = {
   remark: string,
   choices: Choice[]
 }
+
+
+type OrderContent = {
+  choices: string[],
+  quantity: number
+}

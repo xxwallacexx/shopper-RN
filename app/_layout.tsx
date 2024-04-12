@@ -9,6 +9,9 @@ import { LocaleProvider } from '~/hooks/localeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
+import { AuthProvider } from '~/hooks/authProvider';
+import { createUserTemp } from '~/api/auth';
+import moment from 'moment';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,6 +28,7 @@ const RootLayout = () => {
   });
 
   const [locale, setLocale] = useState("zh-Hant")
+  const [token, setToken] = useState<string | null>(null)
   const [isInitializing, setIsInitializing] = useState(true)
 
   useEffect(() => {
@@ -39,53 +43,70 @@ const RootLayout = () => {
       if (locale) {
         setLocale(locale)
       }
+      // auth token
+      let storedToken = await AsyncStorage.getItem("token");
+      const tokenExpAt = await AsyncStorage.getItem("tokenExpAt");
+      if (tokenExpAt && moment().isAfter(tokenExpAt)) {
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("tokenExpAt");
+        storedToken = null
+      }
+      if (!storedToken) {
+        const { token, tokenExpAt } = await createUserTemp().then((res) => { return res.data })
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("tokenExpAt", tokenExpAt);
+        storedToken = token
+      }
+      setToken(storedToken)
       setIsInitializing(false)
     })()
   }, [])
 
-  if (!loaded || isInitializing) {
+  if (!loaded || !token || isInitializing) {
     return (
       <></>
     )
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TamaguiProvider config={config}>
-        <Theme name="primary">
-          <LocaleProvider initialLocale={locale}>
-            <Stack screenOptions={({ navigation }) => ({
-              title: "",
-              headerLeft: () => {
-                return (
-                  <TouchableOpacity onPress={() => { return navigation.goBack() }}>
-                    <AntDesign name="arrowleft" size={24} />
-                  </TouchableOpacity>
-                )
-              },
-              headerStyle: { backgroundColor: "#12baa6" }
-            })}>
-              <Stack.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false
-                }}
-              />
-              <Stack.Screen
-                name="modal"
-                options={{ presentation: 'modal' }}
-              />
-              <Stack.Screen
-                name="product"
-                options={{
-                  headerShown: true,
-                }}
-              />
-            </Stack>
-          </LocaleProvider>
-        </Theme>
-      </TamaguiProvider>
-    </QueryClientProvider>
+    <AuthProvider initialToken={token}>
+      <QueryClientProvider client={queryClient}>
+        <TamaguiProvider config={config}>
+          <Theme name="primary">
+            <LocaleProvider initialLocale={locale}>
+              <Stack screenOptions={({ navigation }) => ({
+                title: "",
+                headerLeft: () => {
+                  return (
+                    <TouchableOpacity onPress={() => { return navigation.goBack() }}>
+                      <AntDesign name="arrowleft" size={24} color={"#fff"} />
+                    </TouchableOpacity>
+                  )
+                },
+                headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
+              })}>
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false
+                  }}
+                />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: 'modal' }}
+                />
+                <Stack.Screen
+                  name="product"
+                  options={{
+                    headerShown: true,
+                  }}
+                />
+              </Stack>
+            </LocaleProvider>
+          </Theme>
+        </TamaguiProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }
 

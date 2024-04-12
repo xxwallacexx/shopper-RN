@@ -13,8 +13,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: 'black',
-        headerStyle: { backgroundColor: "#12baa6" }
+        tabBarInactiveTintColor: "#fff",
+        tabBarActiveTintColor: '#000',
+        headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" },
+        tabBarStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
       }}>
       <Tabs.Screen
         name="index"

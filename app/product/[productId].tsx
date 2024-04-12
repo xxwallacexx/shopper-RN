@@ -2,17 +2,27 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons"
 import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
-import { SectionList, RefreshControl, Dimensions, SafeAreaView } from "react-native"
-import { Section, Separator, SizableText, Stack, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions } from "~/api/product"
+import { SectionList, RefreshControl, SafeAreaView } from "react-native"
+import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
+import { getProduct, listOptions, getProductPriceDetail } from "~/api/product"
 import { BannerCarousel } from "~/components"
 import { useLocale } from "~/hooks/useLocale"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
+import ActionSheet from "~/components/ActionSheet"
+import { useState } from "react"
+import ProductOptionCard from "~/components/ProductOptionCard"
+import { useAuth } from "~/hooks/useAuth"
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams()
   const { t } = useLocale()
+  const { token } = useAuth()
+  const [isOptionSheetOpen, setIsOptionSheetOpen] = useState(false)
+  const [sheetPosition, setSheetPosition] = useState(0)
+  const [selectedChoices, setSelectedChoices] = useState<{ optionId: string, choiceId: string }[]>([])
+
+
   const { data: product, isFetching: isProductFetching } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => { return await getProduct(`${productId}`) },
@@ -22,14 +32,28 @@ const ProductDetail = () => {
     queryKey: ['productOption', productId],
     queryFn: async () => { return await listOptions(`${productId}`) }
   })
-  console.log('options')
-  console.log(options)
+
+  const { data: priceDetail, isFetching: isPriceDetailFetching } = useQuery({
+    queryKey: ['priceDetail', productId, selectedChoices],
+    queryFn: async () => {
+      const orderContent = {
+        choices: selectedChoices.map((c) => { return c.choiceId }),
+        quantity: 1
+      }
+      return await getProductPriceDetail(token, `${productId}`, orderContent, undefined)
+    }
+  })
+
+
   if (!product || isProductFetching || isOptionsFetching) {
     return <></>
   }
 
-  const onPurchasePress = () => {
-    console.log('purchase')
+
+  const onChoiceChange = (optionId: string, choiceId: string) => {
+    let aSelectedChoices = [...selectedChoices]
+    aSelectedChoices = [...aSelectedChoices.filter((s) => { return s.optionId !== optionId }), { optionId, choiceId }]
+    setSelectedChoices(aSelectedChoices)
   }
 
   const renderItem = ({ item, index, section }) => {
@@ -50,7 +74,7 @@ const ProductDetail = () => {
               <XStack justifyContent="space-between">
                 <Subtitle size="$4">{category.name}</Subtitle>
                 <StyledButton>
-                  分享商品
+                  {t('shareProduct')}
                   <AntDesign name="link" color="#fff" />
                 </StyledButton>
               </XStack>
@@ -118,12 +142,52 @@ const ProductDetail = () => {
           keyExtractor={(item, index) => item + index.toString()}
         />
         <BottomAction>
-          <StyledButton onPress={onPurchasePress}>
+          <StyledButton onPress={() => setIsOptionSheetOpen(true)}>
             {t('addToCart')}
             <AntDesign name="shoppingcart" color="#fff" />
           </StyledButton>
         </BottomAction>
       </YStack>
+      <ActionSheet
+        isSheetOpen={isOptionSheetOpen}
+        setIsSheetOpen={setIsOptionSheetOpen}
+        sheetPosition={sheetPosition}
+        setSheetPosition={setSheetPosition}
+      >
+        <YStack flex={1}>
+          <ScrollView>
+            <YStack space="$4">
+              {
+                options.map((option) => {
+                  return (
+                    <ProductOptionCard
+                      key={option._id}
+                      option={option}
+                      selectedChoice={selectedChoices.find((s) => { return s.optionId == option._id })?.choiceId}
+                      onChoiceChange={onChoiceChange}
+                    />
+                  )
+                })
+              }
+            </YStack>
+            <YStack>
+              <Label>
+                數量
+              </Label>
+              <SizableText>1</SizableText>
+            </YStack>
+          </ScrollView>
+          <Separator borderColor={"lightslategrey"} />
+          <XStack minHeight={"$6"} >
+            {
+              isPriceDetailFetching ? <Spinner /> :
+                <SizableText>
+                  {priceDetail.subtotal}
+                </SizableText>
+            }
+          </XStack>
+        </YStack>
+      </ActionSheet>
     </SafeAreaView>
   )
 }
