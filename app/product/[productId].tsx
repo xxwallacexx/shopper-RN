@@ -3,8 +3,8 @@ import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView } from "react-native"
-import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions, getProductPriceDetail } from "~/api/product"
+import { Button, Circle, Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
+import { getProduct, listOptions, getProductPriceDetail, getProductStock } from "~/api/product"
 import { BannerCarousel } from "~/components"
 import { useLocale } from "~/hooks/useLocale"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
@@ -21,7 +21,7 @@ const ProductDetail = () => {
   const [isOptionSheetOpen, setIsOptionSheetOpen] = useState(false)
   const [sheetPosition, setSheetPosition] = useState(0)
   const [selectedChoices, setSelectedChoices] = useState<{ optionId: string, choiceId: string }[]>([])
-
+  const [quantity, setQuantity] = useState(1)
 
   const { data: product, isFetching: isProductFetching } = useQuery({
     queryKey: ['product', productId],
@@ -34,11 +34,11 @@ const ProductDetail = () => {
   })
 
   const { data: priceDetail, isFetching: isPriceDetailFetching } = useQuery({
-    queryKey: ['priceDetail', productId, selectedChoices],
+    queryKey: ['priceDetail', productId, selectedChoices, quantity],
     queryFn: async () => {
       const orderContent = {
         choices: selectedChoices.map((c) => { return c.choiceId }),
-        quantity: 1
+        quantity
       }
       return await getProductPriceDetail(token, `${productId}`, orderContent, undefined)
     }
@@ -49,11 +49,17 @@ const ProductDetail = () => {
     return <></>
   }
 
+  let stock = product.stock
 
   const onChoiceChange = (optionId: string, choiceId: string) => {
     let aSelectedChoices = [...selectedChoices]
     aSelectedChoices = [...aSelectedChoices.filter((s) => { return s.optionId !== optionId }), { optionId, choiceId }]
     setSelectedChoices(aSelectedChoices)
+  }
+
+  const onQuantityChange = (value: number) => {
+    if (value < 1) return
+    setQuantity(value)
   }
 
   const renderItem = ({ item, index, section }) => {
@@ -172,9 +178,14 @@ const ProductDetail = () => {
             </YStack>
             <YStack>
               <Label>
-                數量
+                {t('quantity')}
               </Label>
-              <SizableText>1</SizableText>
+              <XStack ml={2} space={"$2"} alignItems="center">
+                <StyledButton disabled={quantity < 2} pressStyle={{ opacity: 0.5 }} size="$2" onPress={() => onQuantityChange(quantity - 1)} icon={<AntDesign name="minus" />} />
+                <SizableText>{quantity}</SizableText>
+                <StyledButton disabled={quantity >= stock} pressStyle={{ opacity: 0.5 }} size="$2" onPress={() => onQuantityChange(quantity + 1)} icon={<AntDesign name="plus" />} />
+                {stock < 20 ? <SizableText>{t('stock')}: {stock}</SizableText> : null}
+              </XStack>
             </YStack>
           </ScrollView>
           <Separator borderColor={"lightslategrey"} />
@@ -182,7 +193,7 @@ const ProductDetail = () => {
             {
               isPriceDetailFetching ? <Spinner /> :
                 <SizableText>
-                  {priceDetail.subtotal}
+                  HK$ {priceDetail.subtotal}
                 </SizableText>
             }
           </XStack>
