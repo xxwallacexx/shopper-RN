@@ -90,14 +90,35 @@ const getProductPriceDetail = async (token: string, productId: string, orderCont
       currentCouponId: currentCouponId,
     },
   };
-  let res = axios(options).then((res)=>{return res.data})
+  let res = axios(options).then((res) => { return res.data })
   return res
 }
+
+const getProductStock = async (token: string, productId: string, choices?: string[]) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    params: {
+      choices
+    },
+    url: `${baseUrl}/product/${productId}/getStockByChoices`,
+  };
+  let res = await axios(options).then((res) => {
+    console.log(res)
+    return res.data }).catch((e)=>{console.log(e)})
+  console.log(res)
+  return res
+}
+
+
 
 export {
   listCategories,
   listProducts,
   getProduct,
   listOptions,
-  getProductPriceDetail
+  getProductPriceDetail,
+  getProductStock
 }
