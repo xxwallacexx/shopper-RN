@@ -38,6 +38,7 @@ enum DeliveryMethodEnum {
 
 
 type Coupon = {
+  _id:string,
   credit: number,
   detail: string,
   discount: number,
