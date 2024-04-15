@@ -13,7 +13,6 @@ const ProductLayout = () => {
         name="[productId]"
       />
 
-
     </Stack>
   )
 }
