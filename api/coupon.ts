@@ -23,6 +23,21 @@ const listCoupons = async (token: string, skip: number, sort: string, productId?
   let res: Coupon[] = await axios(options).then((res) => { return res.data.coupons })
   return res
 }
+
+const getCoupon = async (token: string, couponId: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/coupon/${couponId}`,
+  };
+
+  let res: Coupon = await axios(options).then((res) => { return res.data })
+  return res
+}
+
 export {
-  listCoupons
+  listCoupons,
+  getCoupon
 }

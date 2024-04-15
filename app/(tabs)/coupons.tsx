@@ -64,6 +64,7 @@ const Coupons = () => {
         <TouchableOpacity style={{ flex: 0.5 }} >
           <YStack flex={1} p="$4">
             <Image
+              resizeMode="contain"
               aspectRatio={1}
               source={{ uri: item.photo }}
               width={"100%"}

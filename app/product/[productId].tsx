@@ -146,7 +146,7 @@ const ProductDetail = () => {
           ]}
           keyExtractor={(item, index) => item + index.toString()}
         />
-        <BottomAction>
+        <BottomAction justifyContent="flex-end">
           <StyledButton onPress={() => setIsOptionSheetOpen(true)}>
             {t('addToCart')}
             <AntDesign name="shoppingcart" color="#fff" />
