@@ -101,6 +101,12 @@ const RootLayout = () => {
                     headerShown: true,
                   }}
                 />
+                <Stack.Screen
+                  name="coupon"
+                  options={{
+                    headerShown: true,
+                  }}
+                />
               </Stack>
             </LocaleProvider>
           </Theme>

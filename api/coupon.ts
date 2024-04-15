@@ -20,7 +20,7 @@ const listCoupons = async (token: string, skip: number, sort: string, productId?
       sort: sort,
     },
   };
-  let res: Coupon = await axios(options).then((res) => { return res.data.coupons })
+  let res: Coupon[] = await axios(options).then((res) => { return res.data.coupons })
   return res
 }
 export {
