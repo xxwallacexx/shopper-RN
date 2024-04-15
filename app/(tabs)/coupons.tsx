@@ -1,8 +1,11 @@
+import { AntDesign } from "@expo/vector-icons"
+import { tokens } from "@tamagui/themes"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { Link } from "expo-router"
+import moment from "moment"
 import { useState } from "react"
 import { SectionList, RefreshControl, FlatList, TouchableOpacity } from "react-native"
-import { Image, SizableText, Spinner, YStack } from "tamagui"
+import { Image, SizableText, Spinner, XStack, YStack } from "tamagui"
 import { getCredit, getShop, listCoupons } from "~/api"
 import { useAuth, useLocale } from "~/hooks"
 import { Badge, Container, StyledButton } from "~/tamagui.config"
@@ -19,13 +22,14 @@ const Coupons = () => {
   ]
   const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0].value)
   const { data: shop } = useQuery({ queryKey: ['shop'], queryFn: getShop })
-  const { data: credit } = useQuery({ queryKey: ['credit', token], queryFn: async () => { return await getCredit(token) } })
+  const { data: credit, refetch: refetchCredit } = useQuery({ queryKey: ['credit', token], queryFn: async () => { return await getCredit(token) } })
   const {
     data: coupons,
     isFetching: isCouponsFetching,
     isFetchingNextPage: isFetchingMoreCoupons,
     fetchNextPage: fetchMoreCoupons,
-    hasNextPage: couponsHasNextPage
+    hasNextPage: couponsHasNextPage,
+    refetch: refetchCoupons,
   } = useInfiniteQuery({
     queryKey: ['coupons', selectedSortOption],
     initialPageParam: 0,
@@ -46,24 +50,37 @@ const Coupons = () => {
     return <></>
   }
   const onRefresh = () => {
-    console.log('refresh')
+    refetchCredit()
+    refetchCoupons()
   }
 
   const onEndReached = () => {
     console.log('onEndReached')
   }
 
-  const renderCoupons = ({ item }) => {
+  const renderCoupons = ({ item }: { item: Coupon }) => {
     return (
-      <TouchableOpacity style={{ flex: 0.5 }} >
-        <YStack flex={1} p="$4">
-          <Image
-            aspectRatio={1}
-            source={{ uri: item.photo }}
-            width={"100%"}
-          />
-        </YStack>
-      </TouchableOpacity>
+      <Link href={`/coupon/${item._id}`} asChild>
+        <TouchableOpacity style={{ flex: 0.5 }} >
+          <YStack flex={1} p="$4">
+            <Image
+              aspectRatio={1}
+              source={{ uri: item.photo }}
+              width={"100%"}
+            />
+            <Badge position='absolute' top={22} right={22}>
+              <SizableText fontSize={8} color="#fff">
+                {t('couponCredit', { credit: item.credit })}
+              </SizableText>
+            </Badge>
+            <XStack space={4} alignItems="center">
+              <AntDesign name="clockcircleo" color={tokens.color.gray10Dark.val} />
+              <SizableText color="lightslategrey">{moment(item.endDate).format('YYYY-MM-DD HH:mm')}</SizableText>
+            </XStack>
+            <SizableText>{item.name}</SizableText>
+          </YStack>
+        </TouchableOpacity>
+      </Link>
     )
 
   }
@@ -139,6 +156,9 @@ const Coupons = () => {
             onRefresh={() => onRefresh()}
           />
         }
+        style={{
+          backgroundColor: "#fff"
+        }}
         renderItem={(item) => renderSectionItem(item)}
         onEndReached={() => onEndReached()}
         sections={[
