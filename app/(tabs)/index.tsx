@@ -74,7 +74,7 @@ const Home = () => {
     ? products.pages.flat()
     : []
 
-  const renderRecommendedProducts = ({ item }) => {
+  const renderRecommendedProducts = ({ item }: { item: Product }) => {
     const { _id, price, category, name, introduction } = item
 
     const uri = item.photos[0].path

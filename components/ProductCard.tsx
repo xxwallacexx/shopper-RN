@@ -27,6 +27,7 @@ const ProductCard = ({
         aspectRatio={1}
         source={{ uri: imageUri }}
         width={"100%"}
+        resizeMode="contain"
         borderRadius={4}
       />
       <Badge position='absolute' top={22} right={22}>

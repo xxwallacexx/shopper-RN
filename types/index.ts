@@ -38,7 +38,7 @@ enum DeliveryMethodEnum {
 
 
 type Coupon = {
-  _id:string,
+  _id: string,
   credit: number,
   detail: string,
   discount: number,
@@ -46,6 +46,9 @@ type Coupon = {
   name: string,
   photo: string,
   terms: string
+  minPriceRequired: number,
+  maxPurchase: number,
+  discount: number
 }
 
 type Shop = {
@@ -60,6 +63,7 @@ type Shop = {
 }
 
 type Product = {
+  _id: string,
   name: string,
   category: { name: string, status: "ACTIVE" | "INACTIVE" }
   shop: Shop,

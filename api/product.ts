@@ -105,10 +105,7 @@ const getProductStock = async (token: string, productId: string, choices?: strin
     },
     url: `${baseUrl}/product/${productId}/getStockByChoices`,
   };
-  let res = await axios(options).then((res) => {
-    console.log(res)
-    return res.data }).catch((e)=>{console.log(e)})
-  console.log(res)
+  let res = await axios(options).then((res) => { return res.data })
   return res
 }
 

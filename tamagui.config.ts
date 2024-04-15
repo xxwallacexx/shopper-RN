@@ -81,7 +81,6 @@ export const BottomAction = styled(XStack, {
   btw: 0.5,
   borderColor: "lightslategrey",
   alignItems: "center",
-  justifyContent: "flex-end",
   space: "$2"
 })
 
