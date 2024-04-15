@@ -1,6 +1,4 @@
-
 import axios from 'axios'
-
 const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 const shop = process.env.EXPO_PUBLIC_SHOP;
 
@@ -80,16 +78,17 @@ const listOptions = async (id: string) => {
 
 const getProductPriceDetail = async (token: string, productId: string, orderContent: OrderContent, currentCouponId?: string) => {
   const options = {
-    method: "get",
+    method: "put",
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/product/${productId}/priceDetail`,
-    params: {
-      orderContent: JSON.stringify(orderContent),
-      currentCouponId: currentCouponId,
-    },
+    data: {
+      orderContent,
+      currentCouponId
+    }
   };
+  console.log(options)
   let res = axios(options).then((res) => { return res.data })
   return res
 }
