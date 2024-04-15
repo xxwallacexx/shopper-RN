@@ -1,5 +1,5 @@
 import { Image, SizableText, Text, YStack } from "tamagui"
-import { useLocale } from "~/hooks/useLocale"
+import { useLocale } from "~/hooks"
 import { Badge } from "~/tamagui.config"
 
 const ProductCard = ({

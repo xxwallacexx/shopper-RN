@@ -1,6 +1,6 @@
 import { H2, Theme } from "tamagui"
 
-const Cart = () => {
+const Carts = () => {
   return (
     <Theme name="light">
       <H2>Cart</H2>
@@ -8,4 +8,4 @@ const Cart = () => {
   )
 }
 
-export default Cart
+export default Carts

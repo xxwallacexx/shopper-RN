@@ -36,14 +36,26 @@ enum DeliveryMethodEnum {
   SELF_PICK_UP = "SELF_PICK_UP"
 }
 
+
+type Coupon = {
+  credit: number,
+  detail: string,
+  discount: number,
+  endDate: Date,
+  name: string,
+  photo: string,
+  terms: string
+}
+
 type Shop = {
   address: string,
   deliveryMethods: DeliveryMethodEnum[],
   feedCover: string,
   logo: string,
   name: string,
-  phoneNumber: string
-
+  phoneNumber: string,
+  searchCover: string,
+  couponCover: string
 }
 
 type Product = {
