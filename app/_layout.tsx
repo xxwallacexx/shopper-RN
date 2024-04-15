@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { AuthProvider } from '~/hooks/authProvider';
-import { createUserTemp } from '~/api/auth';
+import { createUserTemp } from '~/api';
 import moment from 'moment';
 
 SplashScreen.preventAutoHideAsync();

@@ -3,16 +3,15 @@ import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView } from "react-native"
-import { Button, Circle, Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions, getProductPriceDetail, getProductStock } from "~/api/product"
+import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
+import { getProduct, listOptions, getProductPriceDetail } from "~/api"
 import { BannerCarousel } from "~/components"
-import { useLocale } from "~/hooks/useLocale"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from "~/components/ActionSheet"
 import { useState } from "react"
 import ProductOptionCard from "~/components/ProductOptionCard"
-import { useAuth } from "~/hooks/useAuth"
+import { useAuth, useLocale } from "~/hooks"
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams()

@@ -2,12 +2,11 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
 import { YStack, XStack, ScrollView, Spinner } from 'tamagui';
-import { listAdsBanners } from '~/api/adsBanner';
-import { listCategories, listProducts } from '~/api/product';
+import { listCategories, listProducts, listAdsBanners } from '~/api';
 import { BannerCarousel, ProductCard } from '~/components';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-import { useLocale } from '~/hooks/useLocale';
+import { useLocale } from '~/hooks';
 import { Container, StyledButton, Title } from '~/tamagui.config';
 import { Link } from 'expo-router';
 import ActionSheet from '~/components/ActionSheet';
@@ -75,7 +74,7 @@ const Home = () => {
     ? products.pages.flat()
     : []
 
-  const renderRecommendedProductsView = ({ item }) => {
+  const renderRecommendedProducts = ({ item }) => {
     const { _id, price, category, name, introduction } = item
 
     const uri = item.photos[0].path
@@ -146,7 +145,7 @@ const Home = () => {
         return (
           <FlatList
             data={productsData}
-            renderItem={renderRecommendedProductsView}
+            renderItem={renderRecommendedProducts}
             numColumns={2}
             keyExtractor={(item, index) => index.toString()}
             style={{ flex: 1 }}
