@@ -3,9 +3,8 @@ import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
 import moment from "moment"
-import { RefreshControl, SectionList } from "react-native"
+import { RefreshControl, SectionList, SafeAreaView } from "react-native"
 import HTMLView from "react-native-htmlview"
-import { SafeAreaView } from "react-native-safe-area-context"
 import { Image, Separator, SizableText, Text, XStack, YStack } from "tamagui"
 import { getCoupon } from "~/api"
 import { useAuth, useLocale } from "~/hooks"
@@ -40,7 +39,7 @@ const CouponDetail = () => {
             backgroundColor={"#fff"}
             resizeMode="contain"
             aspectRatio={16 / 9}
-            src={{ uri: photo }}
+            source={{ uri: photo }}
             width={"100%"}
           />
         )
@@ -104,7 +103,7 @@ const CouponDetail = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <YStack flex={1}>
         <SectionList
           refreshControl={

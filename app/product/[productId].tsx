@@ -128,7 +128,7 @@ const ProductDetail = () => {
     }
   }
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <YStack flex={1} alignItems="center">
         <SectionList
           refreshControl={

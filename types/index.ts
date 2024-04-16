@@ -47,8 +47,7 @@ type Coupon = {
   photo: string,
   terms: string
   minPriceRequired: number,
-  maxPurchase: number,
-  discount: number
+  maxPurchase: number
 }
 
 type Shop = {
