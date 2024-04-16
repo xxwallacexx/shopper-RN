@@ -1,5 +1,4 @@
-import { useState } from "react"
-import { ScrollView } from "react-native"
+import { ReactNode, useEffect, useState } from "react"
 import type { StackProps, TabLayout, TabsTabProps } from 'tamagui'
 import {
   AnimatePresence,
@@ -8,6 +7,7 @@ import {
   Tabs,
   YStack,
   styled,
+  ScrollView
 } from 'tamagui'
 import { Subtitle } from "~/tamagui.config"
 
@@ -35,21 +35,15 @@ const TabsRovingIndicator = ({ active, ...props }: { active?: boolean } & StackP
   )
 }
 
-const AnimatedYStack = styled(YStack, {
-  variants: {
-    isLeft: { true: { x: -25, opacity: 0 } },
-    isRight: { true: { x: 25, opacity: 0 } },
-    defaultFade: { true: { opacity: 0 } },
-  } as const,
-})
 
 const AnimatedTabs = ({
   tabs,
-  selectedTab,
+  initialTab,
+  onTabChanged,
 }: {
   tabs: { label: string, value: string }[]
-  selectedTab: string
-  onTabSelected: (value: string) => void
+  initialTab: string,
+  onTabChanged: (value: string) => void,
 }) => {
   const [tabState, setTabState] = useState<{
     currentTab: string
@@ -67,7 +61,7 @@ const AnimatedTabs = ({
     prevActiveAt: TabLayout | null
   }>({
     activeAt: null,
-    currentTab: selectedTab,
+    currentTab: initialTab,
     intentAt: null,
     prevActiveAt: null,
   })
@@ -83,17 +77,17 @@ const AnimatedTabs = ({
    *  0: n/a
    *  1: from right
    */
-  const direction = (() => {
-    if (!activeAt || !prevActiveAt || activeAt.x === prevActiveAt.x) {
-      return 0
-    }
-    return activeAt.x > prevActiveAt.x ? -1 : 1
-  })()
+  // const direction = (() => {
+  //   if (!activeAt || !prevActiveAt || activeAt.x === prevActiveAt.x) {
+  //     return 0
+  //   }
+  //   return activeAt.x > prevActiveAt.x ? -1 : 1
+  // })()
 
-  const enterVariant =
-    direction === 1 ? 'isLeft' : direction === -1 ? 'isRight' : 'defaultFade'
-  const exitVariant =
-    direction === 1 ? 'isRight' : direction === -1 ? 'isLeft' : 'defaultFade'
+  // const enterVariant =
+  //   direction === 1 ? 'isLeft' : direction === -1 ? 'isRight' : 'defaultFade'
+  // const exitVariant =
+  //   direction === 1 ? 'isRight' : direction === -1 ? 'isLeft' : 'defaultFade'
 
   const handleOnInteraction: TabsTabProps['onInteraction'] = (type, layout) => {
     if (type === 'select') {
@@ -103,15 +97,14 @@ const AnimatedTabs = ({
     }
   }
 
-  const onValueChange = (value: string) => {
-    setCurrentTab(value)
-  }
+  useEffect(() => {
+    onTabChanged(tabState.currentTab)
+  }, [tabState.currentTab])
 
-  
   return (
     <Tabs
       value={currentTab}
-      onValueChange={onValueChange}
+      onValueChange={setCurrentTab}
       orientation="horizontal"
       size="$4"
       padding="$2"
@@ -119,8 +112,10 @@ const AnimatedTabs = ({
       activationMode="manual"
       borderRadius="$4"
       position="relative"
+      width={"100%"}
+      backgroundColor={"#fff"}
     >
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      <YStack>
         <AnimatePresence>
           {intentAt && (
             <TabsRovingIndicator
@@ -147,7 +142,6 @@ const AnimatedTabs = ({
           disablePassBorderRadius
           loop={false}
           backgroundColor="transparent"
-          separator={<Separator vertical borderColor={"lightslategrey"} />}
           borderBottomWidth={0.3}
           borderColor={"lightslategrey"}
         >
@@ -170,19 +164,21 @@ const AnimatedTabs = ({
             })
           }
         </Tabs.List>
-      </ScrollView>
+      </YStack>
 
-      <AnimatePresence
+      {/*
+     <AnimatePresence
         exitBeforeEnter
-        enterVariant={enterVariant}
-        exitVariant={exitVariant}
+        enterVariant={"defaultFade"}
+        exitVariant={"defaultFade"}
       >
         <AnimatedYStack key={currentTab} animation="100ms" x={0} opacity={1} flex={1}>
           <Tabs.Content value={currentTab} forceMount flex={1} justifyContent="center">
-            <H5 textAlign="center">{currentTab}</H5>
+            {children}
           </Tabs.Content>
         </AnimatedYStack>
       </AnimatePresence>
+      */}
     </Tabs>
   )
 }

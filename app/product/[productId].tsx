@@ -1,20 +1,21 @@
-import { AntDesign, MaterialIcons } from "@expo/vector-icons"
+import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
-import { useLocalSearchParams } from "expo-router"
-import { SectionList, RefreshControl, SafeAreaView } from "react-native"
+import { useLocalSearchParams, useNavigation } from "expo-router"
+import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from "react-native"
 import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions, getProductPriceDetail } from "~/api"
+import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark } from "~/api"
 import { BannerCarousel } from "~/components"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from "~/components/ActionSheet"
-import { useState } from "react"
+import { useLayoutEffect, useState } from "react"
 import ProductOptionCard from "~/components/ProductOptionCard"
 import { useAuth, useLocale } from "~/hooks"
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams()
+  const navigation = useNavigation()
   const { t } = useLocale()
   const { token } = useAuth()
   const [isOptionSheetOpen, setIsOptionSheetOpen] = useState(false)
@@ -42,6 +43,34 @@ const ProductDetail = () => {
       return await getProductPriceDetail(token, `${productId}`, orderContent, undefined)
     }
   })
+
+  const { data: isBookmarked, refetch: refetchIsBookmarked } = useQuery({
+    queryKey: ['productBookmark', productId],
+    queryFn: async () => { return await getProductIsBookmarked(token, `${productId}`) }
+  })
+
+
+  const onBookmarkPress = async () => {
+    if (isBookmarked) {
+      await removeBookmark(token, `${productId}`)
+    } else {
+      await createBookmark(token, `${productId}`)
+    }
+    refetchIsBookmarked()
+  }
+
+  useLayoutEffect(() => {
+    if (isBookmarked == undefined) return
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <TouchableOpacity onPress={onBookmarkPress}>
+            <Ionicons name="bookmark" size={24} color={isBookmarked ? tokens.color.yellow9Light.val : "#fff"} />
+          </TouchableOpacity>
+        )
+      }
+    })
+  }, [navigation, isBookmarked])
 
 
   if (!product || isProductFetching || isOptionsFetching) {
