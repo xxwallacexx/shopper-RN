@@ -98,13 +98,13 @@ const RootLayout = () => {
                 <Stack.Screen
                   name="product"
                   options={{
-                    headerShown: true,
+                    headerShown: false,
                   }}
                 />
                 <Stack.Screen
                   name="coupon"
                   options={{
-                    headerShown: true,
+                    headerShown: false,
                   }}
                 />
               </Stack>

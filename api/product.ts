@@ -108,7 +108,17 @@ const getProductStock = async (token: string, productId: string, choices?: strin
   return res
 }
 
-
+const getProductIsBookmarked = async (token: string, productId: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${productId}/isBookmarked`,
+  };
+  let res: boolean = await axios(options).then((res) => { return res.data })
+  return res
+}
 
 export {
   listCategories,
@@ -116,5 +126,6 @@ export {
   getProduct,
   listOptions,
   getProductPriceDetail,
-  getProductStock
+  getProductStock,
+  getProductIsBookmarked
 }

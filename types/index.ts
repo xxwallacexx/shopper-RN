@@ -104,3 +104,21 @@ type OrderContent = {
   choices: string[],
   quantity: number
 }
+
+type Address = {
+  coordiante: number[],
+
+}
+
+type User = {
+  _id: string,
+  address: Address,
+  isTemp: boolean,
+  username: string
+}
+
+type Bookmark = {
+  _id: string,
+  product: Product,
+  shop: Shop
+}

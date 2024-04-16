@@ -15,6 +15,19 @@ const getCredit = async (token: string) => {
   return res
 }
 
+const getSelf = async (token: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/user/self`,
+  };
+  let res: User = await axios(options).then((res) => { return res.data })
+  console.log(res)
+  return res
+}
 export {
-  getCredit
+  getCredit,
+  getSelf
 }

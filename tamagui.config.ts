@@ -58,6 +58,14 @@ export const Subtitle = styled(SizableText, {
   size: '$1',
 });
 
+export const AnimatedYStack = styled(YStack, {
+  variants: {
+    isLeft: { true: { x: -25, opacity: 0 } },
+    isRight: { true: { x: 25, opacity: 0 } },
+    defaultFade: { true: { opacity: 0 } },
+  } as const,
+})
+
 export const StyledButton = styled(Button, {
   backgroundColor: "$color.primary",
   color: "#fff",
