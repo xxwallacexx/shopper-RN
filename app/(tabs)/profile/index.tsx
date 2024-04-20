@@ -1,18 +1,12 @@
-import { AntDesign } from "@expo/vector-icons"
-import { tokens } from "@tamagui/themes"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { Link } from "expo-router"
-import moment from "moment"
 import { useState } from "react"
 import { FlatList, RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from "react-native"
-import { Spinner, XStack } from "tamagui"
-import { AnimatePresence } from "tamagui"
-import { SizableText } from "tamagui"
-import { Image, Text, YStack } from "tamagui"
+import { Image, YStack, SizableText, AnimatePresence } from "tamagui"
 import { getSelf, listBookmarks } from "~/api"
-import { AnimatedTabs, ProductCard } from "~/components"
+import { AnimatedTabs, ProductCard, Spinner } from "~/components"
 import { useAuth, useLocale } from "~/hooks"
-import { AnimatedYStack, Badge, Container } from "~/tamagui.config"
+import { AnimatedYStack, Container, StyledButton } from "~/tamagui.config"
 
 const Profile = () => {
   const { t } = useLocale()
@@ -52,8 +46,6 @@ const Profile = () => {
     : []
 
 
-  console.log(bookmarksData)
-
   const [selectedTab, setSelectedTab] = useState(tabs[0].value)
   const onRefresh = () => {
 
@@ -88,8 +80,27 @@ const Profile = () => {
     switch (section.key) {
       case "main":
         return (
-          <YStack minHeight={120}>
-            <Text>this is main</Text>
+          <YStack space="$2" p="$2" alignItems="center">
+            {
+              user?.isTemp ?
+                <StyledButton backgroundColor={"red"} width={"80%"}>
+                  <SizableText color="#fff">{t('tempAcc')}</SizableText>
+                </StyledButton>
+                : null
+            }
+            <TouchableOpacity style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+              <YStack w="100%" alignItems="center" space="$2">
+                <Image
+                  resizeMode="contain"
+                  aspectRatio={1}
+                  source={{ uri: user?.avatar }}
+                  width={"20%"}
+                />
+                <SizableText>
+                  {user?.username}
+                </SizableText>
+              </YStack>
+            </TouchableOpacity>
           </YStack>
         )
       case "tabView":
@@ -138,11 +149,6 @@ const Profile = () => {
     }
   }
 
-  const renderHeader = ({ section }) => {
-    return (
-      <Text>header</Text>
-    )
-  }
   const renderSectionHeader = ({ section }) => {
     switch (section.key) {
       case "tabView":
@@ -174,7 +180,6 @@ const Profile = () => {
           { key: "main", data: [""] },
           { key: "tabView", data: [""] },
         ]}
-        ListHeaderComponent={renderHeader}
         renderSectionHeader={renderSectionHeader}
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}

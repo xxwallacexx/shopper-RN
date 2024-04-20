@@ -107,11 +107,14 @@ type OrderContent = {
 
 type Address = {
   coordiante: number[],
-
+  room?:string,
+  street?:string,
+  district?:string
 }
 
 type User = {
   _id: string,
+  avatar: string,
   address: Address,
   isTemp: boolean,
   username: string

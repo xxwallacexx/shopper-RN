@@ -1,14 +1,8 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons"
+import { AntDesign } from "@expo/vector-icons"
 import { Stack } from "expo-router"
 import { TouchableOpacity } from "react-native"
 
-type ProductRoute = {
-  params: {
-    productId: string
-  }
-}
-
-const ProductLayout = () => {
+const Layout = () => {
   return (
     <Stack
       screenOptions={({ navigation }) => ({
@@ -33,4 +27,4 @@ const ProductLayout = () => {
   )
 }
 
-export default ProductLayout
+export default Layout

@@ -12,7 +12,8 @@ import { TouchableOpacity } from 'react-native';
 import { AuthProvider } from '~/hooks/authProvider';
 import { createUserTemp } from '~/api';
 import moment from 'moment';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast, { ErrorToast } from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
@@ -69,50 +70,75 @@ const RootLayout = () => {
   }
 
   return (
-    <AuthProvider initialToken={token}>
-      <QueryClientProvider client={queryClient}>
-        <TamaguiProvider config={config}>
-          <Theme name="primary">
-            <LocaleProvider initialLocale={locale}>
-              <Stack screenOptions={({ navigation }) => ({
-                title: "",
-                headerLeft: () => {
-                  return (
-                    <TouchableOpacity onPress={() => { return navigation.goBack() }}>
-                      <AntDesign name="arrowleft" size={24} color={"#fff"} />
-                    </TouchableOpacity>
-                  )
-                },
-                headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
-              })}>
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerShown: false
-                  }}
-                />
-                <Stack.Screen
-                  name="modal"
-                  options={{ presentation: 'modal' }}
-                />
-                <Stack.Screen
-                  name="product"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="coupon"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-              </Stack>
-            </LocaleProvider>
-          </Theme>
-        </TamaguiProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider initialToken={token}>
+        <QueryClientProvider client={queryClient}>
+          <TamaguiProvider config={config}>
+            <Theme name="primary">
+              <LocaleProvider initialLocale={locale}>
+                <Stack screenOptions={({ navigation }) => ({
+                  title: "",
+                  headerLeft: () => {
+                    return (
+                      <TouchableOpacity onPress={() => { return navigation.goBack() }}>
+                        <AntDesign name="arrowleft" size={24} color={"#fff"} />
+                      </TouchableOpacity>
+                    )
+                  },
+                  headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
+                })}>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                      headerShown: false
+                    }}
+                  />
+                  <Stack.Screen
+                    name="modal"
+                    options={{ presentation: 'modal' }}
+                  />
+                  <Stack.Screen
+                    name="product"
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="coupon"
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="profile"
+                    options={{
+                      headerShown: false
+                    }}
+                  />
+                </Stack>
+                <Toast config={{
+                  error: (props) => (
+                    <ErrorToast
+                      {...props}
+                      style={{ borderLeftColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#000" }}
+                      contentContainerStyle={{ backgroundColor: "red" }}
+                      text1Style={{
+                        fontSize: 17,
+                        color: "#fff"
+                      }}
+                      text2Style={{
+                        fontSize: 15,
+                        color: "#fff"
+                      }}
+                    />
+                  ),
+                }} visibilityTime={1000} />
+              </LocaleProvider>
+            </Theme>
+          </TamaguiProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
 
