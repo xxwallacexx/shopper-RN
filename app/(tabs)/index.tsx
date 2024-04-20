@@ -1,9 +1,9 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
-import { YStack, XStack, ScrollView, Spinner } from 'tamagui';
+import { YStack, XStack, ScrollView } from 'tamagui';
 import { listCategories, listProducts, listAdsBanners } from '~/api';
-import { BannerCarousel, ProductCard } from '~/components';
+import { BannerCarousel, ProductCard, Spinner } from '~/components';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { useLocale } from '~/hooks';

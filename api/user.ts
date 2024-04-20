@@ -27,7 +27,28 @@ const getSelf = async (token: string) => {
   console.log(res)
   return res
 }
+
+const updateSelf = async (token: string, username: string, email?: string, address?: Address) => {
+  const options = {
+    method: "put",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      username: username,
+      email: email,
+      address: address,
+    },
+    url: `${baseUrl}/user/self`,
+  };
+  return await axios(options).catch((e) => {
+    let error = new Error(e.response.data.errorCodes)
+    throw (error)
+  })
+}
+
 export {
   getCredit,
-  getSelf
+  getSelf,
+  updateSelf
 }
