@@ -76,6 +76,46 @@ const Profile = () => {
 
   }
 
+  const renderTabContent = () => {
+    switch (selectedTab) {
+      case "myBookmarks":
+        return (
+          <FlatList
+            data={bookmarksData}
+            renderItem={renderBookmarks}
+            numColumns={2}
+            keyExtractor={(item, index) => item._id}
+            style={{ flex: 1 }}
+            columnWrapperStyle={{
+              flex: 1,
+              justifyContent: "space-between"
+            }}
+            ListFooterComponent={() => {
+              if (!isBookmarksFetching && !isFetchingMoreBookmarks) {
+                return null
+              }
+              return (
+                <Spinner color="$color.primary" />
+              )
+            }}
+            ListEmptyComponent={() => {
+              if (isBookmarksFetching || isFetchingMoreBookmarks) {
+                return null
+              }
+              return (
+                <Container alignItems='center'>
+                </Container>
+              )
+            }}
+          />
+        )
+      case "myWallet":
+      case "myOrders":
+      default:
+        return <></>
+    }
+  }
+
   const renderSectionItem = ({ section }) => {
     switch (section.key) {
       case "main":
@@ -111,34 +151,7 @@ const Profile = () => {
             exitVariant={"defaultFade"}
           >
             <AnimatedYStack key={selectedTab} animation="100ms" x={0} opacity={1} flex={1}>
-              <FlatList
-                data={bookmarksData}
-                renderItem={renderBookmarks}
-                numColumns={2}
-                keyExtractor={(item, index) => item._id}
-                style={{ flex: 1 }}
-                columnWrapperStyle={{
-                  flex: 1,
-                  justifyContent: "space-between"
-                }}
-                ListFooterComponent={() => {
-                  if (!isBookmarksFetching && !isFetchingMoreBookmarks) {
-                    return null
-                  }
-                  return (
-                    <Spinner color="$color.primary" />
-                  )
-                }}
-                ListEmptyComponent={() => {
-                  if (isBookmarksFetching || isFetchingMoreBookmarks) {
-                    return null
-                  }
-                  return (
-                    <Container alignItems='center'>
-                    </Container>
-                  )
-                }}
-              />
+              {renderTabContent()}
             </AnimatedYStack>
           </AnimatePresence>
 
