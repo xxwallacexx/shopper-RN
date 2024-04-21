@@ -116,6 +116,7 @@ type User = {
   _id: string,
   avatar: string,
   address: Address,
+  email: string,
   isTemp: boolean,
   username: string
 }

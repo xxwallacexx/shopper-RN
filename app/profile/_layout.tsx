@@ -17,9 +17,11 @@ const Layout = () => {
         },
         headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
       })}>
-
       <Stack.Screen
         name="editUsername"
+      />
+      <Stack.Screen
+        name="editEmail"
       />
     </Stack>
   )
