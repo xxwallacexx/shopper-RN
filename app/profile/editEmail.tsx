@@ -1,3 +1,4 @@
+
 import { useQuery } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
 import { Form, Input, Label, YStack } from 'tamagui'
@@ -9,13 +10,14 @@ import { SafeAreaView } from 'react-native'
 import Toast from 'react-native-toast-message';
 import { useNavigation } from 'expo-router'
 
-const EditUsername = () => {
+const EditEmail = () => {
   const { t } = useLocale()
   const navigation = useNavigation()
   const [isSubmiting, setIsSubmiting] = useState(false)
+
   const { token } = useAuth()
   const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token) } })
-  const inputRef = useRef<string|undefined>(user?.username)
+  const inputRef = useRef<string | undefined>(user?.email)
   if (!user) {
     return <></>
   }
@@ -27,10 +29,10 @@ const EditUsername = () => {
 
   const onSubmit = async () => {
     if (!inputRef.current) return
-    const { email, address } = user
+    const { username, address } = user
     setIsSubmiting(true)
     try {
-      await updateSelf(token, inputRef.current, email, address)
+      await updateSelf(token, username, inputRef.current, address)
     }
     catch (e) {
       const error = e as Error
@@ -53,13 +55,13 @@ const EditUsername = () => {
       >
         <YStack space="$2" p="$2">
           <Label>
-            {t('editUsername')}
+            {t('editEmail')}
           </Label>
           <Input
             disabled={isSubmiting}
             borderColor={"lightgrey"}
             backgroundColor={"whitesmoke"}
-            defaultValue={user.username}
+            defaultValue={user.email}
             onChangeText={onChangeText}
           />
           <Form.Trigger asChild disabled={isSubmiting}>
@@ -80,4 +82,4 @@ const EditUsername = () => {
   )
 }
 
-export default EditUsername
+export default EditEmail
