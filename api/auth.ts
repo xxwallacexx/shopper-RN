@@ -13,7 +13,15 @@ const login = async (email: string, password: string) => {
       password,
     },
   };
-  return await axios(options);
+  let res: Auth = await axios(options)
+    .then((res) => {
+      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt }
+    })
+    .catch((e) => {
+      let error = new Error(e.response.data.errorCodes)
+      throw (error)
+    });
+  return res
 }
 
 const facebookLogin = async (token: string) => {
@@ -80,7 +88,8 @@ const createUserTemp = async () => {
       shop,
     },
   };
-  return await axios(options);
+  let res: Auth = await axios(options).then((res) => { return res.data });
+  return res
 }
 
 

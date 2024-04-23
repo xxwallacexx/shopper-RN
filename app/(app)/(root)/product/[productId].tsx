@@ -18,6 +18,7 @@ const ProductDetail = () => {
   const navigation = useNavigation()
   const { t } = useLocale()
   const { token } = useAuth()
+  if(!token)return <></>
   const [isOptionSheetOpen, setIsOptionSheetOpen] = useState(false)
   const [sheetPosition, setSheetPosition] = useState(0)
   const [selectedChoices, setSelectedChoices] = useState<{ optionId: string, choiceId: string }[]>([])

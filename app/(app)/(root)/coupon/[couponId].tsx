@@ -15,6 +15,8 @@ const CouponDetail = () => {
   const { t } = useLocale()
   const { token } = useAuth()
 
+  if(!token)return <></>
+
   const { data: coupon } = useQuery({
     queryKey: ['coupon', couponId],
     queryFn: async () => { return await getCoupon(token, `${couponId}`) }

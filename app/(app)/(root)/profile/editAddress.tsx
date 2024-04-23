@@ -14,6 +14,7 @@ const EditAddress = () => {
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const { token } = useAuth()
+  if(!token)return <></>
   const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token) } })
 
 
@@ -57,6 +58,7 @@ const EditAddress = () => {
   }
 
   const disabled = phoneNumber == "" || !phoneNumber || district == "" || !district || street == "" || !street || room == "" || !room
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>

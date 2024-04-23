@@ -58,7 +58,8 @@ type Shop = {
   name: string,
   phoneNumber: string,
   searchCover: string,
-  couponCover: string
+  couponCover: string,
+  terms: string,
 }
 
 type Product = {
@@ -106,10 +107,10 @@ type OrderContent = {
 }
 
 type Address = {
-  room?:string,
-  street?:string,
-  district?:string,
-  phoneNumber?:string
+  room?: string,
+  street?: string,
+  district?: string,
+  phoneNumber?: string
 }
 
 type User = {
@@ -125,4 +126,9 @@ type Bookmark = {
   _id: string,
   product: Product,
   shop: Shop
+}
+
+type Auth = {
+  token: string,
+  tokenExpAt: string
 }
