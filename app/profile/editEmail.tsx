@@ -1,6 +1,5 @@
-
-import { useQuery } from '@tanstack/react-query'
-import { useRef, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 import { Form, Input, Label, YStack } from 'tamagui'
 import { getSelf, updateSelf } from '~/api'
 import { useAuth, useLocale } from '~/hooks'
@@ -13,39 +12,41 @@ import { useNavigation } from 'expo-router'
 const EditEmail = () => {
   const { t } = useLocale()
   const navigation = useNavigation()
-  const [isSubmiting, setIsSubmiting] = useState(false)
-
+  const queryClient = useQueryClient()
   const { token } = useAuth()
   const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token) } })
-  const inputRef = useRef<string | undefined>(user?.email)
-  if (!user) {
-    return <></>
-  }
-
-  const onChangeText = (text: string) => {
-    inputRef.current = text
-  }
 
 
-  const onSubmit = async () => {
-    if (!inputRef.current) return
-    const { username, address } = user
-    setIsSubmiting(true)
-    try {
-      await updateSelf(token, username, inputRef.current, address)
-    }
-    catch (e) {
+  const { isPending: isSubmiting, mutate: updateSelfMutate } = useMutation({
+    mutationFn: ({ token, username, email, address }: { token: string, username: string, email?: string, address?: Address }) => {
+      return updateSelf(token, username, email, address)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+      navigation.goBack()
+    },
+    onError: (e) => {
+      console.log(e)
       const error = e as Error
       Toast.show({
         type: 'error',
         text1: t(error.message),
       });
-      console.log(error.message)
-      setIsSubmiting(false)
     }
-    setIsSubmiting(false)
-    navigation.goBack()
+  })
 
+  const [email, setEmail] = useState(user?.email)
+  if (!user) {
+    return <></>
+  }
+
+  const onChangeText = (value: string) => {
+    setEmail(value)
+  }
+
+  const onSubmit = async () => {
+    const { username, address } = user
+    updateSelfMutate({ token, username, email, address })
   }
 
   return (
@@ -58,6 +59,7 @@ const EditEmail = () => {
             {t('editEmail')}
           </Label>
           <Input
+            autoCapitalize='none'
             disabled={isSubmiting}
             borderColor={"lightgrey"}
             backgroundColor={"whitesmoke"}
@@ -66,6 +68,7 @@ const EditEmail = () => {
           />
           <Form.Trigger asChild disabled={isSubmiting}>
             <StyledButton
+              disabled={email == "" || !email}
               alignSelf='center'
               m="$4"
               w="$20"

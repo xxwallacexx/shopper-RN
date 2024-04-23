@@ -106,10 +106,10 @@ type OrderContent = {
 }
 
 type Address = {
-  coordiante: number[],
   room?:string,
   street?:string,
-  district?:string
+  district?:string,
+  phoneNumber?:string
 }
 
 type User = {
