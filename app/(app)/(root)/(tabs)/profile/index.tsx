@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
-import { Link } from "expo-router"
+import { Link, } from "expo-router"
 import { useState } from "react"
 import { FlatList, RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from "react-native"
 import { Image, YStack, SizableText, AnimatePresence } from "tamagui"
@@ -11,6 +11,8 @@ import { AnimatedYStack, Container, StyledButton } from "~/tamagui.config"
 const Profile = () => {
   const { t } = useLocale()
   const { token } = useAuth()
+
+  if(!token) return <></>
   const tabs = [
     { label: t("myBookmarks"), value: "myBookmarks" },
     { label: t("myWallet"), value: "myWallet" },

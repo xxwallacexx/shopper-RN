@@ -1,6 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable, StyleSheet } from 'react-native';
+import { Tabs } from 'expo-router';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useAuth } from '~/hooks';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -9,7 +10,7 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={styles.tabBarIcon} {...props} />;
 }
 
-export default function TabLayout() {
+const Layout = () => {
   return (
     <Tabs
       screenOptions={{
@@ -24,20 +25,7 @@ export default function TabLayout() {
         options={{
           headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color="gray"
-                    style={[styles.headerRight, { opacity: pressed ? 0.5 : 1 }]}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          tabBarButton: (props) => <TouchableOpacity {...props} />
         }}
       />
       <Tabs.Screen
@@ -45,6 +33,7 @@ export default function TabLayout() {
         options={{
           headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarButton: (props) => <TouchableOpacity {...props} />
         }}
       />
       <Tabs.Screen
@@ -52,6 +41,7 @@ export default function TabLayout() {
         options={{
           headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarButton: (props) => <TouchableOpacity {...props} />
         }}
       />
       <Tabs.Screen
@@ -59,14 +49,16 @@ export default function TabLayout() {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarButton: (props) => <TouchableOpacity {...props} />
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name={"profile"}
         options={{
-          tabBarLabel:"profile",
+          tabBarLabel: "profile",
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarButton: (props) => <TouchableOpacity {...props} />
         }}
       />
     </Tabs>
@@ -74,10 +66,9 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  headerRight: {
-    marginRight: 15,
-  },
   tabBarIcon: {
     marginBottom: -3,
   },
 });
+
+export default Layout

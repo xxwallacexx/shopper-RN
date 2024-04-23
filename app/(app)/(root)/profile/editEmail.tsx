@@ -14,6 +14,7 @@ const EditEmail = () => {
   const navigation = useNavigation()
   const queryClient = useQueryClient()
   const { token } = useAuth()
+  if(!token) return <></>
   const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token) } })
 
 

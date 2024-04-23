@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { Link } from "expo-router"
+import { Link, useRouter } from "expo-router"
+import { useLayoutEffect } from "react"
 import { RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from "react-native"
 import { Image } from "tamagui"
 import { XStack } from "tamagui"
@@ -10,9 +11,9 @@ import { useAuth, useLocale } from "~/hooks"
 
 const Info = () => {
   const { t } = useLocale()
-  const { token } = useAuth()
-
-  const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token) } })
+  const { token, signout } = useAuth()
+  const router = useRouter()
+  const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token!) } })
 
   let address = ''
   if (user?.address) {
@@ -33,6 +34,11 @@ const Info = () => {
 
   const onRefresh = () => {
     console.log('refresh')
+  }
+
+  const onSignout = async () => {
+    await signout()
+    router.replace('/auth')
   }
 
   const renderSectionItem = ({ section }) => {
@@ -72,7 +78,7 @@ const Info = () => {
                 <SizableText color={"lightslategrey"}>{t("removeUser")}</SizableText>
               </XStack>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onSignout}>
               <XStack justifyContent="space-between" p="$2" borderBottomWidth="0.5" borderColor={"lightslategrey"}>
                 <SizableText color={"lightslategrey"}>{t("signout")}</SizableText>
               </XStack>

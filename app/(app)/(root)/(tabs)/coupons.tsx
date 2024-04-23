@@ -14,7 +14,7 @@ import { Badge, Container, StyledButton } from "~/tamagui.config"
 const Coupons = () => {
   const { t } = useLocale()
   const { token } = useAuth()
-
+  if (!token) return <></>
   const sortOptions = [
     { label: t('newToOld'), value: '-endDate' },
     { label: t('oldToNew'), value: 'endDate' },

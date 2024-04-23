@@ -53,7 +53,7 @@ const RootLayout = () => {
         storedToken = null
       }
       if (!storedToken) {
-        const { token, tokenExpAt } = await createUserTemp().then((res) => { return res.data })
+        const { token, tokenExpAt } = await createUserTemp()
         await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("tokenExpAt", tokenExpAt);
         storedToken = token
@@ -88,29 +88,7 @@ const RootLayout = () => {
                   headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
                 })}>
                   <Stack.Screen
-                    name="(tabs)"
-                    options={{
-                      headerShown: false
-                    }}
-                  />
-                  <Stack.Screen
-                    name="modal"
-                    options={{ presentation: 'modal' }}
-                  />
-                  <Stack.Screen
-                    name="product"
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="coupon"
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="profile"
+                    name="(app)"
                     options={{
                       headerShown: false
                     }}
