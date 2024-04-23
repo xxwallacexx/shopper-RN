@@ -23,6 +23,9 @@ const Layout = () => {
       <Stack.Screen
         name="editEmail"
       />
+      <Stack.Screen
+        name="editAddress"
+      />
     </Stack>
   )
 }

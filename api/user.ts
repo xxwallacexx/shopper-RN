@@ -42,6 +42,7 @@ const updateSelf = async (token: string, username: string, email?: string, addre
     url: `${baseUrl}/user/self`,
   };
   return await axios(options).catch((e) => {
+    console.log(e)
     let error = new Error(e.response.data.errorCodes)
     throw (error)
   })

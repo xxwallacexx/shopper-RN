@@ -67,6 +67,15 @@ export const AnimatedYStack = styled(YStack, {
 })
 
 export const StyledButton = styled(Button, {
+  variants: {
+    disabled: {
+      true: {
+        backgroundColor: "lightslategrey",
+        pressStyle: { opacity: 1 }
+      },
+      false: {},
+    }
+  },
   backgroundColor: "$color.primary",
   color: "#fff",
   size: "$2",

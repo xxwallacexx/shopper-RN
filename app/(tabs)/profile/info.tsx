@@ -26,7 +26,7 @@ const Info = () => {
   const editList = [
     { label: t("username"), value: user?.username, screen: 'editUsername' },
     { label: t("email"), value: user?.email, screen: 'editEmail' },
-    { label: t("address"), value: address, screen: 'address' },
+    { label: t("address"), value: address, screen: 'editAddress' },
     { label: t("changePassword"), value: null, screen: 'editPassword' },
   ]
 
