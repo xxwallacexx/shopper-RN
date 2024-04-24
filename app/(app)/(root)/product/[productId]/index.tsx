@@ -1,7 +1,7 @@
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { tokens } from "@tamagui/themes"
 import { useQuery } from "@tanstack/react-query"
-import { useLocalSearchParams, useNavigation } from "expo-router"
+import { useLocalSearchParams, useNavigation, Link, useFocusEffect, router, useRouter } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from "react-native"
 import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
 import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark } from "~/api"
@@ -9,20 +9,27 @@ import { BannerCarousel } from "~/components"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from "~/components/ActionSheet"
-import { useLayoutEffect, useState } from "react"
+import { useCallback, useLayoutEffect, useState } from "react"
 import ProductOptionCard from "~/components/ProductOptionCard"
 import { useAuth, useLocale } from "~/hooks"
 
 const ProductDetail = () => {
-  const { productId } = useLocalSearchParams()
+  const { productId } = useLocalSearchParams<{ productId: string }>()
   const navigation = useNavigation()
+  const router = useRouter()
   const { t } = useLocale()
   const { token } = useAuth()
-  if(!token)return <></>
+  if (!token) return <></>
   const [isOptionSheetOpen, setIsOptionSheetOpen] = useState(false)
   const [sheetPosition, setSheetPosition] = useState(0)
   const [selectedChoices, setSelectedChoices] = useState<{ optionId: string, choiceId: string }[]>([])
   const [quantity, setQuantity] = useState(1)
+  const [selectedCouponId, setSelectedCouponId] = useState()
+
+  const orderContent = {
+    choices: selectedChoices.map((c) => { return c.choiceId }),
+    quantity
+  }
 
   const { data: product, isFetching: isProductFetching } = useQuery({
     queryKey: ['product', productId],
@@ -37,11 +44,7 @@ const ProductDetail = () => {
   const { data: priceDetail, isFetching: isPriceDetailFetching } = useQuery({
     queryKey: ['priceDetail', productId, selectedChoices, quantity],
     queryFn: async () => {
-      const orderContent = {
-        choices: selectedChoices.map((c) => { return c.choiceId }),
-        quantity
-      }
-      return await getProductPriceDetail(token, `${productId}`, orderContent, undefined)
+      return await getProductPriceDetail(token, `${productId}`, orderContent, selectedCouponId)
     }
   })
 
@@ -73,6 +76,16 @@ const ProductDetail = () => {
     })
   }, [navigation, isBookmarked])
 
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribe = () => {
+        setIsOptionSheetOpen(false)
+      }
+
+      return () => unsubscribe();
+    }, [navigation])
+  );
+
 
   if (!product || isProductFetching || isOptionsFetching) {
     return <></>
@@ -91,6 +104,16 @@ const ProductDetail = () => {
     setQuantity(value)
   }
 
+  const onCheckoutPress = () => {
+    let searchParams: { orderContentStr: string, currentCouponId?: string } = {
+      orderContentStr: JSON.stringify(orderContent)
+    }
+    if (selectedCouponId) {
+      searchParams['currentCouponId'] = selectedCouponId
+    }
+    router.navigate({ pathname: `/product/${productId}/checkout`, params: searchParams })
+
+  }
   const renderItem = ({ item, index, section }) => {
     const { price, photos, category, name, introduction, shop, description, logisticDescription } = product
 
@@ -189,7 +212,7 @@ const ProductDetail = () => {
         sheetPosition={sheetPosition}
         setSheetPosition={setSheetPosition}
       >
-        <YStack flex={1}>
+        <YStack flex={1} space="$2">
           <ScrollView>
             <YStack space="$4">
               {
@@ -218,13 +241,23 @@ const ProductDetail = () => {
             </YStack>
           </ScrollView>
           <Separator borderColor={"lightslategrey"} />
-          <XStack minHeight={"$6"} >
+          <XStack minHeight={"$6"} justifyContent="space-between" >
             {
               isPriceDetailFetching ? <Spinner /> :
                 <SizableText>
                   HK$ {priceDetail.subtotal}
                 </SizableText>
             }
+            <XStack space="$2">
+              <StyledButton>
+                {t('addToCart')}
+                <AntDesign name="shoppingcart" color="#fff" />
+              </StyledButton>
+              <StyledButton onPress={onCheckoutPress}>
+                {t('checkout')}
+                <AntDesign name="tag" color="#fff" />
+              </StyledButton>
+            </XStack>
           </XStack>
         </YStack>
       </ActionSheet>

@@ -93,6 +93,27 @@ const getProductPriceDetail = async (token: string, productId: string, orderCont
   return res
 }
 
+const getProductCheckoutItemsDetail = async (
+  token: string,
+  productId: string,
+  orderContent: OrderContent,
+  currentCouponId?: string
+) => {
+  const options = {
+    method: "put",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${productId}/checkoutItemsDetail`,
+    data: {
+      orderContent,
+      currentCouponId,
+    },
+  };
+  let res: { product: Product, coupon: Coupon } = await axios(options).then((res) => { return res.data })
+  return res
+}
+
 const getProductStock = async (token: string, productId: string, choices?: string[]) => {
   const options = {
     method: "get",
@@ -126,6 +147,7 @@ export {
   getProduct,
   listOptions,
   getProductPriceDetail,
+  getProductCheckoutItemsDetail,
   getProductStock,
   getProductIsBookmarked
 }

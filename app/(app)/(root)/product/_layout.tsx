@@ -7,15 +7,7 @@ const Layout = () => {
     <Stack
       screenOptions={({ navigation }) => ({
         title: "",
-        headerShown: true,
-        headerLeft: () => {
-          return (
-            <TouchableOpacity onPress={() => { return navigation.goBack() }}>
-              <AntDesign name="arrowleft" size={24} color={"#fff"} />
-            </TouchableOpacity>
-          )
-        },
-        headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
+        headerShown: false,
       })}>
       <Stack.Screen
         name="index"
