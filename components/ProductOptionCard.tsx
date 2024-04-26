@@ -1,32 +1,7 @@
 import { useMemo } from "react"
 import { Label, YStack, XStack, RadioGroup } from "tamagui"
+import { RadioGroupItem } from "~/components"
 
-const RadioGroupItem = ({
-  value,
-  label,
-  onLabelPress
-}: {
-  value: string
-  label: string
-  onLabelPress: (value: string) => void
-}) => {
-  const id = `radiogroup-${value}`
-  return (
-    <XStack width={300} alignItems="center" space="$4">
-      <RadioGroup.Item
-        backgroundColor={"#fff"}
-        value={value} id={id}
-        size={"$size.1"}
-      >
-        <RadioGroup.Indicator backgroundColor={"$primary"} />
-      </RadioGroup.Item>
-
-      <Label size={"$size.1"} pressStyle={{ opacity: 0.5 }} onPress={() => onLabelPress(value)}>
-        {label}
-      </Label>
-    </XStack>
-  )
-}
 const ProductOptionCard = ({
   option,
   selectedChoice,
