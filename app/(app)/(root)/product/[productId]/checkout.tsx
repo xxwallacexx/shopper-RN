@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router"
+import { useEffect, useMemo, useState } from "react"
 import { RefreshControl, SafeAreaView, SectionList } from "react-native"
-import { Card, Image, XStack } from "tamagui"
+import { Card, Image, RadioGroup, XStack, YStack } from "tamagui"
 import { H2, SizableText } from "tamagui"
-import { getProductCheckoutItemsDetail, getShop } from "~/api"
-import { CartItemCard } from "~/components"
+import { getProductCheckoutItemsDetail, getSelf, getShop } from "~/api"
+import { AddressForm, CartItemCard, RadioGroupItem } from "~/components"
 import { useAuth, useLocale } from "~/hooks"
 
 const Checkout = () => {
@@ -17,7 +18,11 @@ const Checkout = () => {
   const { token } = useAuth()
   if (!token) return <></>
 
+  const { data: user } = useQuery({
+    queryKey: ['profile', token],
+    queryFn: async () => { return await getSelf(token) },
 
+  })
   const { data: shop, isLoading: isShopLoading } = useQuery({ queryKey: ['shop'], queryFn: getShop })
   const { data: itemDetail, isLoading: isItemDetailLoading } = useQuery({
     queryKey: ['itemDetail', productId, orderContent, currentCouponId],
@@ -26,10 +31,35 @@ const Checkout = () => {
     }
   })
 
-  if (isShopLoading || isItemDetailLoading || !shop || !itemDetail) return <></>
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<string>()
+  const [address, setAddress] = useState<Address>()
+
+
+  useEffect(() => {
+    if (!shop) return
+    setSelectedDeliveryMethod(shop.deliveryMethods[0])
+  }, [shop])
+
+  useEffect(() => {
+    if (!user) return
+    setAddress(user.address)
+  }, [user])
+
+
+  if (isShopLoading || isItemDetailLoading || !shop || !itemDetail || !user) return <></>
+
+
 
   const onRefresh = () => {
     console.log('on refresh')
+  }
+
+  const onAddressChange = (field: keyof Address, value: string) => {
+    setAddress((prevAddress) => {
+      let address = { ...prevAddress }
+      address[field] = value
+      return address
+    })
   }
 
   const renderSectionHeader = ({ section }) => {
@@ -37,8 +67,15 @@ const Checkout = () => {
       case "cartItems":
         return (
           <H2 backgroundColor={"#fff"}>{t('orderDetail')}</H2>
-        );
-
+        )
+      case "deliveryMethods":
+        return (
+          <H2 backgroundColor={"#fff"}>{t('deliveryMethod')}</H2>
+        )
+      case "address":
+        return (
+          <H2 backgroundColor={"#fff"}>{t("address")}</H2>
+        )
       default:
         return <></>
     }
@@ -67,6 +104,40 @@ const Checkout = () => {
             coupon={itemDetail.coupon}
           />
         )
+      case "deliveryMethods":
+        return (
+          <RadioGroup value={selectedDeliveryMethod} name={"deliveryMethod"} onValueChange={(value) => setSelectedDeliveryMethod(value)}>
+            <YStack width={300} alignItems="center" space="$2">
+              {
+                useMemo(() => {
+                  return (
+                    shop.deliveryMethods.map((c) => {
+                      return <RadioGroupItem
+                        key={`radiogroup-${c}`}
+                        value={c}
+                        label={t(c)}
+                        onLabelPress={(value) => setSelectedDeliveryMethod(value)}
+                      />
+                    })
+                  )
+                }, [shop.deliveryMethods])
+              }
+            </YStack>
+          </RadioGroup>
+        )
+      case "address":
+        switch (selectedDeliveryMethod) {
+          case "SFEXPRESS":
+            return (
+              <AddressForm
+                address={address}
+                onChange={onAddressChange}
+              />
+            )
+          default:
+            return <></>
+        }
+
       default:
         return <></>
     }
@@ -90,7 +161,9 @@ const Checkout = () => {
         renderSectionHeader={renderSectionHeader}
         sections={[
           { key: 'store', data: [''] },
-          { key: "cartItems", data: [''] }
+          { key: "cartItems", data: [''] },
+          { key: "deliveryMethods", data: [''] },
+          { key: "address", data: [''] }
         ]}
         keyExtractor={(item, index) => item + index}
       />
