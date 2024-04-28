@@ -1,7 +1,9 @@
 import axios from 'axios'
+import { Shop } from '~/types'
+import { API_URL, SHOP } from '@env'
+const baseUrl = API_URL
+const shop = SHOP
 
-const baseUrl = process.env.EXPO_PUBLIC_API_URL;
-const shop = process.env.EXPO_PUBLIC_SHOP;
 
 const getShop = async () => {
   const options = {

@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { ScrollView, Sheet } from 'tamagui'
+import { Sheet } from 'tamagui'
 
 const ActionSheet = ({
   isSheetOpen = false,
@@ -31,13 +31,13 @@ const ActionSheet = ({
       animation="quick"
     >
       <Sheet.Overlay
-        style={{ opacity: 0.8, backgroundColor: "lightslategrey" }}
-        animation="lazy"
+        style={{ opacity: 0.5, backgroundColor: "lightslategrey" }}
+        animation="100ms"
         enterStyle={{ opacity: 0 }}
         exitStyle={{ opacity: 0 }}
       />
       <Sheet.Frame padding="$4" backgroundColor={"ghostwhite"} >
-          {children}
+        {children}
       </Sheet.Frame>
     </Sheet>
 

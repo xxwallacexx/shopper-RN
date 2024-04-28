@@ -1,6 +1,7 @@
 import { Input } from "tamagui"
 import { Label, YStack } from "tamagui"
 import { useLocale } from "~/hooks"
+import { Address } from '~/types'
 
 const AddressForm = ({
   address,

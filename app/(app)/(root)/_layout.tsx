@@ -1,10 +1,11 @@
 import { Stack } from 'expo-router';
+import { PRIMARY_COLOR } from '@env';
 
 const Layout = () => {
   return (
     <Stack screenOptions={({ navigation }) => ({
       title: "",
-      headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
+      headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
     })}>
       <Stack.Screen
         name="(tabs)"

@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "temp1",
-    "slug": "temp1",
+    "name": "hongyeebakery",
+    "slug": "hongyeebakery",
     "version": "1.0.0",
-    "scheme": "temp1",
+    "scheme": "hongyeebakery",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -11,7 +11,28 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.hongyeebakery",
+          "enableGooglePay": false
+        }
+      ],
+      "@react-native-google-signin/google-signin",
+      [
+        "react-native-fbsdk-next",
+         {
+          "appID": "747030580916518",
+          "clientToken": "c6e3a9327ca1d9c2fcd57c2047d53f8f",
+          "displayName": "康儀烘焙",
+          "scheme": "fb747030580916518",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": false,
+          "isAutoInitEnabled": true,
+        }
+
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -29,13 +50,33 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist":{
+        "NSCalendarsUsageDescription":"允許存取以加入預約",
+        "NSCameraUsageDescription":"允許存取以掃描QRCode或用以上傳圖片",
+        "NSLocationWhenInUseUsageDescription":"允許存取定位尋找付近店鋪",
+        "NSMicrophoneUsageDescription":"允許存取以上傳商品評價圖片影片及頭像",
+        "NSPhotoLibraryAddUsageDescription":"允許存取以上傳商品評價圖片及頭像",
+        "NSPhotoLibraryUsageDescription":"允許存取以上傳商品評價圖片及頭像",
+        "NSRemindersUsageDescription":"允許存取以加入預約",
+        "NSUserTrackingUsageDescription":"允許上傳報錯以改善應用程式質素"
+      },
+      "bundleIdentifier": "com.hongyeebakery.v1",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.243092544236-n1flefrh97t3i4dctruvsqehojdn9fqp"
+        }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
-    }
+      },
+      "package": "com.hongyeebakery.v1",
+      "googleServicesFile": "./google-services.json"
+    },
+    "scheme": "hongyeebakery"
   }
 }

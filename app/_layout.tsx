@@ -15,6 +15,7 @@ import moment from 'moment';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast, { ErrorToast } from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
+import { PRIMARY_COLOR } from '@env';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -85,7 +86,7 @@ const RootLayout = () => {
                       </TouchableOpacity>
                     )
                   },
-                  headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
+                  headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
                 })}>
                   <Stack.Screen
                     name="(app)"
@@ -98,7 +99,7 @@ const RootLayout = () => {
                   error: (props) => (
                     <ErrorToast
                       {...props}
-                      style={{ borderLeftColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#000" }}
+                      style={{ borderLeftColor: PRIMARY_COLOR ?? "#000" }}
                       contentContainerStyle={{ backgroundColor: "red" }}
                       text1Style={{
                         fontSize: 17,

@@ -1,6 +1,7 @@
 import { AntDesign } from "@expo/vector-icons"
 import { Stack } from "expo-router"
 import { TouchableOpacity } from "react-native"
+import { PRIMARY_COLOR } from '@env';
 
 const CouponLayout = () => {
   return (
@@ -15,7 +16,7 @@ const CouponLayout = () => {
             </TouchableOpacity>
           )
         },
-        headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" }
+        headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
       })}>
       <Stack.Screen
         name="[couponId]"
