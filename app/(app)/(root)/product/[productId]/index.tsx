@@ -105,6 +105,7 @@ const ProductDetail = () => {
   }
 
   const onCheckoutPress = () => {
+    setIsOptionSheetOpen(false)
     let searchParams: { orderContentStr: string, currentCouponId?: string } = {
       orderContentStr: JSON.stringify(orderContent)
     }

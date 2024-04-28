@@ -1,7 +1,9 @@
 import axios from 'axios'
+import { Auth } from '~/types'
+import { API_URL, SHOP } from '@env'
+const baseUrl = API_URL
+const shop = SHOP
 
-const baseUrl = process.env.EXPO_PUBLIC_API_URL;
-const shop = process.env.EXPO_PUBLIC_SHOP;
 
 const login = async (email: string, password: string) => {
   const options = {

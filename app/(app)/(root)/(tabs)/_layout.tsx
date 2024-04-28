@@ -1,7 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { useAuth } from '~/hooks';
+import { PRIMARY_COLOR } from '@env';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -16,8 +16,8 @@ const Layout = () => {
       screenOptions={{
         tabBarInactiveTintColor: "#fff",
         tabBarActiveTintColor: '#000',
-        headerStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" },
-        tabBarStyle: { backgroundColor: process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#fff" },
+        headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" },
+        tabBarStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" },
         headerTitle: ""
       }}>
       <Tabs.Screen

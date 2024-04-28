@@ -5,8 +5,9 @@ import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
 import { XStack } from 'tamagui';
 import { createTamagui, styled, SizableText, H1, YStack, Button } from 'tamagui';
+import { PRIMARY_COLOR } from '@env';
 
-const primary = process.env.EXPO_PUBLIC_PRIMARY_COLOR ?? "#000"
+const primary = PRIMARY_COLOR ?? "#000"
 const animations = createAnimations({
   bouncy: {
     damping: 10,

@@ -1,7 +1,8 @@
 import axios from 'axios'
-
-const baseUrl = process.env.EXPO_PUBLIC_API_URL;
-const shop = process.env.EXPO_PUBLIC_SHOP;
+import { Address, User } from '~/types';
+import { API_URL, SHOP } from '@env'
+const baseUrl = API_URL
+const shop = SHOP
 
 const getCredit = async (token: string) => {
   const options = {

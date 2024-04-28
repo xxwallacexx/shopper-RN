@@ -1,4 +1,4 @@
-type Banner = {
+export type Banner = {
   photo: string
   shop: string
   detail: string
@@ -9,7 +9,7 @@ type Banner = {
   updatedAt: Date
 }
 
-type Category = {
+export type Category = {
   _id: string
   name: string
   priority: number
@@ -21,23 +21,23 @@ type Category = {
   parent?: string
 }
 
-type Photo = {
+export type Photo = {
   id: string
   path: string
 }
 
-type ProductRating = {
+export type ProductRating = {
   count: number
   rating: number
 }
 
-enum DeliveryMethodEnum {
+export enum DeliveryMethodEnum {
   SFEXPRESS = "SFEXPRESS",
   SELF_PICK_UP = "SELF_PICK_UP"
 }
 
 
-type Coupon = {
+export type Coupon = {
   _id: string,
   credit: number,
   detail: string,
@@ -50,19 +50,20 @@ type Coupon = {
   maxPurchase: number
 }
 
-type Shop = {
-  address: string,
-  deliveryMethods: DeliveryMethodEnum[],
-  feedCover: string,
-  logo: string,
-  name: string,
-  phoneNumber: string,
-  searchCover: string,
-  couponCover: string,
-  terms: string,
+export type Shop = {
+  address: string
+  deliveryMethods: DeliveryMethodEnum[]
+  feedCover: string
+  logo: string
+  name: string
+  stores: string[]
+  phoneNumber: string
+  searchCover: string
+  couponCover: string
+  terms: string
 }
 
-type Product = {
+export type Product = {
   _id: string,
   name: string,
   category: { name: string, status: "ACTIVE" | "INACTIVE" }
@@ -84,7 +85,7 @@ type Product = {
   updatedAt: Date
 }
 
-type Choice = {
+export type Choice = {
   _id: string,
   name: string,
   photo: string,
@@ -92,7 +93,7 @@ type Choice = {
   subchoices: Choice[]
 }
 
-type Option = {
+export type Option = {
   _id: string,
   fieldName: string,
   priority: number,
@@ -101,19 +102,19 @@ type Option = {
 }
 
 
-type OrderContent = {
+export type OrderContent = {
   choices: string[],
   quantity: number
 }
 
-type Address = {
+export type Address = {
   room?: string,
   street?: string,
   district?: string,
   phoneNumber?: string
 }
 
-type User = {
+export type User = {
   _id: string,
   avatar: string,
   address: Address,
@@ -122,13 +123,13 @@ type User = {
   username: string
 }
 
-type Bookmark = {
+export type Bookmark = {
   _id: string,
   product: Product,
   shop: Shop
 }
 
-type Auth = {
+export type Auth = {
   token: string,
   tokenExpAt: string
 }

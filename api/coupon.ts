@@ -1,8 +1,9 @@
 import axios from 'axios'
 import moment from 'moment';
-
-const baseUrl = process.env.EXPO_PUBLIC_API_URL;
-const shop = process.env.EXPO_PUBLIC_SHOP;
+import { Coupon } from '~/types';
+import { API_URL, SHOP } from '@env'
+const baseUrl = API_URL
+const shop = SHOP
 
 const listCoupons = async (token: string, skip: number, sort: string, productId?: string) => {
   const options = {
