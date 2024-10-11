@@ -1,6 +1,6 @@
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons"
 import { tokens } from "@tamagui/themes"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocalSearchParams, useNavigation, Link, useFocusEffect, router, useRouter } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from "react-native"
 import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
@@ -12,6 +12,7 @@ import ActionSheet from "~/components/ActionSheet"
 import { useCallback, useLayoutEffect, useState } from "react"
 import ProductOptionCard from "~/components/ProductOptionCard"
 import { useAuth, useLocale } from "~/hooks"
+import { PRIMARY_9_COLOR } from "@env"
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams<{ productId: string }>()
@@ -25,6 +26,7 @@ const ProductDetail = () => {
   const [selectedChoices, setSelectedChoices] = useState<{ optionId: string, choiceId: string }[]>([])
   const [quantity, setQuantity] = useState(1)
   const [selectedCouponId, setSelectedCouponId] = useState()
+  const queryClient = useQueryClient()
 
   const orderContent = {
     choices: selectedChoices.map((c) => { return c.choiceId }),
@@ -53,23 +55,27 @@ const ProductDetail = () => {
     queryFn: async () => { return await getProductIsBookmarked(token, `${productId}`) }
   })
 
-
-  const onBookmarkPress = async () => {
-    if (isBookmarked) {
-      await removeBookmark(token, `${productId}`)
-    } else {
-      await createBookmark(token, `${productId}`)
+  const { mutate: updateBookmarked } = useMutation({
+    mutationFn: async () => {
+      if (isBookmarked) {
+        return await removeBookmark(token, productId)
+      } else {
+        return await createBookmark(token, productId)
+      }
+    },
+    onSuccess: () => {
+      refetchIsBookmarked()
+      queryClient.resetQueries({queryKey:['bookmarks']})
     }
-    refetchIsBookmarked()
-  }
+  })
 
   useLayoutEffect(() => {
     if (isBookmarked == undefined) return
     navigation.setOptions({
       headerRight: () => {
         return (
-          <TouchableOpacity onPress={onBookmarkPress}>
-            <Ionicons name="bookmark" size={24} color={isBookmarked ? tokens.color.yellow9Light.val : "#fff"} />
+          <TouchableOpacity onPress={() => updateBookmarked()}>
+            <Ionicons name="bookmark" size={24} color={isBookmarked ? PRIMARY_9_COLOR : "#fff"} />
           </TouchableOpacity>
         )
       }

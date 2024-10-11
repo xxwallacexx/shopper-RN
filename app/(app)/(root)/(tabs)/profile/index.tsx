@@ -7,12 +7,13 @@ import { getSelf, listBookmarks } from "~/api"
 import { AnimatedTabs, ProductCard, Spinner } from "~/components"
 import { useAuth, useLocale } from "~/hooks"
 import { AnimatedYStack, Container, StyledButton } from "~/tamagui.config"
+import { Bookmark } from "~/types"
 
 const Profile = () => {
   const { t } = useLocale()
   const { token } = useAuth()
 
-  if(!token) return <></>
+  if (!token) return <></>
   const tabs = [
     { label: t("myBookmarks"), value: "myBookmarks" },
     { label: t("myWallet"), value: "myWallet" },
@@ -32,8 +33,8 @@ const Profile = () => {
   } = useInfiniteQuery({
     queryKey: ['bookmarks'],
     initialPageParam: 0,
-    queryFn: ({ pageParam }: { pageParam: number }) => {
-      return listBookmarks(token, pageParam)
+    queryFn:async ({ pageParam }: { pageParam: number }) => {
+      return await listBookmarks(token, pageParam)
     },
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage) return null
@@ -42,7 +43,7 @@ const Profile = () => {
     },
   })
 
-
+  console.log(bookmarks)
   const bookmarksData = bookmarks?.pages
     ? bookmarks.pages.flat()
     : []
