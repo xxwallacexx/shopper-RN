@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "hongyeebakery",
-    "slug": "hongyeebakery",
-    "version": "1.0.0",
-    "scheme": "hongyeebakery",
+    "name": "hangchiu",
+    "slug": "hangchiu",
+    "version": "1.0.3",
+    "scheme": "hangchiu",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -15,7 +15,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.hongyeebakery",
+          "merchantIdentifier": "merchant.com.hangchiu",
           "enableGooglePay": false
         }
       ],
@@ -23,10 +23,10 @@
       [
         "react-native-fbsdk-next",
          {
-          "appID": "747030580916518",
-          "clientToken": "c6e3a9327ca1d9c2fcd57c2047d53f8f",
-          "displayName": "康儀烘焙",
-          "scheme": "fb747030580916518",
+          "appID": "314105534961274",
+          "clientToken": "7d1377e601f55ea7e4439d277e6c13b1",
+          "displayName": "杏晁中醫",
+          "scheme": "fb314105534961274",
           "advertiserIDCollectionEnabled": false,
           "autoLogAppEventsEnabled": false,
           "isAutoInitEnabled": true,
@@ -61,10 +61,10 @@
         "NSRemindersUsageDescription":"允許存取以加入預約",
         "NSUserTrackingUsageDescription":"允許上傳報錯以改善應用程式質素"
       },
-      "bundleIdentifier": "com.hongyeebakery.v1",
+      "bundleIdentifier": "com.hangchiu.v1",
       "config": {
         "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.243092544236-n1flefrh97t3i4dctruvsqehojdn9fqp"
+          "reservedClientId": "com.googleusercontent.apps.677119458468-bj2guj18v96c9qs3gn7ikbcm9j9q7065"
         }
       },
       "googleServicesFile": "./GoogleService-Info.plist"
@@ -74,9 +74,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hongyeebakery.v1",
+      "package": "com.hangchiu.v1",
       "googleServicesFile": "./google-services.json"
     },
-    "scheme": "hongyeebakery"
+    "scheme": "hangchiu"
   }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="18px" viewBox="0 0 20 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>icon_arrow_white</title>
+    <desc>Created with Sketch.</desc>
+    <g id="cut-img" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon_arrow_white" transform="translate(-24.000000, -13.000000)">
+            <rect id="Frame" x="0" y="0" width="44" height="44"></rect>
+            <g id="arrow-left" transform="translate(24.000000, 13.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                <polygon id="Shape" points="3.828 8 9.899 1.929 8.485 0.515 0 9 0.707 9.707 8.485 17.485 9.899 16.071 3.828 10 20 10 20 8"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

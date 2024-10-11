@@ -55,7 +55,7 @@ export const Title = styled(H1, {
 });
 
 export const Subtitle = styled(SizableText, {
-  color: '#8c8c8c',
+  color: '#5f5f5f',
   size: '$1',
 });
 

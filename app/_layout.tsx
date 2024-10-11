@@ -1,15 +1,11 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { TamaguiProvider, Theme } from 'tamagui';
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
-
-import config from '~/tamagui.config';
-import { LocaleProvider } from '~/hooks/localeProvider';
+import { QueryClient } from "@tanstack/react-query"
+import Providers from './providers';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
-import { AuthProvider } from '~/hooks/authProvider';
 import { createUserTemp } from '~/api';
 import moment from 'moment';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -17,13 +13,16 @@ import Toast, { ErrorToast } from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
 import { PRIMARY_COLOR } from '@env';
 
+
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: '(tabs)',
 };
 
+const queryClient = new QueryClient();
+
+
 const RootLayout = () => {
-  const queryClient = new QueryClient();
   const [loaded] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
@@ -72,51 +71,47 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider initialToken={token}>
-        <QueryClientProvider client={queryClient}>
-          <TamaguiProvider config={config}>
-            <Theme name="primary">
-              <LocaleProvider initialLocale={locale}>
-                <Stack screenOptions={({ navigation }) => ({
-                  title: "",
-                  headerLeft: () => {
-                    return (
-                      <TouchableOpacity onPress={() => { return navigation.goBack() }}>
-                        <AntDesign name="arrowleft" size={24} color={"#fff"} />
-                      </TouchableOpacity>
-                    )
-                  },
-                  headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
-                })}>
-                  <Stack.Screen
-                    name="(app)"
-                    options={{
-                      headerShown: false
-                    }}
-                  />
-                </Stack>
-                <Toast config={{
-                  error: (props) => (
-                    <ErrorToast
-                      {...props}
-                      style={{ borderLeftColor: PRIMARY_COLOR ?? "#000" }}
-                      contentContainerStyle={{ backgroundColor: "red" }}
-                      text1Style={{
-                        fontSize: 17,
-                        color: "#fff"
-                      }}
-                      text2Style={{
-                        fontSize: 15,
-                        color: "#fff"
-                      }}
-                    />
-                  ),
-                }} visibilityTime={1000} />
-              </LocaleProvider>
-            </Theme>
-          </TamaguiProvider>
-        </QueryClientProvider>
-      </AuthProvider>
+      <Providers
+        queryClient={queryClient}
+        initialLocale={locale}
+        initialToken={token}
+      >
+        <Stack screenOptions={({ navigation }) => ({
+          title: "",
+          headerLeft: () => {
+            return (
+              <TouchableOpacity onPress={() => { return navigation.goBack() }}>
+                <AntDesign name="arrowleft" size={24} color={"#fff"} />
+              </TouchableOpacity>
+            )
+          },
+          headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
+        })}>
+          <Stack.Screen
+            name="(app)"
+            options={{
+              headerShown: false
+            }}
+          />
+        </Stack>
+      </Providers>
+      <Toast config={{
+        error: (props) => (
+          <ErrorToast
+            {...props}
+            style={{ borderLeftColor: PRIMARY_COLOR ?? "#000" }}
+            contentContainerStyle={{ backgroundColor: "red" }}
+            text1Style={{
+              fontSize: 17,
+              color: "#fff"
+            }}
+            text2Style={{
+              fontSize: 15,
+              color: "#fff"
+            }}
+          />
+        ),
+      }} visibilityTime={1000} />
     </GestureHandlerRootView>
   );
 }
