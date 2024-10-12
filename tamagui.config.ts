@@ -5,9 +5,12 @@ import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
 import { XStack } from 'tamagui';
 import { createTamagui, styled, SizableText, H1, YStack, Button } from 'tamagui';
-import { PRIMARY_COLOR } from '@env';
+import { PRIMARY_COLOR, PRIMARY_8_COLOR, PRIMARY_9_COLOR } from "@env";
 
 const primary = PRIMARY_COLOR ?? "#000"
+const primary8 = PRIMARY_8_COLOR ?? "#000"
+const primary9 = PRIMARY_9_COLOR ?? "#000"
+
 const animations = createAnimations({
   bouncy: {
     damping: 10,
@@ -68,20 +71,47 @@ export const AnimatedYStack = styled(YStack, {
 })
 
 export const StyledButton = styled(Button, {
+
   variants: {
     disabled: {
       true: {
-        backgroundColor: "lightslategrey",
-        pressStyle: { opacity: 1 }
-      },
-      false: {},
+        backgroundColor: tokens.color.gray5Light,
+        pressStyle: {
+          backgroundColor: tokens.color.gray5Light,
+          borderWidth: 0
+        }
+      }
+    },
+    destructive: {
+      true: {
+        backgroundColor: tokens.color.red11Light,
+        pressStyle: {
+          backgroundColor: tokens.color.red7Light,
+          borderWidth: 0
+        }
+
+      }
     }
   },
-  backgroundColor: "$color.primary",
+  hoverStyle: {
+    backgroundColor: "$color.primary8",
+  },
+  pressStyle: {
+    backgroundColor: "$color.primary8"
+  },
+  backgroundColor: primary,
   color: "#fff",
   size: "$2",
-  pressStyle: { opacity: 0.8 },
-  elevation: 0.5
+
+  // Shaddows
+  shadowColor: '#000',
+  shadowOffset: {
+    height: 2,
+    width: 0,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+
 })
 
 export const Badge = styled(XStack, {
@@ -118,17 +148,14 @@ const config = createTamagui({
     body: bodyFont,
     heading: headingFont,
   },
-  themes: {
-    ...themes,
-    primary: {
-      background: primary,
-      color: "#2d3f4f",
-    },
-
-  },
+  themes,
   tokens: {
     ...tokens,
-    color: { primary }
+    color: {
+      primary,
+      primary8,
+      primary9
+    }
   },
   media: createMedia({
     xs: { maxWidth: 660 },

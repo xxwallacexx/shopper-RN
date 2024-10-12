@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { Drawer } from 'expo-router/drawer'
 import { TouchableOpacity } from 'react-native'
 import { useLocale } from '~/hooks'
-import { PRIMARY_COLOR } from '@env';
+import { PRIMARY_COLOR } from "@env";
 
 export default function Layout() {
   const { t } = useLocale()
@@ -12,7 +12,7 @@ export default function Layout() {
         headerShown: true,
         headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" },
         drawerActiveTintColor: PRIMARY_COLOR ?? "#fff",
-        headerTintColor:"#fff",
+        headerTintColor: "#fff",
         drawerPosition: "right",
         headerLeft: () => { return null },
         headerRight: () => {

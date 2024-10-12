@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocalSearchParams, useNavigation, Link, useFocusEffect, router, useRouter } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from "react-native"
 import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark } from "~/api"
+import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark, getShop } from "~/api"
 import { BannerCarousel } from "~/components"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
@@ -13,6 +13,7 @@ import { useCallback, useLayoutEffect, useState } from "react"
 import ProductOptionCard from "~/components/ProductOptionCard"
 import { useAuth, useLocale } from "~/hooks"
 import { PRIMARY_9_COLOR } from "@env"
+import * as Sharing from 'expo-sharing';
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams<{ productId: string }>()
@@ -32,6 +33,8 @@ const ProductDetail = () => {
     choices: selectedChoices.map((c) => { return c.choiceId }),
     quantity
   }
+
+  const { data: shop } = useQuery({ queryKey: ['shop'], queryFn: async () => { return await getShop() } })
 
   const { data: product, isFetching: isProductFetching } = useQuery({
     queryKey: ['product', productId],
@@ -65,7 +68,7 @@ const ProductDetail = () => {
     },
     onSuccess: () => {
       refetchIsBookmarked()
-      queryClient.resetQueries({queryKey:['bookmarks']})
+      queryClient.resetQueries({ queryKey: ['bookmarks'] })
     }
   })
 
@@ -93,7 +96,7 @@ const ProductDetail = () => {
   );
 
 
-  if (!product || isProductFetching || isOptionsFetching) {
+  if (!product || isProductFetching || isOptionsFetching || !shop) {
     return <></>
   }
 
@@ -121,6 +124,15 @@ const ProductDetail = () => {
     router.navigate({ pathname: `/product/${productId}/checkout`, params: searchParams })
 
   }
+
+  const onSharePress = async () => {
+    await Sharing.shareAsync(
+      `https://mall.${shop?.mallDomainName}/productDetail/${product._id}`,
+      {
+        dialogTitle: t('shareProductWithYou', { product: product.name, url: `https://mall.${shop?.mallDomainName}/productDetail/${product._id}` })
+      })
+  }
+
   const renderItem = ({ item, index, section }) => {
     const { price, photos, category, name, introduction, shop, description, logisticDescription } = product
 
@@ -138,7 +150,7 @@ const ProductDetail = () => {
             <YStack space="$2">
               <XStack justifyContent="space-between">
                 <Subtitle size="$4">{category.name}</Subtitle>
-                <StyledButton>
+                <StyledButton onPress={onSharePress}>
                   {t('shareProduct')}
                   <AntDesign name="link" color="#fff" />
                 </StyledButton>
