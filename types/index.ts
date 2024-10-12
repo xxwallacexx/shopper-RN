@@ -51,16 +51,17 @@ export type Coupon = {
 }
 
 export type Shop = {
-  address: string
-  deliveryMethods: DeliveryMethodEnum[]
-  feedCover: string
-  logo: string
-  name: string
-  stores: string[]
-  phoneNumber: string
-  searchCover: string
-  couponCover: string
-  terms: string
+  address: string;
+  deliveryMethods: DeliveryMethodEnum[];
+  feedCover: string;
+  logo: string;
+  name: string;
+  stores: string[];
+  phoneNumber: string;
+  searchCover: string;
+  mallDomainName: string;
+  couponCover: string;
+  terms: string;
 }
 
 export type Product = {

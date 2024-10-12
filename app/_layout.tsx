@@ -11,7 +11,7 @@ import moment from 'moment';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast, { ErrorToast } from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
-import { PRIMARY_COLOR } from '@env';
+import { PRIMARY_COLOR } from "@env"
 
 
 export const unstable_settings = {
