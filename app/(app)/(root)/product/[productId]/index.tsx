@@ -4,16 +4,20 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocalSearchParams, useNavigation, Link, useFocusEffect, router, useRouter } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from "react-native"
 import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark, getShop } from "~/api"
-import { BannerCarousel } from "~/components"
+import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark, getShop, listReservations, reservationCreateCart } from "~/api"
+import { BannerCarousel, OptionSelection } from "~/components"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from "~/components/ActionSheet"
-import { useCallback, useLayoutEffect, useState } from "react"
+import { useCallback, useLayoutEffect, useMemo, useState } from "react"
 import ProductOptionCard from "~/components/ProductOptionCard"
 import { useAuth, useLocale } from "~/hooks"
 import { PRIMARY_9_COLOR } from "@env"
 import * as Sharing from 'expo-sharing';
+import moment from "moment"
+import ReservationCalendar from "~/components/ReservationCalendar"
+import { ReservationContent, ReservationOption } from "~/types"
+import Toast from "react-native-toast-message"
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams<{ productId: string }>()
@@ -28,6 +32,35 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1)
   const [selectedCouponId, setSelectedCouponId] = useState()
   const queryClient = useQueryClient()
+
+  //reservations
+  const [selectedDate, setSelectedDate] = useState<string>()
+  const [availableTimes, setAvailableTimes] = useState<Date[]>([])
+  const [selectedTime, setSeletedTime] = useState<Date>()
+  const [availableReservationOptions, setAvailableReservationOptions] = useState<ReservationOption[]>([])
+  const [selectedReservationOption, setSelectedReservationOption] = useState<string>()
+  const [isReservationOptionSheetOpen, setIsReservationOptionSheetOpen] = useState(false)
+  const [reservationOptionsSheetPosition, setReservationOptionsSheetPosition] = useState(0)
+
+  const { isPending: isReservationCreateCartSubmiting, mutate: reservationCreateCartMutate } = useMutation({
+    mutationFn: ({ reservationId, reservationContent }: { reservationId: string; reservationContent: ReservationContent }) => {
+      return reservationCreateCart(token, reservationId, reservationContent)
+    },
+    onSuccess: async (res) => {
+      queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+    },
+    onError: (e) => {
+      console.log(e)
+      const error = e as Error
+      Toast.show({
+        type: 'error',
+        text1: t(error.message),
+      });
+    }
+  })
+
+
+
 
   const orderContent = {
     choices: selectedChoices.map((c) => { return c.choiceId }),
@@ -72,6 +105,14 @@ const ProductDetail = () => {
     }
   })
 
+
+  const { data: reservations = [], isFetching: isReservationsFetching } = useQuery({
+    queryKey: ['reservations', productId],
+    queryFn: async () => { return await listReservations(token, productId, moment().valueOf(), moment().endOf('month').valueOf(), 0) },
+    enabled: product?.productType == "RESERVATION"
+  })
+
+
   useLayoutEffect(() => {
     if (isBookmarked == undefined) return
     navigation.setOptions({
@@ -100,16 +141,46 @@ const ProductDetail = () => {
     return <></>
   }
 
-  let stock = product.stock
+  const getStock = () => {
+    switch (product.productType) {
+      case "ORDER":
+        return product.stock
+      case "RESERVATION":
+        if (!selectedTime || !selectedReservationOption) return 0
+        const reservation = reservations.find((f) => { return moment(f.time).toISOString() == moment(selectedTime).toISOString() })
+        const option = reservation?.options.find((f) => { return f._id == selectedReservationOption })
+        if (!reservation || !option) return 0
+        const { stock } = option
+        const { userCountMax } = reservation
+        return stock > userCountMax ? userCountMax : stock
+    }
+  }
 
+  const getMinQuantity = () => {
+    switch (product.productType) {
+      case "ORDER":
+        return 1
+      case "RESERVATION":
+        if (!selectedTime || !selectedReservationOption) return 0
+        const reservation = reservations.find((f) => { return moment(f.time).toISOString() == moment(selectedTime).toISOString() })
+        if (!reservation) return 1
+        const { userCountMin } = reservation
+        return userCountMin
+
+    }
+  }
+
+  let stock = getStock()
+  let minQuantity = getMinQuantity()
   const onChoiceChange = (optionId: string, choiceId: string) => {
     let aSelectedChoices = [...selectedChoices]
     aSelectedChoices = [...aSelectedChoices.filter((s) => { return s.optionId !== optionId }), { optionId, choiceId }]
     setSelectedChoices(aSelectedChoices)
   }
 
+  console.log(`stock: ${stock}`)
   const onQuantityChange = (value: number) => {
-    if (value < 1) return
+    if (value < minQuantity) return
     setQuantity(value)
   }
 
@@ -199,6 +270,174 @@ const ProductDetail = () => {
         )
     }
   }
+
+  const onDayChange = (value?: string) => {
+    setSelectedDate(value)
+    setSeletedTime(undefined)
+    setSelectedReservationOption(undefined)
+    setAvailableReservationOptions([])
+
+    if (!value) {
+      return setAvailableTimes([])
+    }
+    const availableTimes = reservations.map((r) => { return r.time }).filter((t) => { return moment(t).format('YYYY-MM-DD') == value }).sort((a, b) => { return moment(a).valueOf() - moment(b).valueOf() })
+    setAvailableTimes(availableTimes)
+
+  }
+
+  const onTimeChange = (value?: string) => {
+    setSelectedReservationOption(undefined)
+
+    setSeletedTime(moment(value).toDate())
+    if (!value) return
+    console.log(reservations)
+    const reservation = reservations.find((f) => { return moment(f.time).toISOString() == value })
+    const availableOptions = reservation?.options ?? []
+    console.log(availableOptions)
+    setAvailableReservationOptions(availableOptions)
+  }
+
+  const onReservationOptionChange = (value: string) => {
+    setIsReservationOptionSheetOpen(false)
+    if (selectedReservationOption == value) {
+      return setSelectedReservationOption(undefined)
+    }
+    setSelectedReservationOption(value)
+  }
+
+  const renderSheetContent = () => {
+    switch (product.productType) {
+      case "ORDER":
+        return (
+          <YStack space="$4">
+            {
+              options.map((option) => {
+                return (
+                  <ProductOptionCard
+                    key={option._id}
+                    option={option}
+                    selectedChoice={selectedChoices.find((s) => { return s.optionId == option._id })?.choiceId}
+                    onChoiceChange={onChoiceChange}
+                  />
+                )
+              })
+            }
+
+          </YStack>
+        )
+      case "RESERVATION":
+        return (
+          <YStack space="$4">
+            <Label>
+              {t("pleaseSelectDate")}
+            </Label>
+            <ReservationCalendar
+              isLoading={isReservationsFetching}
+              reservations={reservations}
+              selectedDate={selectedDate}
+              onDayChange={onDayChange}
+            />
+            {availableTimes.length ?
+              <OptionSelection
+                title={t("pleaseSelectTime")}
+                options={availableTimes.map((t) => { return { label: moment(t).format("HH:mm"), value: moment(t).toISOString() } })}
+                selectedOption={selectedTime?.toISOString()}
+                onOptionChange={onTimeChange}
+              />
+              : null}
+            {
+              availableReservationOptions.length ?
+                <YStack>
+                  <Label>
+                    {t("pleaseSelectOption")}
+                  </Label>
+                  <StyledButton mx="$1" h="$3" backgroundColor={"#fff"} pressStyle={{ backgroundColor: "ghostwhite" }} color="#000" onPress={() => setIsReservationOptionSheetOpen(true)}>
+                    {selectedReservationOption ? availableReservationOptions.find((o) => { return o._id == selectedReservationOption })?.name : t('pleaseSelect')}
+                  </StyledButton>
+                </YStack>
+                : null
+            }
+            <ActionSheet
+              isSheetOpen={isReservationOptionSheetOpen}
+              setIsSheetOpen={setIsReservationOptionSheetOpen}
+              sheetPosition={reservationOptionsSheetPosition}
+              snapPoints={[40]}
+              setSheetPosition={setReservationOptionsSheetPosition}
+            >
+              <ScrollView space="$4">
+                {availableReservationOptions.map((o) => {
+                  const selected = o._id == selectedReservationOption
+                  return (
+                    <StyledButton
+                      backgroundColor={selected ? "$primary" : "slategray"}
+                      key={o._id}
+                      onPress={() => onReservationOptionChange(o._id)}
+                    >
+                      <SizableText
+                        color="white"
+                      >{o.name}</SizableText>
+                    </StyledButton>
+                  )
+                })
+                }
+              </ScrollView>
+            </ActionSheet>
+
+          </YStack>
+        )
+      default:
+        return <></>
+
+    }
+  }
+
+  const quantitySelector = () => {
+    return (
+      <YStack>
+        <Label>
+          {t('quantity')}
+        </Label>
+        <XStack ml={2} space={"$2"} alignItems="center">
+          <StyledButton disabled={quantity < minQuantity + 1 || quantity < 2} pressStyle={{ opacity: 0.5 }} size="$2" onPress={() => onQuantityChange(quantity - 1)} icon={<AntDesign name="minus" />} />
+          <SizableText>{quantity}</SizableText>
+          <StyledButton disabled={quantity >= stock} pressStyle={{ opacity: 0.5 }} size="$2" onPress={() => onQuantityChange(quantity + 1)} icon={<AntDesign name="plus" />} />
+          {stock < 20 ? <SizableText>{t('stock')}: {stock}</SizableText> : null}
+        </XStack>
+      </YStack>
+    )
+
+  }
+
+  const renderQuantitySelector = () => {
+    switch (product.productType) {
+      case 'ORDER':
+        return quantitySelector()
+      case 'RESERVATION':
+        if (!selectedReservationOption) return <></>
+        return (
+          quantitySelector()
+        )
+
+    }
+  }
+
+  const onAddCartPress = () => {
+    switch (product.productType) {
+      case "ORDER":
+      case "RESERVATION":
+        const reservation = reservations.find((f) => { return moment(f.time).toISOString() == moment(selectedTime).toISOString() })
+        if (!reservation) return
+        const reservationContent = {
+          reservation: reservation._id!,
+          option: selectedReservationOption!,
+          quantity: quantity!
+        }
+        reservationCreateCartMutate({ reservationId: reservation._id, reservationContent })
+
+    }
+
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <YStack flex={1} alignItems="center">
@@ -229,35 +468,13 @@ const ProductDetail = () => {
         isSheetOpen={isOptionSheetOpen}
         setIsSheetOpen={setIsOptionSheetOpen}
         sheetPosition={sheetPosition}
+        snapPoints={[80]}
         setSheetPosition={setSheetPosition}
       >
-        <YStack flex={1} space="$2">
+        <YStack space="$2">
           <ScrollView>
-            <YStack space="$4">
-              {
-                options.map((option) => {
-                  return (
-                    <ProductOptionCard
-                      key={option._id}
-                      option={option}
-                      selectedChoice={selectedChoices.find((s) => { return s.optionId == option._id })?.choiceId}
-                      onChoiceChange={onChoiceChange}
-                    />
-                  )
-                })
-              }
-            </YStack>
-            <YStack>
-              <Label>
-                {t('quantity')}
-              </Label>
-              <XStack ml={2} space={"$2"} alignItems="center">
-                <StyledButton disabled={quantity < 2} pressStyle={{ opacity: 0.5 }} size="$2" onPress={() => onQuantityChange(quantity - 1)} icon={<AntDesign name="minus" />} />
-                <SizableText>{quantity}</SizableText>
-                <StyledButton disabled={quantity >= stock} pressStyle={{ opacity: 0.5 }} size="$2" onPress={() => onQuantityChange(quantity + 1)} icon={<AntDesign name="plus" />} />
-                {stock < 20 ? <SizableText>{t('stock')}: {stock}</SizableText> : null}
-              </XStack>
-            </YStack>
+            {renderSheetContent()}
+            {renderQuantitySelector()}
           </ScrollView>
           <Separator borderColor={"lightslategrey"} />
           <XStack minHeight={"$6"} justifyContent="space-between" >
@@ -268,7 +485,7 @@ const ProductDetail = () => {
                 </SizableText>
             }
             <XStack space="$2">
-              <StyledButton>
+              <StyledButton onPress={onAddCartPress}>
                 {t('addToCart')}
                 <AntDesign name="shoppingcart" color="#fff" />
               </StyledButton>

@@ -5,12 +5,14 @@ const ActionSheet = ({
   isSheetOpen = false,
   setIsSheetOpen,
   sheetPosition,
+  snapPoints = [40],
   setSheetPosition,
   children
 }: {
   isSheetOpen?: boolean,
   setIsSheetOpen: (value: boolean) => void,
   sheetPosition: number,
+  snapPoints?: [number];
   setSheetPosition: (value: number) => void,
   children: ReactNode
 }
@@ -23,7 +25,7 @@ const ActionSheet = ({
       open={isSheetOpen}
       onOpenChange={setIsSheetOpen}
       snapPointsMode={"percent"}
-      snapPoints={[40]}
+      snapPoints={snapPoints}
       dismissOnSnapToBottom
       position={sheetPosition}
       onPositionChange={setSheetPosition}

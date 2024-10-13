@@ -65,25 +65,50 @@ export type Shop = {
 }
 
 export type Product = {
-  _id: string,
-  name: string,
-  category: { name: string, status: "ACTIVE" | "INACTIVE" }
-  shop: Shop,
-  cost: number
-  description: string
-  group: string,
-  introduction: string
-  isRecommended: boolean
-  logisticDescription: string
-  options: string[]
-  photos: Photo[]
-  price: number
-  priority: number
-  productRating: ProductRating
-  stock: number
-  productType: "ORDER" | "RESERVATION"
-  createdAt: Date
-  updatedAt: Date
+  _id: string;
+  name: string;
+  category: { name: string, status: "ACTIVE" | "INACTIVE" };
+  shop: Shop;
+  cost: number;
+  description: string;
+  group: string;
+  introduction: string;
+  isRecommended: boolean;
+  logisticDescription: string;
+  options: string[];
+  photos: Photo[];
+  price: number;
+  priority: number;
+  productRating: ProductRating;
+  stock: number;
+  productType: "ORDER" | "RESERVATION";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type ReservationOption = {
+  _id: string;
+  name: string;
+  price: number;
+  stock: number;
+  cost: number;
+  status: "ACTIVE" | "INACTIVE";
+}
+
+export type Reservation = {
+  _id: string;
+  product: Product;
+  duration: number;
+  time: Date;
+  userCountMax: number;
+  userCountMin: number;
+  options: ReservationOption[];
+}
+
+export type ReservationContent = {
+  reservation: string;
+  option: string;
+  quantity: number
 }
 
 export type Choice = {
