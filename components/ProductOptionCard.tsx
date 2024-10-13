@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import { Label, YStack, XStack, RadioGroup } from "tamagui"
 import { RadioGroupItem } from "~/components"
+import { Option } from "~/types"
 
 const ProductOptionCard = ({
   option,

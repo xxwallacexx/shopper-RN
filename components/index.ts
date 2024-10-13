@@ -6,6 +6,7 @@ import Spinner from './Spinner'
 import CartItemCard from './CartItemCard'
 import RadioGroupItem from './RadioGroupItem'
 import AddressForm from './AddressForm'
+import OptionSelection from './OptionSelection'
 
 export {
   ProductCard,
@@ -15,5 +16,6 @@ export {
   Spinner,
   CartItemCard,
   RadioGroupItem,
-  AddressForm
+  AddressForm,
+  OptionSelection
 }
