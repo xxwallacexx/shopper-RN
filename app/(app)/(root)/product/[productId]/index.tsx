@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocalSearchParams, useNavigation, Link, useFocusEffect, router, useRouter } from "expo-router"
 import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from "react-native"
 import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from "tamagui"
-import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark, getShop, listReservations, reservationCreateCart } from "~/api"
+import { getProduct, listOptions, getProductPriceDetail, getProductIsBookmarked, removeBookmark, createBookmark, getShop, listReservations, reservationCreateCart, productCreateCart } from "~/api"
 import { BannerCarousel, OptionSelection } from "~/components"
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from "~/tamagui.config"
 import HTMLView from 'react-native-htmlview';
@@ -16,7 +16,7 @@ import { PRIMARY_9_COLOR } from "@env"
 import * as Sharing from 'expo-sharing';
 import moment from "moment"
 import ReservationCalendar from "~/components/ReservationCalendar"
-import { ReservationContent, ReservationOption } from "~/types"
+import { OrderContent, ReservationContent, ReservationOption } from "~/types"
 import Toast from "react-native-toast-message"
 
 const ProductDetail = () => {
@@ -43,8 +43,24 @@ const ProductDetail = () => {
   const [reservationOptionsSheetPosition, setReservationOptionsSheetPosition] = useState(0)
 
   const { isPending: isReservationCreateCartSubmiting, mutate: reservationCreateCartMutate } = useMutation({
-    mutationFn: ({ reservationId, reservationContent }: { reservationId: string; reservationContent: ReservationContent }) => {
-      return reservationCreateCart(token, reservationId, reservationContent)
+    mutationFn: async ({ reservationId, reservationContent }: { reservationId: string; reservationContent: ReservationContent }) => {
+      return await reservationCreateCart(token, reservationId, reservationContent)
+    },
+    onSuccess: async (res) => {
+      queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+    },
+    onError: (e) => {
+      const error = e as Error
+      Toast.show({
+        type: 'error',
+        text1: t(error.message),
+      });
+    }
+  })
+
+  const { isPending: isProductCreateCartSubmiting, mutate: productCreateCartMutate } = useMutation({
+    mutationFn: async ({ orderContent }: { orderContent: OrderContent }) => {
+      return await productCreateCart(token, productId, orderContent)
     },
     onSuccess: async (res) => {
       queryClient.invalidateQueries({ queryKey: ['cartItems'] })
@@ -58,7 +74,6 @@ const ProductDetail = () => {
       });
     }
   })
-
 
 
 
@@ -178,7 +193,6 @@ const ProductDetail = () => {
     setSelectedChoices(aSelectedChoices)
   }
 
-  console.log(`stock: ${stock}`)
   const onQuantityChange = (value: number) => {
     if (value < minQuantity) return
     setQuantity(value)
@@ -290,10 +304,8 @@ const ProductDetail = () => {
 
     setSeletedTime(moment(value).toDate())
     if (!value) return
-    console.log(reservations)
     const reservation = reservations.find((f) => { return moment(f.time).toISOString() == value })
     const availableOptions = reservation?.options ?? []
-    console.log(availableOptions)
     setAvailableReservationOptions(availableOptions)
   }
 
@@ -424,6 +436,14 @@ const ProductDetail = () => {
   const onAddCartPress = () => {
     switch (product.productType) {
       case "ORDER":
+        console.log(selectedChoices)
+        console.log(quantity)
+        const orderContent = {
+          choices: selectedChoices.map((f) => { return f.choiceId }),
+          quantity
+        }
+        productCreateCartMutate({ orderContent })
+        break
       case "RESERVATION":
         const reservation = reservations.find((f) => { return moment(f.time).toISOString() == moment(selectedTime).toISOString() })
         if (!reservation) return
@@ -433,6 +453,7 @@ const ProductDetail = () => {
           quantity: quantity!
         }
         reservationCreateCartMutate({ reservationId: reservation._id, reservationContent })
+        break
 
     }
 
@@ -471,7 +492,7 @@ const ProductDetail = () => {
         snapPoints={[80]}
         setSheetPosition={setSheetPosition}
       >
-        <YStack space="$2">
+        <YStack flex={1} space="$2" justifyContent="space-between">
           <ScrollView>
             {renderSheetContent()}
             {renderQuantitySelector()}

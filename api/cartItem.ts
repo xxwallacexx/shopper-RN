@@ -1,6 +1,6 @@
 import axios from 'axios'
 import moment from 'moment';
-import { Coupon, ReservationContent } from '~/types';
+import { Coupon, OrderContent, ReservationContent } from '~/types';
 import { API_URL, SHOP } from '@env'
 const baseUrl = API_URL
 const shop = SHOP
@@ -50,8 +50,24 @@ const reservationCreateCart = async (token: string, id: string, reservationConte
   return await axios(options)
 }
 
+const productCreateCart = async (token: string, id: string, orderContent: OrderContent) => {
+  const options = {
+    method: "post",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      orderContent,
+      shop,
+    },
+    url: `${baseUrl}/product/${id}/cart`,
+  }
+  return await axios(options)
+}
+
 export {
   listCartItems,
   countCartitem,
-  reservationCreateCart
+  reservationCreateCart,
+  productCreateCart
 }
