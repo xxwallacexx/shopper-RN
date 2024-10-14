@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import { Drawer } from 'expo-router/drawer'
 import { TouchableOpacity } from 'react-native'
 import { useLocale } from '~/hooks'

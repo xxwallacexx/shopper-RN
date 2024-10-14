@@ -133,6 +133,36 @@ export type OrderContent = {
   quantity: number
 }
 
+export type Stock = {
+  _id: string;
+  priceAdjustment: number;
+  stock: number;
+}
+
+export type CartItemOrderContent = {
+  choices: Choice[];
+  quantity?: number;
+  stock?: Stock;
+}
+
+export type CartItemReservation = {
+  reservation?: Reservation
+  option?: string
+  quantity?: number
+}
+
+export type CartItem = {
+  _id: string;
+  orderContent: CartItemOrderContent;
+  product: Product;
+  type: string;
+  reservationContent: ReservationContent;
+  user: string;
+  shop: Shop;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type Address = {
   room?: string,
   street?: string,

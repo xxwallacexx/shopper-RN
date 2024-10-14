@@ -39,6 +39,7 @@ const Layout = () => {
       <Tabs.Screen
         name="carts"
         options={{
+          headerShown: false,
           headerTitle: "",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           tabBarButton: (props) => <TouchableOpacity {...props} />
