@@ -1,6 +1,6 @@
 import axios from 'axios'
 import moment from 'moment';
-import { Coupon, OrderContent, ReservationContent } from '~/types';
+import { CartItem, Coupon, OrderContent, ReservationContent } from '~/types';
 import { API_URL, SHOP } from '@env'
 const baseUrl = API_URL
 const shop = SHOP
@@ -16,7 +16,7 @@ const listCartItems = async (token: string) => {
       shop: shop,
     },
   };
-  let res = await axios(options).then((res) => {
+  let res: CartItem[] = await axios(options).then((res) => {
     return res.data
   })
   return res
@@ -65,9 +65,45 @@ const productCreateCart = async (token: string, id: string, orderContent: OrderC
   return await axios(options)
 }
 
+const cartItemGetTotalPrice = async (token: string, currentCouponIds: string[], deliveryMethod?: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/cartItem/totalPrice`,
+    params: {
+      shop,
+      currentCouponIds,
+      deliveryMethod,
+    }
+  };
+  let res: number = await axios(options).then((res) => { return res.data })
+
+  return res
+}
+
+const cartItemGetPriceDetail = async (token: string, currentCouponIds: string[], deliveryMethod?: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/cartItem/priceDetail`,
+    params: {
+      shop,
+      currentCouponIds,
+      deliveryMethod,
+    },
+  };
+  return await axios(options).then((res) => { return res.data });
+}
+
 export {
   listCartItems,
   countCartitem,
   reservationCreateCart,
-  productCreateCart
+  productCreateCart,
+  cartItemGetTotalPrice,
+  cartItemGetPriceDetail
 }
