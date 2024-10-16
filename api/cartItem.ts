@@ -99,11 +99,37 @@ const cartItemGetPriceDetail = async (token: string, currentCouponIds: string[],
   return await axios(options).then((res) => { return res.data });
 }
 
+const updateCartItem = async (token: string, id: string, orderContent: OrderContent) => {
+  const options = {
+    method: "put",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      orderContent: orderContent,
+    },
+    url: `${baseUrl}/cartItem/${id}`,
+  };
+  return axios(options);
+}
+
+const removeCartItem = async (token: string, id: string) => {
+  const options = {
+    method: "delete",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/cartItem/${id}`,
+  };
+  return axios(options);
+}
 export {
   listCartItems,
   countCartitem,
   reservationCreateCart,
   productCreateCart,
   cartItemGetTotalPrice,
-  cartItemGetPriceDetail
+  cartItemGetPriceDetail,
+  updateCartItem,
+  removeCartItem
 }

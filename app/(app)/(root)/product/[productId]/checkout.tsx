@@ -5,7 +5,7 @@ import { RefreshControl, SafeAreaView, SectionList } from "react-native"
 import { Image, RadioGroup, XStack, YStack } from "tamagui"
 import { H2, SizableText } from "tamagui"
 import { getProductCheckoutItemsDetail, getSelf, getShop } from "~/api"
-import { AddressForm, CartItemCard, RadioGroupItem } from "~/components"
+import { AddressForm,CheckoutItemCard,  RadioGroupItem } from "~/components"
 import { useAuth, useLocale } from "~/hooks"
 import { DeliveryMethodEnum, Address } from "~/types"
 
@@ -113,7 +113,7 @@ const Checkout = () => {
         )
       case "cartItems":
         return (
-          <CartItemCard
+          <CheckoutItemCard
             quantity={orderContent.quantity}
             product={itemDetail.product}
             coupon={itemDetail.coupon}

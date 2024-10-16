@@ -3,10 +3,12 @@ import BannerCarousel from './BannerCarousel'
 import AnimatedTabs from './AnimatedTabs'
 import ProductCard from './ProductCard'
 import Spinner from './Spinner'
-import CartItemCard from './CartItemCard'
+import CheckoutItemCard from './CheckoutItemCard'
 import RadioGroupItem from './RadioGroupItem'
 import AddressForm from './AddressForm'
 import OptionSelection from './OptionSelection'
+import StoreCard from './StoreCard'
+import CartItemCard from './CartItemCard'
 
 export {
   ProductCard,
@@ -14,8 +16,10 @@ export {
   BannerCarousel,
   AnimatedTabs,
   Spinner,
-  CartItemCard,
+  CheckoutItemCard,
   RadioGroupItem,
   AddressForm,
-  OptionSelection
+  OptionSelection,
+  StoreCard,
+  CartItemCard
 }

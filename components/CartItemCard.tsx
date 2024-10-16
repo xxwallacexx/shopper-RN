@@ -1,64 +1,126 @@
-import { Image, SizableText, XStack, YStack } from "tamagui"
-import { useLocale } from "~/hooks"
-import { Badge } from "~/tamagui.config"
+import { EvilIcons, Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { XStack, YStack, Image, SizableText, Text, Separator, Stack } from "tamagui";
+import { useLocale } from "~/hooks";
+import { Badge, StyledButton } from "~/tamagui.config";
+import { CartItemOrderContent, Product } from "~/types";
+import { Skeleton } from "moti/skeleton"
 
 const CartItemCard = ({
-  quantity,
+  photoUri,
+  totalPrice,
+  stock,
+  singleItemPrice,
   product,
-  coupon
+  orderContent,
+  onProductPress,
+  onDeductPress,
+  onAddPress,
+  onRemovePress,
+  isCartItemUpdating,
+  isCartItemRemoving
 }: {
-  quantity: number,
-  product: Product,
-  coupon?: Coupon
+  photoUri: string;
+  totalPrice: number;
+  stock: number;
+  singleItemPrice: number;
+  product: Product;
+  orderContent: CartItemOrderContent;
+  onProductPress: () => void;
+  onDeductPress: () => void;
+  onAddPress: () => void;
+  onRemovePress: () => void;
+  isCartItemUpdating: boolean;
+  isCartItemRemoving: boolean;
 }) => {
   const { t } = useLocale()
-  const priceAdjustment = product.productStock ? product.productStock.priceAdjustment : 0
-  const singleItemPrice = product.price + priceAdjustment
-  const singleItemDiscount = coupon ? coupon.coupon.discount : 0
-  const singleItemSubtotal = singleItemPrice * quantity - singleItemDiscount
-  const photoUri = product.photos && product.photos.length ? product.photos[0].path : undefined
-
+  const quantity = orderContent.quantity ?? 0
   return (
-    <XStack
+    <YStack flex={1}
+      backgroundColor={"white"}
       p={"$1"}
       space="$2"
-      borderColor={"lightslategrey"}
       borderRadius={"$radius.3"}
-      borderWidth={0.3}
+      shadowColor={"black"}
+      shadowOffset={{
+        height: 2,
+        width: 0
+      }}
+      shadowOpacity={0.25}
+      shadowRadius={3.84}
     >
-      <YStack width={"40%"} borderRadius={"$radius.3"} overflow="hidden">
-        <Image
-          resizeMode="contain"
-          aspectRatio={1}
-          source={{ uri: photoUri }}
-          width={"100%"}
-        />
-        <Badge position='absolute' top={8} right={8}>
-          <SizableText size={"$1"} color="#fff">
-            HK$ {(product.price + priceAdjustment).toFixed(2)}
-          </SizableText>
-        </Badge>
-      </YStack>
-      <YStack py={"$2"} space="$2" justifyContent="space-between">
-        <YStack>
-          <SizableText numberOfLines={1} ellipsizeMode="tail">
-            {product.name}
-          </SizableText>
-          {/*
-            choices
-          */}
-        </YStack>
-        <XStack space="$2">
-          <SizableText>
-            {t('orderQuantity', { quantity: quantity })}
-          </SizableText>
-          <SizableText color={"$primary"}>
-            {`HK$ ${singleItemSubtotal.toFixed(2)}`}
-          </SizableText>
+      <TouchableOpacity onPress={onProductPress}>
+        <XStack
+          space="$2"
+          flex={1}
+        >
+          <YStack width={"40%"} borderRadius={"$radius.3"} overflow="hidden">
+            <Image
+              backgroundColor={"white"}
+              resizeMode="contain"
+              aspectRatio={1}
+              source={{ uri: photoUri }}
+              width={"100%"}
+            />
+            <Badge position='absolute' top={8} right={8}>
+              <SizableText size={"$1"} color="#fff">
+                HK$ {singleItemPrice.toFixed(2)}
+              </SizableText>
+            </Badge>
+          </YStack>
+          <YStack py={"$2"} space="$2" justifyContent="space-between">
+            <YStack>
+              <SizableText numberOfLines={1} ellipsizeMode="tail">
+                {product.name} {product.introduction}
+              </SizableText>
+              {
+                orderContent.choices.map((c) => {
+                  return (
+                    <Text key={c._id} fontWeight={"300"} fontSize={"$2"}>
+                      {t("option")}: {c.name}
+                    </Text>
+                  )
+                })
+              }
+            </YStack>
+            <XStack space="$2" alignItems="center">
+              {
+                isCartItemUpdating ? <Skeleton height={12} colorMode="light" width={80} /> :
+                  <SizableText color={"$primary"}>
+                    HK$ {totalPrice.toFixed(2)}
+                  </SizableText>
+              }
+              <Text fontWeight={"300"} fontSize={"$2"}>
+                {t("stock")}: {stock}
+              </Text>
+            </XStack>
+          </YStack>
         </XStack>
-      </YStack>
+      </TouchableOpacity>
 
-    </XStack>
+      <Separator />
+      <XStack px="$2" flex={1} h="$3" alignItems="center" justifyContent="space-between">
+        <XStack space="$2" alignItems="center">
+          <TouchableOpacity disabled={quantity < 2} onPress={onDeductPress}>
+            <Ionicons size={24} name="remove-circle-outline" />
+          </TouchableOpacity>
+          {isCartItemUpdating ? <Skeleton height={8} colorMode="light" width={18} /> :
+            <SizableText textAlign="center" w={18}>{quantity}</SizableText>}
+          <TouchableOpacity disabled={quantity >= stock} onPress={onAddPress}>
+            <Ionicons size={24} name="add-circle-outline" />
+          </TouchableOpacity>
+        </XStack>
+        <StyledButton w="40%">
+          {t("redeemCoupon")}
+        </StyledButton>
+        {isCartItemRemoving ? <Skeleton height={18} colorMode="light" width={22} /> :
+          <TouchableOpacity onPress={onRemovePress}>
+            <EvilIcons size={24} name="trash" />
+          </TouchableOpacity>
+        }
+
+      </XStack>
+    </YStack>
   )
 }
 
