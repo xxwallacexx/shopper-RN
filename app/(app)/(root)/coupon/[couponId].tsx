@@ -1,36 +1,65 @@
 import { AntDesign, MaterialIcons } from "@expo/vector-icons"
 import { tokens } from "@tamagui/themes"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocalSearchParams } from "expo-router"
 import moment from "moment"
+import { useState } from "react"
 import { RefreshControl, SectionList, SafeAreaView } from "react-native"
 import HTMLView from "react-native-htmlview"
-import { Image, Separator, SizableText, Text, XStack, YStack } from "tamagui"
-import { getCoupon } from "~/api"
+import Toast from "react-native-toast-message"
+import { AlertDialog, Image, Separator, SizableText, Text, XStack, YStack, Stack } from "tamagui"
+import { Dialog } from '~/components'
+import { getCredit, getCoupon, createUserCoupon } from "~/api"
 import { useAuth, useLocale } from "~/hooks"
 import { BottomAction, Container, StyledButton, Title } from "~/tamagui.config"
 
 const CouponDetail = () => {
-  const { couponId } = useLocalSearchParams()
+  const { couponId } = useLocalSearchParams<{ couponId: string }>()
   const { t } = useLocale()
   const { token } = useAuth()
+  const queryClient = useQueryClient()
 
-  if(!token)return <></>
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+  if (!token) return <></>
 
-  const { data: coupon } = useQuery({
+  const { data: coupon, refetch: couponRefetch } = useQuery({
     queryKey: ['coupon', couponId],
     queryFn: async () => { return await getCoupon(token, `${couponId}`) }
   })
 
-  console.log(coupon)
+  const { data: credit = 0, refetch: creditRefetch } = useQuery({
+    queryKey: ['credit', token],
+    queryFn: async () => { return await getCredit(token) }
+  })
+
+  const { isPending: isCreateUserCouponSubmiting, mutate: createUserCouponMutate } = useMutation({
+    mutationFn: () => {
+      return createUserCoupon(token, couponId)
+    },
+    onSuccess: async (res) => {
+      setIsSuccessDialogOpen(true)
+      creditRefetch()
+      queryClient.resetQueries({ queryKey: ['userCoupons'] })
+    },
+    onError: (e) => {
+      console.log(e)
+      const error = e as Error
+      Toast.show({
+        type: 'error',
+        text1: t(error.message),
+      });
+    }
+  })
 
   const onRefresh = () => {
-    console.log('refresh')
+    couponRefetch()
+    creditRefetch()
   }
 
   if (!coupon) {
     return <></>
   }
+
   const renderSectionItem = ({ item, index, section }) => {
     const { photo, name, shop, endDate, detail, minPriceRequired, maxPurchase, discount, terms } = coupon
 
@@ -104,6 +133,13 @@ const CouponDetail = () => {
 
   }
 
+  const onGetCouponPress = () => {
+    if (credit < coupon.credit || isCreateUserCouponSubmiting) return
+    createUserCouponMutate()
+
+  }
+
+  const buttonDisabled = credit < coupon.credit || isCreateUserCouponSubmiting
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <YStack flex={1}>
@@ -127,14 +163,41 @@ const CouponDetail = () => {
         />
         <BottomAction justifyContent="space-between">
           <SizableText>{t('creditRequired', { credit: coupon.credit })}</SizableText>
-          <StyledButton onPress={() => console.log('press')}>
+          <StyledButton disabled={buttonDisabled} onPress={onGetCouponPress}>
             {t('getCoupon')}
             <MaterialIcons name="discount" color="#fff" />
           </StyledButton>
         </BottomAction>
       </YStack>
+      <Dialog isOpen={isSuccessDialogOpen}>
+        <YStack space="$4">
+          <SizableText fontSize={"$6"}>
+            {t("addCouponSuccess")}
+          </SizableText>
+          <Stack>
+            <Text>
+              {t("addCouponSuccessContent")}
+            </Text>
+            <XStack>
+              <Text>
+                {t("pleaseGoTo")}
+              </Text>
+              <Text fontWeight={"700"}>
+                {t("myWallet")}
+              </Text>
+              <Text>
+                {t("toCheck")}
+              </Text>
+            </XStack>
+          </Stack>
+
+          <AlertDialog.Action asChild>
+            <StyledButton onPress={() => setIsSuccessDialogOpen(false)}>{t("confirm")}</StyledButton>
+          </AlertDialog.Action>
+        </YStack>
+      </Dialog>
     </SafeAreaView>
   )
 }
 
-export default CouponDetail
+export default CouponDetail 

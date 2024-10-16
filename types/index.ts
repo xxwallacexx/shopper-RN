@@ -38,16 +38,17 @@ export enum DeliveryMethodEnum {
 
 
 export type Coupon = {
-  _id: string,
-  credit: number,
-  detail: string,
-  discount: number,
-  endDate: Date,
-  name: string,
-  photo: string,
-  terms: string
-  minPriceRequired: number,
-  maxPurchase: number
+  _id: string;
+  credit: number;
+  detail: string;
+  discount: number;
+  endDate: Date;
+  name: string;
+  shop: Shop;
+  photo: string;
+  terms: string;
+  minPriceRequired: number;
+  maxPurchase: number;
 }
 
 export type Shop = {
