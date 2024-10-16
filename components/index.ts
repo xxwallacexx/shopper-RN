@@ -9,6 +9,7 @@ import AddressForm from './AddressForm'
 import OptionSelection from './OptionSelection'
 import StoreCard from './StoreCard'
 import CartItemCard from './CartItemCard'
+import Dialog from './Dialog'
 
 export {
   ProductCard,
@@ -21,5 +22,6 @@ export {
   AddressForm,
   OptionSelection,
   StoreCard,
-  CartItemCard
+  CartItemCard,
+  Dialog
 }

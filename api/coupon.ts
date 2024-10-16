@@ -38,7 +38,22 @@ const getCoupon = async (token: string, couponId: string) => {
   return res
 }
 
+const createUserCoupon = async (token: string, couponId: string) => {
+  const options = {
+    method: "post",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      couponId: couponId,
+    },
+    url: `${baseUrl}/userCoupon`,
+  };
+  return await axios(options);
+}
+
 export {
   listCoupons,
-  getCoupon
+  getCoupon,
+  createUserCoupon
 }
