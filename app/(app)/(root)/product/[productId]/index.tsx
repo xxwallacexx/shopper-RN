@@ -63,6 +63,7 @@ const ProductDetail = () => {
       return await productCreateCart(token, productId, orderContent)
     },
     onSuccess: async (res) => {
+    console.log('success')
       queryClient.invalidateQueries({ queryKey: ['cartItems'] })
     },
     onError: (e) => {
@@ -155,6 +156,8 @@ const ProductDetail = () => {
   if (!product || isProductFetching || isOptionsFetching || !shop) {
     return <></>
   }
+
+  console.log(product)
 
   const getStock = () => {
     switch (product.productType) {

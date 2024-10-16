@@ -38,7 +38,7 @@ const CouponDetail = () => {
       case 'cover':
         return (
           <Image
-            backgroundColor={"#fff"}
+            backgroundColor={"white"}
             resizeMode="contain"
             aspectRatio={16 / 9}
             source={{ uri: photo }}

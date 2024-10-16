@@ -189,3 +189,35 @@ export type Auth = {
   token: string,
   tokenExpAt: string
 }
+
+export type CheckoutProductOption = {
+  _id: string;
+  fieldName: string;
+}
+
+export type CheckoutProductStock = {
+  _id: string;
+  priceAdjustment: number;
+}
+
+export type CheckoutProductChoice = {
+  _id: string;
+  productOption: CheckoutProductOption;
+  name: string;
+  productsubchoices: any[];
+}
+
+export type CheckoutProduct = {
+  _id: string;
+  name: string;
+  photos: Photo[];
+  price: number;
+  shop: Shop;
+  choices: Choice[];
+  productStock: CheckoutProductStock;
+}
+
+export type CheckoutCoupon = {
+  _id: string;
+  coupon: Coupon
+}

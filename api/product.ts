@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Category, Option, OrderContent, Product } from '~/types';
+import { Category, CheckoutCoupon, CheckoutProduct, Option, OrderContent, Product } from '~/types';
 import { API_URL, SHOP } from '@env'
 const baseUrl = API_URL
 const shop = SHOP
@@ -112,7 +112,7 @@ const getProductCheckoutItemsDetail = async (
       currentCouponId,
     },
   };
-  let res: { product: Product, coupon: Coupon } = await axios(options).then((res) => { return res.data })
+  let res: { product: CheckoutProduct, coupon: CheckoutCoupon } = await axios(options).then((res) => { return res.data })
   return res
 }
 

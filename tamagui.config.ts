@@ -75,9 +75,9 @@ export const StyledButton = styled(Button, {
   variants: {
     disabled: {
       true: {
-        backgroundColor: tokens.color.gray5Light,
+        backgroundColor: tokens.color.gray9Dark,
         pressStyle: {
-          backgroundColor: tokens.color.gray5Light,
+          backgroundColor: tokens.color.gray9Dark,
           borderWidth: 0
         }
       }
