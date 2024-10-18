@@ -3,7 +3,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } fr
 
 const Spinner = ({ size = 12, color = "#fff" }: { size?: number, color?: string }) => {
   const rotation = useSharedValue(0);
-  rotation.value = withRepeat(withTiming(360, { duration: 1000 }), -1);
+  rotation.value = withRepeat(withTiming(360, { duration: 6000 }), -1);
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotateZ: `${rotation.value}deg` }],

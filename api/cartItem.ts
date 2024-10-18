@@ -1,6 +1,5 @@
 import axios from 'axios'
-import moment from 'moment';
-import { CartItem, Coupon, OrderContent, ReservationContent } from '~/types';
+import { AvailabelCoupon, CartItem, OrderContent, ReservationContent } from '~/types';
 import { API_URL, SHOP } from '@env'
 const baseUrl = API_URL
 const shop = SHOP
@@ -110,7 +109,7 @@ const updateCartItem = async (token: string, id: string, orderContent: OrderCont
     },
     url: `${baseUrl}/cartItem/${id}`,
   };
-  return axios(options);
+  return await axios(options);
 }
 
 const removeCartItem = async (token: string, id: string) => {
@@ -121,8 +120,24 @@ const removeCartItem = async (token: string, id: string) => {
     },
     url: `${baseUrl}/cartItem/${id}`,
   };
-  return axios(options);
+  return await axios(options);
 }
+
+const cartItemListAvailableCoupons = async (token: string, id: string, quantity: number) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/cartItem/${id}/availableCoupons`,
+    params: {
+      quantity: quantity,
+    },
+  };
+  let res: AvailabelCoupon[] = await axios(options).then((res) => { return res.data })
+  return res
+}
+
 export {
   listCartItems,
   countCartitem,
@@ -131,5 +146,6 @@ export {
   cartItemGetTotalPrice,
   cartItemGetPriceDetail,
   updateCartItem,
-  removeCartItem
+  removeCartItem,
+  cartItemListAvailableCoupons
 }

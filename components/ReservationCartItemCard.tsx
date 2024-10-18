@@ -1,40 +1,39 @@
 import { EvilIcons, Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { XStack, YStack, Image, SizableText, Text, Separator, Stack } from "tamagui";
+import { XStack, YStack, Image, SizableText, Text, Separator } from "tamagui";
 import { useLocale } from "~/hooks";
 import { Badge, StyledButton } from "~/tamagui.config";
-import { CartItemOrderContent, Product } from "~/types";
+import { CartItemReservation, Product } from "~/types";
 import { Skeleton } from "moti/skeleton"
+import moment from "moment";
 
-const CartItemCard = ({
+const ReservationCartItemCard = ({
   photoUri,
   totalPrice,
   stock,
   singleItemPrice,
   product,
-  orderContent,
+  reservationContent,
   onProductPress,
-  onDeductPress,
-  onAddPress,
   onRemovePress,
+  onAvailableCouponPress,
   isCartItemUpdating,
-  isCartItemRemoving
+  isCartItemRemoving,
 }: {
   photoUri: string;
   totalPrice: number;
   stock: number;
   singleItemPrice: number;
   product: Product;
-  orderContent: CartItemOrderContent;
+  reservationContent: CartItemReservation;
   onProductPress: () => void;
-  onDeductPress: () => void;
-  onAddPress: () => void;
   onRemovePress: () => void;
+  onAvailableCouponPress: () => void;
   isCartItemUpdating: boolean;
   isCartItemRemoving: boolean;
 }) => {
   const { t } = useLocale()
-  const quantity = orderContent.quantity ?? 0
+  const option = reservationContent.reservation?.options.find((o) => { return o._id == reservationContent.option })
   return (
     <YStack flex={1}
       backgroundColor={"white"}
@@ -68,20 +67,20 @@ const CartItemCard = ({
               </SizableText>
             </Badge>
           </YStack>
-          <YStack py={"$2"} space="$2" justifyContent="space-between">
+          <YStack flex={1} py={"$2"} space="$2" justifyContent="space-between">
             <YStack>
               <SizableText numberOfLines={1} ellipsizeMode="tail">
                 {product.name} {product.introduction}
               </SizableText>
-              {
-                orderContent.choices.map((c) => {
-                  return (
-                    <Text key={c._id} fontWeight={"300"} fontSize={"$2"}>
-                      {t("option")}: {c.name}
-                    </Text>
-                  )
-                })
-              }
+              <Text fontWeight={"300"} fontSize={"$2"}>
+                {t("option")}: {option?.name}
+              </Text>
+              <Text fontWeight={"300"} fontSize={"$2"}>
+                {t("quantity")}: {reservationContent.quantity}
+              </Text>
+              <Text fontWeight={"300"} fontSize={"$2"}>
+                {t("time")}: {moment(reservationContent.reservation?.time).format("YYYY-MM-DD HH:mm")}
+              </Text>
             </YStack>
             <XStack space="$2" alignItems="center">
               {
@@ -100,17 +99,7 @@ const CartItemCard = ({
 
       <Separator />
       <XStack px="$2" flex={1} h="$3" alignItems="center" justifyContent="space-between">
-        <XStack space="$2" alignItems="center">
-          <TouchableOpacity disabled={quantity < 2} onPress={onDeductPress}>
-            <Ionicons size={24} name="remove-circle-outline" />
-          </TouchableOpacity>
-          {isCartItemUpdating ? <Skeleton height={8} colorMode="light" width={18} /> :
-            <SizableText textAlign="center" w={18}>{quantity}</SizableText>}
-          <TouchableOpacity disabled={quantity >= stock} onPress={onAddPress}>
-            <Ionicons size={24} name="add-circle-outline" />
-          </TouchableOpacity>
-        </XStack>
-        <StyledButton w="40%">
+        <StyledButton w="40%" onPress={onAvailableCouponPress}>
           {t("redeemCoupon")}
         </StyledButton>
         {isCartItemRemoving ? <Skeleton height={18} colorMode="light" width={22} /> :
@@ -118,10 +107,9 @@ const CartItemCard = ({
             <EvilIcons size={24} name="trash" />
           </TouchableOpacity>
         }
-
       </XStack>
     </YStack>
   )
 }
 
-export default CartItemCard
+export default ReservationCartItemCard
