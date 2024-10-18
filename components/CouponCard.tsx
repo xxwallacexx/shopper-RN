@@ -1,20 +1,18 @@
+import moment from "moment";
 import { Image, SizableText, Text, YStack } from "tamagui"
 import { useLocale } from "~/hooks"
 import { Badge } from "~/tamagui.config"
 
-const ProductCard = ({
+const CouponCard = ({
   imageUri,
-  price,
   name,
-  categoryName,
-  introduction
+  endDate,
+  credit
 }: {
-  imageUri: string,
-  price: number,
-  name: string,
-  categoryName: string,
-  introduction: string
-
+  imageUri: string;
+  name: string;
+  endDate: Date;
+  credit: number;
 }) => {
   const { t } = useLocale()
 
@@ -41,15 +39,17 @@ const ProductCard = ({
       />
       <Badge position='absolute' top={22} right={22}>
         <SizableText fontSize={8} color="#fff">
-          $ {price.toFixed(2)} {t('up')}
+          {t("couponCredit", { credit })}
         </SizableText>
       </Badge>
-      <SizableText size={"$1"} color="lightslategray">{categoryName}</SizableText>
-      <Text numberOfLines={1} ellipsizeMode='tail'>{name}</Text>
-      <Text numberOfLines={1} ellipsizeMode='tail'>{introduction}</Text>
+      <Text fontSize={"$2"} color="slategrey" numberOfLines={1} ellipsizeMode='tail'>{moment(endDate).format("YYYY-MM-DD HH:mm")}</Text>
+      <SizableText numberOfLines={1} ellipsizeMode='tail'>{name}</SizableText>
+
     </YStack>
 
   )
 }
 
-export default ProductCard
+
+
+export default CouponCard

@@ -290,6 +290,7 @@ export const messages = {
     removeUser: "Delete User",
     expiryDateMessage: "Expiry Date not correct",
     time: "Time",
+    endDate:"End Date",
     /**
      * Error Code
      */
@@ -622,6 +623,7 @@ export const messages = {
     removeUser: "刪除用戶",
     expiryDateMessage: "卡號過期日錯誤",
     time: "時間",
+    endDate:"完結日",
     /**
      * Error Code
      */

@@ -231,5 +231,10 @@ export type CheckoutProduct = {
 
 export type CheckoutCoupon = {
   _id: string;
-  coupon: Coupon
+  coupon: Coupon;
+}
+
+export type UserCoupon = {
+  _id: string;
+  coupon: Coupon;
 }
