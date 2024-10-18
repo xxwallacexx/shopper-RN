@@ -81,7 +81,7 @@ const Home = () => {
 
     return (
       <Link href={`/product/${_id}`} asChild >
-        <TouchableOpacity style={{ flex: 0.5 }} >
+        <TouchableOpacity style={{ width: "48%" }} >
           <ProductCard
             imageUri={uri}
             price={price}
@@ -151,6 +151,7 @@ const Home = () => {
             style={{ flex: 1 }}
             columnWrapperStyle={{
               flex: 1,
+              padding: 12,
               justifyContent: "space-between"
             }}
             ListFooterComponent={() => {

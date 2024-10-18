@@ -1,6 +1,6 @@
 import axios from 'axios'
 import moment from 'moment';
-import { Coupon } from '~/types';
+import { Coupon, UserCoupon } from '~/types';
 import { API_URL, SHOP } from '@env'
 const baseUrl = API_URL
 const shop = SHOP
@@ -52,8 +52,26 @@ const createUserCoupon = async (token: string, couponId: string) => {
   return await axios(options);
 }
 
+const listUserCoupon = async (token: string, skip: number) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/userCoupon`,
+    params: {
+      shop: shop,
+      limit: 10,
+      skip: skip,
+    },
+  };
+  let res: UserCoupon[] = await axios(options).then((res) => { return res.data.userCoupons })
+  return res
+}
+
 export {
   listCoupons,
   getCoupon,
-  createUserCoupon
+  createUserCoupon,
+  listUserCoupon
 }

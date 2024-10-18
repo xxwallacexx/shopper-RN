@@ -3,11 +3,11 @@ import { Link, } from "expo-router"
 import { useState } from "react"
 import { FlatList, RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from "react-native"
 import { Image, YStack, SizableText, AnimatePresence } from "tamagui"
-import { getSelf, listBookmarks } from "~/api"
-import { AnimatedTabs, ProductCard, Spinner } from "~/components"
+import { getSelf, listBookmarks, listUserCoupon } from "~/api"
+import { AnimatedTabs, CouponCard, ProductCard, Spinner } from "~/components"
 import { useAuth, useLocale } from "~/hooks"
 import { AnimatedYStack, Container, StyledButton } from "~/tamagui.config"
-import { Bookmark } from "~/types"
+import { Bookmark, UserCoupon } from "~/types"
 
 const Profile = () => {
   const { t } = useLocale()
@@ -31,9 +31,9 @@ const Profile = () => {
     hasNextPage: bookmarksHasNextPage,
     refetch: refetchBookmarks,
   } = useInfiniteQuery({
-    queryKey: ['bookmarks'],
+    queryKey: ['bookmarks', token],
     initialPageParam: 0,
-    queryFn:async ({ pageParam }: { pageParam: number }) => {
+    queryFn: async ({ pageParam }: { pageParam: number }) => {
       return await listBookmarks(token, pageParam)
     },
     getNextPageParam: (lastPage, pages) => {
@@ -43,11 +43,32 @@ const Profile = () => {
     },
   })
 
-  console.log(bookmarks)
+  const {
+    data: userCoupons,
+    isFetching: isUserCouponsFetching,
+    isFetchingNextPage: isFetchingMoreUserCoupons,
+    fetchNextPage: fetchMoreUserCoupons,
+    hasNextPage: userCouponsHasNextPage,
+    refetch: refetchUserCoupons,
+  } = useInfiniteQuery({
+    queryKey: ['userCoupons', token],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }: { pageParam: number }) => {
+      return await listUserCoupon(token, pageParam)
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage) return null
+      if (!lastPage.length) return null
+      return pages.flat().length
+    },
+  })
+
   const bookmarksData = bookmarks?.pages
     ? bookmarks.pages.flat()
     : []
 
+
+  const userCouponsData = userCoupons?.pages ? userCoupons.pages.flat() : []
 
   const [selectedTab, setSelectedTab] = useState(tabs[0].value)
   const onRefresh = () => {
@@ -58,13 +79,13 @@ const Profile = () => {
     fetchMoreBookmarks()
   }
 
-  const renderBookmarks = ({ item }: { item: Bookmark }) => {
+  const renderBookmark = ({ item }: { item: Bookmark }) => {
     const { product } = item
     const { _id, price, category, name, introduction, photos } = product
     const uri = photos[0].path
     return (
       <Link href={`/product/${_id}`} asChild >
-        <TouchableOpacity style={{ flex: 0.5 }} >
+        <TouchableOpacity style={{ width: "48%" }} >
           <ProductCard
             imageUri={uri}
             price={price}
@@ -74,9 +95,24 @@ const Profile = () => {
           />
         </TouchableOpacity>
       </Link>
-
     )
+  }
 
+  const renderUserCoupon = ({ item }: { item: UserCoupon }) => {
+    const { coupon } = item
+    const { _id, name, credit, photo, endDate } = coupon
+    return (
+      <Link href={`/coupon/${_id}`} asChild >
+        <TouchableOpacity style={{ width: "48%" }} >
+          <CouponCard
+            imageUri={photo}
+            name={name}
+            endDate={endDate}
+            credit={credit}
+          />
+        </TouchableOpacity>
+      </Link>
+    )
   }
 
   const renderTabContent = () => {
@@ -85,12 +121,13 @@ const Profile = () => {
         return (
           <FlatList
             data={bookmarksData}
-            renderItem={renderBookmarks}
+            renderItem={renderBookmark}
             numColumns={2}
             keyExtractor={(item, index) => item._id}
             style={{ flex: 1 }}
             columnWrapperStyle={{
               flex: 1,
+              padding: 12,
               justifyContent: "space-between"
             }}
             ListFooterComponent={() => {
@@ -113,6 +150,37 @@ const Profile = () => {
           />
         )
       case "myWallet":
+        return (
+          <FlatList
+            data={userCouponsData}
+            renderItem={renderUserCoupon}
+            numColumns={2}
+            keyExtractor={(item, index) => item._id}
+            style={{ flex: 1 }}
+            columnWrapperStyle={{
+              flex: 1,
+              padding: 12,
+              justifyContent: "space-between"
+            }}
+            ListFooterComponent={() => {
+              if (!isUserCouponsFetching && !isFetchingMoreUserCoupons) {
+                return null
+              }
+              return (
+                <Spinner color="$color.primary" />
+              )
+            }}
+            ListEmptyComponent={() => {
+              if (isUserCouponsFetching || isFetchingMoreUserCoupons) {
+                return null
+              }
+              return (
+                <Container alignItems='center'>
+                </Container>
+              )
+            }}
+          />
+        )
       case "myOrders":
       default:
         return <></>

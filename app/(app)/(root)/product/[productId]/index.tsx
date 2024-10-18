@@ -63,7 +63,7 @@ const ProductDetail = () => {
       return await productCreateCart(token, productId, orderContent)
     },
     onSuccess: async (res) => {
-    console.log('success')
+      console.log('success')
       queryClient.invalidateQueries({ queryKey: ['cartItems'] })
     },
     onError: (e) => {
@@ -252,11 +252,11 @@ const ProductDetail = () => {
               </Badge>
               <XStack space="$2" alignItems="center">
                 <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-                <Text fontSize={10} color={"lightslategray"}>{shop.name}</Text>
+                <Text fontSize={"$2"} color={"lightslategray"}>{shop.name}</Text>
               </XStack>
               <XStack space="$2" alignItems="center">
                 <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-                <Text fontSize={10} color="lightslategray">{shop.address}</Text>
+                <Text fontSize={"$2"} color="lightslategray">{shop.address}</Text>
               </XStack>
             </YStack>
           </Container>

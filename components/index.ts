@@ -10,6 +10,7 @@ import OptionSelection from './OptionSelection'
 import StoreCard from './StoreCard'
 import OrderCartItemCard from './OrderCartItemCard'
 import Dialog from './Dialog'
+import CouponCard from './CouponCard'
 
 export {
   ProductCard,
@@ -23,5 +24,6 @@ export {
   OptionSelection,
   StoreCard,
   OrderCartItemCard,
-  Dialog
+  Dialog,
+  CouponCard
 }
