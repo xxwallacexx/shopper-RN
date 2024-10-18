@@ -8,7 +8,7 @@ import RadioGroupItem from './RadioGroupItem'
 import AddressForm from './AddressForm'
 import OptionSelection from './OptionSelection'
 import StoreCard from './StoreCard'
-import CartItemCard from './CartItemCard'
+import OrderCartItemCard from './OrderCartItemCard'
 import Dialog from './Dialog'
 
 export {
@@ -22,6 +22,6 @@ export {
   AddressForm,
   OptionSelection,
   StoreCard,
-  CartItemCard,
+  OrderCartItemCard,
   Dialog
 }

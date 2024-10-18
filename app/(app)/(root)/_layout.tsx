@@ -31,6 +31,12 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name='cartCheckout'
+        options={{
+          headerShown: false
+        }}
+      />
     </Stack>
 
   );

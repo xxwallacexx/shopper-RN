@@ -51,6 +51,11 @@ export type Coupon = {
   maxPurchase: number;
 }
 
+export type AvailabelCoupon = {
+  _id: string;
+  coupon: Coupon;
+}
+
 export type Shop = {
   address: string;
   deliveryMethods: DeliveryMethodEnum[];
@@ -146,8 +151,14 @@ export type CartItemOrderContent = {
   stock?: Stock;
 }
 
+export type CartItemReservationContent = {
+  reservation: Reservation;
+  option: string;
+  quantity: number;
+}
+
 export type CartItemReservation = {
-  reservation?: Reservation
+  reservation?: Reservation;
   option?: string
   quantity?: number
 }
@@ -157,7 +168,7 @@ export type CartItem = {
   orderContent: CartItemOrderContent;
   product: Product;
   type: string;
-  reservationContent: ReservationContent;
+  reservationContent: CartItemReservationContent;
   user: string;
   shop: Shop;
   createdAt: string;

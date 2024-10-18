@@ -1,21 +1,26 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { FlatList, RefreshControl, SectionList } from "react-native"
-import { YStack, Card, SizableText, Text, Stack } from "tamagui"
-import { cartItemGetTotalPrice, listCartItems, cartItemGetPriceDetail, getShop, updateCartItem, removeCartItem } from "~/api"
+import { FlatList, RefreshControl, SectionList, SafeAreaView } from "react-native"
+import { YStack, SizableText, Text, Stack, XStack } from "tamagui"
+import { cartItemGetTotalPrice, listCartItems, cartItemGetPriceDetail, getShop, updateCartItem, removeCartItem, cartItemListAvailableCoupons } from "~/api"
 import { useAuth, useLocale } from "~/hooks"
-import { BottomAction, Title } from "~/tamagui.config"
-import Constants from 'expo-constants';
-import { CartItemCard, StoreCard } from "~/components"
-import { CartItem, DeliveryMethodEnum, OrderContent } from "~/types"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { BottomAction, Container, StyledButton, Title } from "~/tamagui.config"
+import { OrderCartItemCard, Spinner, StoreCard } from "~/components"
+import { AvailabelCoupon, CartItem, DeliveryMethodEnum, OrderContent } from "~/types"
 import Toast from "react-native-toast-message"
-const statusBarHeight = Constants.statusBarHeight;
+import ReservationCartItemCard from "~/components/ReservationCartItemCard"
+import ActionSheet from "~/components/ActionSheet"
+import { useState } from "react"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { Link } from "expo-router"
 
-console.log(statusBarHeight)
 const Carts = () => {
   const { t } = useLocale()
   const { token } = useAuth()
 
+  const [isCouponSheetOpen, setIsCouponSheetOpen] = useState(false)
+  const [sheetPosition, setSheetPosition] = useState(0)
+  const [selectedCoupons, setSelectedCoupons] = useState<{ coupon: AvailabelCoupon, cartItemId: string }[]>([])
+  const [selectedCartItemId, setSelectedCartItemId] = useState<string>()
 
   if (!token) return <></>
 
@@ -43,11 +48,11 @@ const Carts = () => {
     data: totalPrice,
     isPending: isTotalPriceFetching
   } = useQuery({
-    queryKey: [`cartItemGetTotalPrice`, token],
+    queryKey: [`cartItemGetTotalPrice`, token, selectedCoupons],
     queryFn: async () => {
       //to do
       //couonIds
-      return await cartItemGetTotalPrice(token, [])
+      return await cartItemGetTotalPrice(token, selectedCoupons.map((c) => { return c.coupon._id }))
     }
   })
 
@@ -55,24 +60,27 @@ const Carts = () => {
     data: priceDetail,
     isPending: isPriceDetailFetching,
   } = useQuery({
-    queryKey: [`cartItemGetPriceDetail`, token],
+    queryKey: [`cartItemGetPriceDetail`, token, selectedCoupons],
     queryFn: async () => {
       //to do
       //couonIds
-      return await cartItemGetPriceDetail(token, [])
+      return await cartItemGetPriceDetail(token, selectedCoupons.map((c) => { return c.coupon._id }))
     }
   })
 
+  const { isPending: isAvailabelCouponsFetching, data: availableCoupons = [], mutate: availableCouponsMutate } = useMutation({
+    mutationFn: async ({ cartItemId, quantity }: { cartItemId: string, quantity: number }) => {
+      return await cartItemListAvailableCoupons(token, cartItemId, quantity)
+    }
+  })
   const { isPending: isCartItemUpdating, mutate: cartItemMutate } = useMutation({
     mutationFn: async ({ cartItemId, orderContent }: { cartItemId: string; orderContent: OrderContent }) => {
       return await updateCartItem(token, cartItemId, orderContent)
     },
     onSuccess: async (res) => {
-      console.log('success')
       refetchCartItems()
     },
     onError: (e) => {
-      console.log(e)
       const error = e as Error
       Toast.show({
         type: 'error',
@@ -86,11 +94,9 @@ const Carts = () => {
       return await removeCartItem(token, cartItemId)
     },
     onSuccess: async (res) => {
-      console.log('success')
       refetchCartItems()
     },
     onError: (e) => {
-      console.log(e)
       const error = e as Error
       Toast.show({
         type: 'error',
@@ -130,6 +136,25 @@ const Carts = () => {
     cartItemRemoveMutate({ cartItemId: itemId })
   }
 
+  const onAvailableCouponPress = (itemId: string) => {
+    let cartItem = cartItems.find((c) => { return c._id == itemId })
+    if (!cartItem) return
+    let quantity = 0
+    switch (cartItem.type) {
+      case "RESERVATION":
+        quantity = cartItem.reservationContent.quantity ?? 0
+        break
+      case "ORDER":
+      default:
+        quantity = cartItem.orderContent.quantity ?? 0
+        break
+    }
+    setSelectedCartItemId(itemId)
+    availableCouponsMutate({ cartItemId: itemId, quantity })
+    setIsCouponSheetOpen(true)
+  }
+
+
   const renderOrder = ({ item }: { item: CartItem }) => {
     const { orderContent, product } = item
     let totalPrice = 0
@@ -153,7 +178,7 @@ const Carts = () => {
 
     return (
       <Stack m={"$2"}>
-        <CartItemCard
+        <OrderCartItemCard
           photoUri={photos[0]}
           totalPrice={totalPrice}
           stock={stock}
@@ -163,12 +188,45 @@ const Carts = () => {
           onProductPress={() => console.log(product)}
           onDeductPress={() => onDeductPress(item._id)}
           onAddPress={() => onAddPress(item._id)}
+          onAvailableCouponPress={() => onAvailableCouponPress(item._id)}
           onRemovePress={() => onRemovePress(item._id)}
           isCartItemUpdating={isCartItemUpdating}
           isCartItemRemoving={isCartItemRemoving}
         />
       </Stack>
+    )
+  }
 
+  const renderReservation = ({ item }: { item: CartItem }) => {
+    const { product, reservationContent } = item
+    const { reservation, option, quantity } = reservationContent
+    if (!reservation) return
+    let totalPrice = 0
+    let singleItemPrice = 0
+    let photos = item.product.photos.map((f) => { return f.path })
+
+    const reservationOption = reservation.options.find((f) => { return f._id == option })
+    singleItemPrice = reservationOption?.price ?? 0
+    totalPrice = singleItemPrice * quantity
+
+    //to-do
+    //coupon discount
+    return (
+      <Stack m={"$2"}>
+        <ReservationCartItemCard
+          photoUri={photos[0]}
+          totalPrice={totalPrice}
+          stock={reservation.userCountMax}
+          singleItemPrice={singleItemPrice}
+          product={product}
+          reservationContent={reservationContent}
+          onProductPress={() => console.log(product)}
+          onAvailableCouponPress={() => onAvailableCouponPress(item._id)}
+          onRemovePress={() => onRemovePress(item._id)}
+          isCartItemUpdating={isCartItemUpdating}
+          isCartItemRemoving={isCartItemRemoving}
+        />
+      </Stack>
     )
   }
 
@@ -180,8 +238,8 @@ const Carts = () => {
         )
       case 'cartItems':
 
-        const reservations = cartItems.filter((f) => { return f.type === 'RESERVATION' })
-        const orders = cartItems.filter((f) => { return f.type === 'ORDER' })
+        const reservations = cartItems.filter((f) => { return f.type === 'RESERVATION' }) ?? []
+        const orders = cartItems.filter((f) => { return f.type === 'ORDER' }) ?? []
         const includeDelivery = shop.deliveryMethods.includes(DeliveryMethodEnum["SFEXPRESS"])
         const freeShippingDiff = priceDetail.freeShippingPrice - priceDetail.subtotal
         const shippingFeeHints = includeDelivery && (freeShippingDiff > 0 ? t('freeShippingDiff', { diff: freeShippingDiff.toFixed(1), fee: priceDetail.nonfreeShippingFee.toFixed(1) }) : t('freeShippingHint'))
@@ -199,7 +257,21 @@ const Carts = () => {
                     key={"orderList"}
                     data={orders}
                     renderItem={renderOrder}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => item._id + index.toString()}
+                  />
+                </YStack>
+                : null
+            }
+            {
+              reservations.length ?
+                <YStack flex={1}>
+                  <Text fontSize={"$7"}>{t("reservationOrders")}</Text>
+                  <FlatList
+                    scrollEnabled={false}
+                    key={"reservationList"}
+                    data={reservations}
+                    renderItem={renderReservation}
+                    keyExtractor={(item, index) => item._id + index.toString()}
                   />
                 </YStack>
                 : null
@@ -211,27 +283,98 @@ const Carts = () => {
     }
   }
 
+  const onCouponPress = (coupon: AvailabelCoupon) => {
+    if (!selectedCartItemId) return
+    let _selectedCoupons = [...selectedCoupons]
 
+    const index = _selectedCoupons.findIndex((c) => { return c.cartItemId == selectedCartItemId })
+
+    if (index !== -1) {
+      // deslect
+      if (_selectedCoupons[index].coupon._id == coupon._id) {
+        console.log('remove!!!!')
+        _selectedCoupons.splice(index, 1)
+      } else {
+        _selectedCoupons[index] = {
+          coupon,
+          cartItemId: selectedCartItemId
+        }
+      }
+    } else {
+
+      _selectedCoupons.push({ coupon, cartItemId: selectedCartItemId })
+    }
+    setSelectedCoupons(_selectedCoupons)
+    setIsCouponSheetOpen(false)
+
+  }
 
   return (
-    <YStack flex={1} p="$4" pt={"$8"}>
-      <SectionList
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={() => console.log('refresh')} />
-        }
-        renderItem={renderItem}
-        sections={[
-          { key: 'primary', data: [''] },
-          { key: 'cartItems', data: [''] }
-        ]}
-        contentContainerStyle={{ gap: 4 }}
-        keyExtractor={(item, index) => item + index.toString()}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <YStack flex={1}>
+        <SectionList
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={() => console.log('refresh')} />
+          }
+          renderItem={renderItem}
+          sections={[
+            { key: 'primary', data: [''] },
+            { key: 'cartItems', data: [''] }
+          ]}
+          contentContainerStyle={{ gap: 4, padding: 12 }}
+          keyExtractor={(item, index) => item + index.toString()}
+        />
+      </YStack>
+      <BottomAction justifyContent="space-between">
+        <SizableText>{`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
+        <Link asChild href={{ pathname: '/cartCheckout', params: { selectedCouponIds: selectedCoupons.map((c) => { return c.coupon._id }) } }}  >
+          <StyledButton>
+            {t('checkout')}
+          </StyledButton>
+        </Link>
+      </BottomAction>
+      <ActionSheet
+        isSheetOpen={isCouponSheetOpen}
+        setIsSheetOpen={setIsCouponSheetOpen}
+        sheetPosition={sheetPosition}
+        setSheetPosition={setSheetPosition}
       >
-        <BottomAction justifyContent="space-between">
+        <FlatList
+          data={availableCoupons}
+          renderItem={({ item }) => {
+            const selectedCouponIds = selectedCoupons.filter((c) => { return c.cartItemId == selectedCartItemId }).map((c) => { return c.coupon._id })
+            const selected = selectedCouponIds.includes(item._id)
+            return (
+              <StyledButton bg={selected ? "$primary" : "slategrey"} onPress={() => onCouponPress(item)}>
+                {item.coupon.name}
+              </StyledButton>
+            )
+          }}
+          ListFooterComponent={() => {
+            if (isAvailabelCouponsFetching) {
+              return (
+                <XStack alignItems="center" justifyContent="center" space="$2">
+                  <Spinner color="$slategrey" />
+                  <SizableText>{t("couponLoading")}</SizableText>
+                </XStack>
+              )
+            }
+          }}
+          ListEmptyComponent={() => {
+            if (isAvailabelCouponsFetching) {
+              return null
+            }
+            return (
+              <Container alignItems='center'>
+                <MaterialCommunityIcons name="ticket-confirmation-outline" size={120} color={"#666"} />
+                <Title>{t('noCoupon')}</Title>
+              </Container>
+            )
+          }}
+        />
+      </ActionSheet>
 
-        </BottomAction>
-      </SectionList>
-    </YStack >
+    </SafeAreaView >
   )
 }
 

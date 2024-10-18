@@ -8,8 +8,8 @@ export const messages = {
     signout: "Sign out",
     userInfo: "User Info",
     tempAcc: "Temporary User Account Precaution",
-    tempAccAlert:"In order to preserve the user account, please go to user setting page to change email and password.",
-    createVisitorAcc:"Sign in as visitor",
+    tempAccAlert: "In order to preserve the user account, please go to user setting page to change email and password.",
+    createVisitorAcc: "Sign in as visitor",
     privacyPolicy: "Privacy Policy",
     TnC: "TnC",
     changeLanguage: "Language",
@@ -288,7 +288,8 @@ export const messages = {
     APPLE_PAY: "Apple Pay",
     CREDIT_CARD: "Credit Card",
     removeUser: "Delete User",
-    expiryDateMessage:"Expiry Date not correct",
+    expiryDateMessage: "Expiry Date not correct",
+    time: "Time",
     /**
      * Error Code
      */
@@ -340,8 +341,8 @@ export const messages = {
     signout: "登出",
     userInfo: "用戶資料",
     tempAcc: "臨時用戶須知",
-    tempAccAlert:"請到用戶資料頁面加入電郵及密碼以保存此臨時用戶紀錄。",
-    createVisitorAcc:"以訪客身份登入",
+    tempAccAlert: "請到用戶資料頁面加入電郵及密碼以保存此臨時用戶紀錄。",
+    createVisitorAcc: "以訪客身份登入",
     privacyPolicy: "私隱政策",
     TnC: "條款細則",
     changeLanguage: "更改語言",
@@ -619,7 +620,8 @@ export const messages = {
     APPLE_PAY: "Apple Pay",
     CREDIT_CARD: "信用卡",
     removeUser: "刪除用戶",
-    expiryDateMessage:"卡號過期日錯誤",
+    expiryDateMessage: "卡號過期日錯誤",
+    time: "時間",
     /**
      * Error Code
      */
