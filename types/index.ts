@@ -36,6 +36,10 @@ export enum DeliveryMethodEnum {
   SELF_PICK_UP = "SELF_PICK_UP"
 }
 
+export enum PaymentMethodEnum {
+  APPLE_PAY = "APPLE_PAY",
+  CREDIT_CARD = "CREDIT_CARD"
+}
 
 export type Coupon = {
   _id: string;
@@ -176,10 +180,18 @@ export type CartItem = {
 }
 
 export type Address = {
+  name?:string,
   room?: string,
   street?: string,
   district?: string,
   phoneNumber?: string
+}
+
+export type Contact = {
+  name: string;
+  phoneNumber: string;
+  //to-do
+  //add other fields
 }
 
 export type User = {

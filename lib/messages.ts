@@ -261,6 +261,7 @@ export const messages = {
     deliveryFee: "Delivery Fee",
     verify: "Verify",
     verifyCode: "Verify Code",
+    getVerifyCode: "Get Verify Code",
     verifyRequired: "Verify Required",
     verifyOverlimit: "Verification Over Limit, Try Again After 2 Hrs",
     verificationError: "Verification Code Not Match",
@@ -290,7 +291,9 @@ export const messages = {
     removeUser: "Delete User",
     expiryDateMessage: "Expiry Date not correct",
     time: "Time",
-    endDate:"End Date",
+    endDate: "End Date",
+    loading: "Loading...",
+    verified: "Verified",
     /**
      * Error Code
      */
@@ -594,6 +597,7 @@ export const messages = {
     deliveryFee: "運費",
     verify: "驗証",
     verifyCode: "驗証碼",
+    getVerifyCode: "取得驗證碼",
     verifyRequired: "需要驗証",
     verifyOverlimit: "驗証嘗試太多, 2小時後再試",
     verificationError: "驗証碼不對",
@@ -623,7 +627,9 @@ export const messages = {
     removeUser: "刪除用戶",
     expiryDateMessage: "卡號過期日錯誤",
     time: "時間",
-    endDate:"完結日",
+    endDate: "完結日",
+    loading: "載入中...",
+    verified: "已驗證",
     /**
      * Error Code
      */

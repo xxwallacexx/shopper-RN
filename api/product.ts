@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Category, CheckoutCoupon, CheckoutProduct, Option, OrderContent, Product } from '~/types';
+import { Category, CheckoutCoupon, CheckoutProduct, Contact, DeliveryMethodEnum, Option, OrderContent, PaymentMethodEnum, Product } from '~/types';
 import { API_URL, SHOP } from '@env'
 const baseUrl = API_URL
 const shop = SHOP
@@ -143,6 +143,27 @@ const getProductIsBookmarked = async (token: string, productId: string) => {
   return res
 }
 
+const createProductOrder = async (token: string, id: string, stripeTokenId: string, contact: Contact, orderContent: OrderContent, deliveryMethod: keyof typeof DeliveryMethodEnum, paymentMethod: keyof typeof PaymentMethodEnum, currentCouponId?: string, pickUpStore?: string) => {
+  const options = {
+    method: "post",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${id}/order`,
+    data: {
+      currentCouponId,
+      stripeTokenId,
+      contact,
+      shop,
+      orderContent,
+      deliveryMethod,
+      paymentMethod,
+      pickUpStore,
+    },
+  };
+  return await axios(options);
+}
+
 export {
   listCategories,
   listProducts,
@@ -151,5 +172,6 @@ export {
   getProductPriceDetail,
   getProductCheckoutItemsDetail,
   getProductStock,
-  getProductIsBookmarked
+  getProductIsBookmarked,
+  createProductOrder
 }

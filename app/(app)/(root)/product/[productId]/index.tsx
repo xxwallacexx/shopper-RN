@@ -466,12 +466,6 @@ const ProductDetail = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <YStack flex={1} alignItems="center">
         <SectionList
-          refreshControl={
-            <RefreshControl
-              refreshing={false}
-              onRefresh={() => { console.log('on refresh') }}
-            />
-          }
           renderItem={renderItem}
           sections={[
             { key: 'photos', data: [''] },
@@ -514,8 +508,8 @@ const ProductDetail = () => {
                 <AntDesign name="shoppingcart" color="#fff" />
               </StyledButton>
               <StyledButton onPress={onCheckoutPress}>
-                {t('checkout')}
-                <AntDesign name="tag" color="#fff" />
+                {product.productType == "RESERVATION" ? t("reservation") : t('checkout')}
+                <Ionicons name="cash-outline" color="#fff" />
               </StyledButton>
             </XStack>
           </XStack>
