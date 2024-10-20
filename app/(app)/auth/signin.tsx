@@ -18,11 +18,11 @@ const Signin = () => {
   const queryClient = useQueryClient()
 
 
-  const { isPending: isSubmiting, mutate: loginMutate } = useMutation({
+  const { isPending: isSubmitting, mutate: loginMutate } = useMutation({
     mutationFn: ({ email, password }: { email: string, password: string }) => {
       return login(email, password)
     },
-    onSuccess: async(res) => {
+    onSuccess: async (res) => {
       await signin(res.token, res.tokenExpAt)
       queryClient.invalidateQueries({ queryKey: ['profile'] })
       router.replace("/(app)/(root)/(tabs)/profile")
@@ -59,7 +59,7 @@ const Signin = () => {
             </Label>
             <Input
               autoCapitalize='none'
-              disabled={isSubmiting}
+              disabled={isSubmitting}
               borderColor={"lightgrey"}
               backgroundColor={"whitesmoke"}
               onChangeText={(value) => setEmail(value)}
@@ -69,19 +69,19 @@ const Signin = () => {
             </Label>
             <Input
               autoCapitalize='none'
-              disabled={isSubmiting}
+              disabled={isSubmitting}
               borderColor={"lightgrey"}
               backgroundColor={"whitesmoke"}
               onChangeText={(value) => setPassword(value)}
             />
-            <Form.Trigger asChild disabled={isSubmiting}>
+            <Form.Trigger asChild disabled={isSubmitting}>
               <StyledButton
                 disabled={disabled}
                 alignSelf='center'
                 m="$4"
                 w="$20"
-                style={{ opacity: isSubmiting ? 0.5 : 1 }}
-                icon={isSubmiting ? <Spinner /> : null}
+                style={{ opacity: isSubmitting ? 0.5 : 1 }}
+                icon={isSubmitting ? <Spinner /> : null}
               >
                 Submit
               </StyledButton>

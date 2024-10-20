@@ -49,8 +49,51 @@ const updateSelf = async (token: string, username: string, email?: string, addre
   })
 }
 
+const checkIsVerified = async (token: string) => {
+  const options = {
+    method: "get",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/smsVerification/isVerified`,
+  };
+  return await axios(options).then((res => { return res.data }));
+
+}
+
+const getVerifyCode = async (token: string, phoneNumber: string) => {
+  const options = {
+    method: "post",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      phoneNumber,
+    },
+    url: `${baseUrl}/smsVerification`,
+  };
+  return await axios(options);
+}
+
+const verifyCode = async (token: string, code: string) => {
+  const options = {
+    method: "post",
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      code,
+    },
+    url: `${baseUrl}/smsVerification/verify`,
+  };
+  return await axios(options);
+}
+
 export {
   getCredit,
   getSelf,
-  updateSelf
+  updateSelf,
+  checkIsVerified,
+  getVerifyCode,
+  verifyCode
 }

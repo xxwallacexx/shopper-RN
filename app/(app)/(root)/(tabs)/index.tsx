@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
-import { YStack, XStack, ScrollView } from 'tamagui';
+import { YStack, XStack, ScrollView, SizableText } from 'tamagui';
 import { listCategories, listProducts, listAdsBanners } from '~/api';
 import { BannerCarousel, ProductCard, Spinner } from '~/components';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -159,7 +159,10 @@ const Home = () => {
                 return null
               }
               return (
-                <Spinner color="$color.primary" />
+                <XStack flex={1} space="$2" alignItems='center' justifyContent='center'>
+                  <Spinner color="$color.primary" />
+                  <SizableText color="slategrey">{t("loading")}</SizableText>
+                </XStack>
               )
             }}
             ListEmptyComponent={() => {
