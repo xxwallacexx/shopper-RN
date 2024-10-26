@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "hangchiu",
-    "slug": "hangchiu",
-    "version": "1.0.3",
-    "scheme": "hangchiu",
+    "name": "sailorhouse",
+    "slug": "sailorhouse",
+    "version": "1.1.4",
+    "scheme": "sailorhouse",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -15,7 +15,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.hangchiu",
+          "merchantIdentifier": "merchant.com.sailorhouse",
           "enableGooglePay": false
         }
       ],
@@ -23,10 +23,10 @@
       [
         "react-native-fbsdk-next",
          {
-          "appID": "314105534961274",
-          "clientToken": "7d1377e601f55ea7e4439d277e6c13b1",
-          "displayName": "杏晁中醫",
-          "scheme": "fb314105534961274",
+          "appID": "532850042000150",
+          "clientToken": "5f9f5dd683069db6e5ccaa5225835f81",
+          "displayName": "水手屋環球食材有限公司",
+          "scheme": "fb532850042000150",
           "advertiserIDCollectionEnabled": false,
           "autoLogAppEventsEnabled": false,
           "isAutoInitEnabled": true,
@@ -61,10 +61,10 @@
         "NSRemindersUsageDescription":"允許存取以加入預約",
         "NSUserTrackingUsageDescription":"允許上傳報錯以改善應用程式質素"
       },
-      "bundleIdentifier": "com.hangchiu.v1",
+      "bundleIdentifier": "com.sailorhouse.v1",
       "config": {
         "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.677119458468-bj2guj18v96c9qs3gn7ikbcm9j9q7065"
+          "reservedClientId": "com.googleusercontent.apps.143758002094-ptpmtk19hm2t5vv3f9g5ul87hitj7o98"
         }
       },
       "googleServicesFile": "./GoogleService-Info.plist"
@@ -74,9 +74,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hangchiu.v1",
+      "package": "com.sailorhouse.v1",
       "googleServicesFile": "./google-services.json"
     },
-    "scheme": "hangchiu"
+    "scheme": "sailorhouse"
   }
 }
