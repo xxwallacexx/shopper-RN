@@ -1,21 +1,37 @@
-import axios from 'axios'
-import { Category, CheckoutCoupon, CheckoutProduct, Contact, DeliveryMethodEnum, Option, OrderContent, PaymentMethodEnum, Product } from '~/types';
-import { API_URL, SHOP } from '@env'
-const baseUrl = API_URL
-const shop = SHOP
+import axios from 'axios';
+import {
+  Category,
+  CheckoutCoupon,
+  CheckoutProduct,
+  Contact,
+  DeliveryMethodEnum,
+  Option,
+  OrderContent,
+  PaymentMethodEnum,
+  Product,
+} from '~/types';
+import { API_URL, SHOP } from '@env';
+const baseUrl = API_URL;
+const shop = SHOP;
 
 const listCategories = async () => {
   const options = {
-    method: "get",
+    method: 'get',
     url: `${baseUrl}/category`,
     params: {
       shop: shop,
-      status: "ACTIVE",
+      status: 'ACTIVE',
     },
   };
-  let res: Category[] = await axios(options).then((res) => { return res.data }).catch((e) => { throw e })
-  return res
-}
+  let res: Category[] = await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      throw e;
+    });
+  return res;
+};
 
 const listProducts = async (
   isRecommended: true,
@@ -24,16 +40,16 @@ const listProducts = async (
   sort?: string,
   name?: string,
   group?: string,
-  shopType?: string,
+  shopType?: string
 ) => {
   const options = {
-    method: "get",
+    method: 'get',
     url: `${baseUrl}/product`,
     params: {
       shop: shop,
       skip: skip,
       limit: 10,
-      status: "ACTIVE",
+      status: 'ACTIVE',
       isRecommended,
       category,
       sort,
@@ -44,56 +60,91 @@ const listProducts = async (
   };
   let res: Product[] = await axios(options)
     .then((res) => {
-      return res.data.products
+      return res.data.products;
     })
-    .catch((e) => { throw e })
+    .catch((e) => {
+      throw e;
+    });
 
   return res;
-}
+};
 const getProduct = async (id: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     url: `${baseUrl}/product/${id}`,
   };
 
   let res: Product = await axios(options).then((res) => {
-    return res.data
-  })
+    return res.data;
+  });
   return res;
-}
+};
 
 const listOptions = async (id: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     params: {
-      status: ["ACTIVE"],
-      suboptionStatus: ["ACTIVE"],
+      status: ['ACTIVE'],
+      suboptionStatus: ['ACTIVE'],
     },
     url: `${baseUrl}/product/${id}/options`,
   };
 
   let res: Option[] = await axios(options).then((res) => {
-    return res.data
-  })
+    return res.data;
+  });
   return res;
-}
+};
 
-const getProductPriceDetail = async (token: string, productId: string, orderContent: OrderContent, currentCouponId?: string) => {
+const getProductPriceDetail = async (
+  token: string,
+  productId: string,
+  orderContent: OrderContent,
+  currentCouponId?: string
+) => {
   const options = {
-    method: "put",
+    method: 'put',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/product/${productId}/priceDetail`,
     data: {
       orderContent,
-      currentCouponId
-    }
+      currentCouponId,
+    },
   };
-  console.log(options)
-  let res = axios(options).then((res) => { return res.data })
-  return res
-}
+  console.log(options);
+  let res = axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
+
+const getProductTotalPrice = async (
+  token: string,
+  productId: string,
+  orderContent: OrderContent,
+  deliveryMethod: keyof typeof DeliveryMethodEnum,
+  currentCouponId?: string
+) => {
+  const options = {
+    method: 'put',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${productId}/totalPrice`,
+    data: {
+      orderContent,
+      deliveryMethod,
+      currentCouponId,
+    },
+  };
+  console.log(options);
+  let res = axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 const getProductCheckoutItemsDetail = async (
   token: string,
@@ -102,7 +153,7 @@ const getProductCheckoutItemsDetail = async (
   currentCouponId?: string
 ) => {
   const options = {
-    method: "put",
+    method: 'put',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -112,40 +163,58 @@ const getProductCheckoutItemsDetail = async (
       currentCouponId,
     },
   };
-  let res: { product: CheckoutProduct, coupon: CheckoutCoupon } = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res: { product: CheckoutProduct; coupon: CheckoutCoupon } = await axios(options).then(
+    (res) => {
+      return res.data;
+    }
+  );
+  return res;
+};
 
 const getProductStock = async (token: string, productId: string, choices?: string[]) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     params: {
-      choices
+      choices,
     },
     url: `${baseUrl}/product/${productId}/getStockByChoices`,
   };
-  let res = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 const getProductIsBookmarked = async (token: string, productId: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/product/${productId}/isBookmarked`,
   };
-  let res: boolean = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res: boolean = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
-const createProductOrder = async (token: string, id: string, stripeTokenId: string, contact: Contact, orderContent: OrderContent, deliveryMethod: keyof typeof DeliveryMethodEnum, paymentMethod: keyof typeof PaymentMethodEnum, currentCouponId?: string, pickUpStore?: string) => {
+const createProductOrder = async (
+  token: string,
+  id: string,
+  stripeTokenId: string,
+  contact: Contact,
+  orderContent: OrderContent,
+  deliveryMethod: keyof typeof DeliveryMethodEnum,
+  paymentMethod: keyof typeof PaymentMethodEnum,
+  currentCouponId?: string,
+  pickUpStore?: string
+) => {
   const options = {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -161,8 +230,15 @@ const createProductOrder = async (token: string, id: string, stripeTokenId: stri
       pickUpStore,
     },
   };
-  return await axios(options);
-}
+  return await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      console.log(e.response.data);
+      throw new Error(e.response.data.errorCodes);
+    });
+};
 
 export {
   listCategories,
@@ -170,8 +246,9 @@ export {
   getProduct,
   listOptions,
   getProductPriceDetail,
+  getProductTotalPrice,
   getProductCheckoutItemsDetail,
   getProductStock,
   getProductIsBookmarked,
-  createProductOrder
-}
+  createProductOrder,
+};

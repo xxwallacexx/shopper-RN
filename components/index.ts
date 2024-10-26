@@ -11,6 +11,7 @@ import StoreCard from './StoreCard'
 import OrderCartItemCard from './OrderCartItemCard'
 import Dialog from './Dialog'
 import CouponCard from './CouponCard'
+import PaymentSheetCard from './PaymentSheetCard'
 
 export {
   ProductCard,
@@ -25,5 +26,6 @@ export {
   StoreCard,
   OrderCartItemCard,
   Dialog,
-  CouponCard
+  CouponCard,
+  PaymentSheetCard
 }
