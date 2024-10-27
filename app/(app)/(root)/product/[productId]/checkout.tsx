@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { RefreshControl, SafeAreaView, SectionList } from 'react-native';
-import { H2, Label, RadioGroup, Input, YStack, XStack, Text } from 'tamagui';
+import { useEffect, useState } from 'react';
+import { FlatList, RefreshControl, SafeAreaView, SectionList } from 'react-native';
+import { H2, Label, RadioGroup, Input, YStack, XStack, Text, SizableText } from 'tamagui';
 import {
   checkIsVerified,
   createProductOrder,
@@ -12,17 +12,26 @@ import {
   getVerifyCode,
   verifyCode as verifySms,
   getProductTotalPrice,
+  listProductAvailableCoupons,
 } from '~/api';
 import {
   AddressForm,
   CheckoutItemCard,
   PaymentSheetCard,
   RadioGroupItem,
+  Spinner,
   StoreCard,
 } from '~/components';
 import { useAuth, useCountdown, useLocale } from '~/hooks';
-import { BottomAction, StyledButton } from '~/tamagui.config';
-import { DeliveryMethodEnum, Address, Contact, OrderContent, PaymentMethodEnum } from '~/types';
+import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
+import {
+  DeliveryMethodEnum,
+  Address,
+  Contact,
+  OrderContent,
+  PaymentMethodEnum,
+  UserCoupon,
+} from '~/types';
 import {
   createPlatformPayToken,
   createToken,
@@ -31,16 +40,15 @@ import {
 } from '@stripe/stripe-react-native';
 import Toast from 'react-native-toast-message';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import ActionSheet from '~/components/ActionSheet';
 import { ScrollView } from 'tamagui';
 
 const Checkout = () => {
-  const { productId, orderContentStr, currentCouponId } = useLocalSearchParams<{
+  const { productId, orderContentStr } = useLocalSearchParams<{
     productId: string;
     orderContentStr: string;
-    currentCouponId?: string;
   }>();
   const orderContent = JSON.parse(orderContentStr);
   const navigation = useNavigation();
@@ -54,11 +62,14 @@ const Checkout = () => {
   const [isPaymenySheetOpen, setIsPaymentSheetOpen] = useState(false);
   const [paymentSheetPosition, setPaymentSheetPosition] = useState(0);
 
+  const [isUserCouponSheetOpen, setIsUserCouponSheetOpen] = useState(false);
+  const [userCouponSheetPosition, setUserCouponSheetPosition] = useState(0);
+
+  const [selectedCoupon, setSelectedCoupon] = useState<UserCoupon>();
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
     useState<keyof typeof DeliveryMethodEnum>();
   const [selectedStore, setSelectedStore] = useState<string>();
   const [address, setAddress] = useState<Address>();
-  console.log(isPaymenySheetOpen);
   const [timer, setTimer] = useState(new Date());
   const [seconds] = useCountdown(timer);
 
@@ -69,6 +80,13 @@ const Checkout = () => {
     },
   });
   if (!token) return <></>;
+
+  const { isPending: isAvailabelCouponsFetching, data: availableCoupons = [] } = useQuery({
+    queryKey: ['productAvailableCoupons', token, productId, orderContent],
+    queryFn: async () => {
+      return await listProductAvailableCoupons(token, productId, orderContent);
+    },
+  });
 
   const { data: user } = useQuery({
     queryKey: ['profile', token],
@@ -98,33 +116,35 @@ const Checkout = () => {
     },
   });
 
-  const { data: itemDetail, isLoading: isItemDetailLoading } = useQuery({
-    queryKey: ['itemDetail', productId, orderContent, currentCouponId],
+  const {
+    data: itemDetail,
+    isLoading: isItemDetailLoading,
+    refetch: refetchItemDetail,
+  } = useQuery({
+    queryKey: ['itemDetail', productId, orderContent],
     queryFn: async () => {
       return await getProductCheckoutItemsDetail(
         token,
         `${productId}`,
         orderContent,
-        currentCouponId
+        selectedCoupon?._id
       );
     },
   });
 
-  const { data: totalPrice, isPending: isTotalPriceLoading } = useQuery({
-    queryKey: [
-      'productTotalPrice',
-      productId,
-      orderContent,
-      selectedDeliveryMethod,
-      currentCouponId,
-    ],
+  const {
+    data: totalPrice,
+    isPending: isTotalPriceLoading,
+    refetch: refetchTotalPrice,
+  } = useQuery({
+    queryKey: ['productTotalPrice', productId, orderContent, selectedDeliveryMethod],
     queryFn: async () => {
       return await getProductTotalPrice(
         token,
         `${productId}`,
         orderContent,
         selectedDeliveryMethod ? selectedDeliveryMethod : 'SELF_PICK_UP',
-        currentCouponId
+        selectedCoupon?._id
       );
     },
   });
@@ -172,7 +192,7 @@ const Checkout = () => {
         orderContent,
         deliveryMethod,
         paymentMethod,
-        currentCouponId,
+        selectedCouponId,
         pickUpStore,
       }: {
         stripeTokenId: string;
@@ -180,7 +200,7 @@ const Checkout = () => {
         orderContent: OrderContent;
         deliveryMethod: keyof typeof DeliveryMethodEnum;
         paymentMethod: keyof typeof PaymentMethodEnum;
-        currentCouponId?: string;
+        selectedCouponId?: string;
         pickUpStore?: string;
       }) => {
         return await createProductOrder(
@@ -191,7 +211,7 @@ const Checkout = () => {
           orderContent,
           deliveryMethod,
           paymentMethod,
-          currentCouponId,
+          selectedCouponId,
           pickUpStore
         );
       },
@@ -206,6 +226,11 @@ const Checkout = () => {
         });
       },
     });
+
+  useEffect(() => {
+    refetchItemDetail();
+    refetchTotalPrice();
+  }, [selectedCoupon]);
 
   if (
     isShopLoading ||
@@ -231,12 +256,16 @@ const Checkout = () => {
     });
   };
 
-  const renderSectionHeader = ({ section }) => {
+  const renderSectionHeader = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
       case 'cartItems':
         return <H2 backgroundColor={'#fff'}>{t('orderDetail')}</H2>;
       case 'deliveryMethod':
         return <H2 backgroundColor={'#fff'}>{t('deliveryMethod')}</H2>;
+      case 'contact':
+        return <H2 backgroundColor={'#fff'}>{t('contactInfo')}</H2>;
+      case 'coupon':
+        return <H2 backgroundColor={'#fff'}>{t('coupon')}</H2>;
       case 'address':
         switch (selectedDeliveryMethod) {
           case DeliveryMethodEnum.SFEXPRESS:
@@ -265,7 +294,7 @@ const Checkout = () => {
     onVerifyCodeSubmit();
   };
 
-  const renderSectionItem = ({ section }) => {
+  const renderSectionItem = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
       case 'store':
         return <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />;
@@ -276,6 +305,14 @@ const Checkout = () => {
             product={itemDetail.product}
             coupon={itemDetail.coupon}
           />
+        );
+      case 'coupon':
+        return (
+          <StyledButton
+            bg={selectedCoupon ? '$primary' : 'slategrey'}
+            onPress={() => setIsUserCouponSheetOpen(true)}>
+            {selectedCoupon ? selectedCoupon.coupon.name : t('redeemCoupon')}
+          </StyledButton>
         );
       case 'contact':
         return (
@@ -421,7 +458,7 @@ const Checkout = () => {
       orderContent,
       deliveryMethod: selectedDeliveryMethod ?? 'SELF_PICK_UP',
       paymentMethod: 'APPLE_PAY',
-      currentCouponId,
+      selectedCouponId: selectedCoupon?._id,
       pickUpStore: selectedDeliveryMethod == 'SELF_PICK_UP' ? selectedStore : undefined,
     });
   };
@@ -442,7 +479,6 @@ const Checkout = () => {
       },
     });
 
-    console.log(token);
     if (!token) return;
     onCreateProductOrderSubmit({
       stripeTokenId: token.id,
@@ -450,15 +486,26 @@ const Checkout = () => {
       orderContent,
       deliveryMethod: selectedDeliveryMethod ?? 'SELF_PICK_UP',
       paymentMethod: 'APPLE_PAY',
-      currentCouponId,
+      selectedCouponId: selectedCoupon?._id,
       pickUpStore: selectedDeliveryMethod == 'SELF_PICK_UP' ? selectedStore : undefined,
     });
   };
 
-  console.log(isPlatformPayAvailable);
+  const onCouponPress = (coupon: UserCoupon) => {
+    setIsUserCouponSheetOpen(false);
+    let _selectedCoupon = selectedCoupon;
+    if (!_selectedCoupon) return setSelectedCoupon(coupon);
+    if (selectedCoupon?._id == coupon._id) {
+      setSelectedCoupon(undefined);
+    } else {
+      setSelectedCoupon(coupon);
+    }
+  };
+
   const onPaymentPress = () => {
     setIsPaymentSheetOpen(true);
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <YStack flex={1}>
@@ -474,6 +521,7 @@ const Checkout = () => {
             sections={[
               { key: 'store', data: [''] },
               { key: 'cartItems', data: [''] },
+              { key: 'coupon', data: [''] },
               { key: 'contact', data: [''] },
               { key: 'deliveryMethod', data: [''] },
               { key: 'address', data: [''] },
@@ -501,6 +549,49 @@ const Checkout = () => {
             onPlatformPayPress={onPlatformPayPress}
           />
         </ScrollView>
+      </ActionSheet>
+      <ActionSheet
+        isSheetOpen={isUserCouponSheetOpen}
+        setIsSheetOpen={setIsUserCouponSheetOpen}
+        sheetPosition={userCouponSheetPosition}
+        setSheetPosition={setUserCouponSheetPosition}>
+        <FlatList
+          data={availableCoupons}
+          renderItem={({ item }) => {
+            return (
+              <StyledButton
+                bg={selectedCoupon ? '$primary' : 'slategrey'}
+                onPress={() => onCouponPress(item)}>
+                {item.coupon.name}
+              </StyledButton>
+            );
+          }}
+          ListFooterComponent={() => {
+            if (isAvailabelCouponsFetching) {
+              return (
+                <XStack alignItems="center" justifyContent="center" space="$2">
+                  <Spinner color="$slategrey" />
+                  <SizableText>{t('couponLoading')}</SizableText>
+                </XStack>
+              );
+            }
+          }}
+          ListEmptyComponent={() => {
+            if (isAvailabelCouponsFetching) {
+              return null;
+            }
+            return (
+              <Container alignItems="center">
+                <MaterialCommunityIcons
+                  name="ticket-confirmation-outline"
+                  size={120}
+                  color={'#666'}
+                />
+                <Title>{t('noCoupon')}</Title>
+              </Container>
+            );
+          }}
+        />
       </ActionSheet>
     </SafeAreaView>
   );
