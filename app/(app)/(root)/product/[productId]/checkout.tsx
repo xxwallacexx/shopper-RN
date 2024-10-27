@@ -13,6 +13,7 @@ import {
   verifyCode as verifySms,
   getProductTotalPrice,
   listProductAvailableCoupons,
+  getProductPriceDetail,
 } from '~/api';
 import {
   AddressForm,
@@ -118,7 +119,7 @@ const Checkout = () => {
 
   const {
     data: itemDetail,
-    isLoading: isItemDetailLoading,
+    isPending: isItemDetailLoading,
     refetch: refetchItemDetail,
   } = useQuery({
     queryKey: ['itemDetail', productId, orderContent],
@@ -146,6 +147,17 @@ const Checkout = () => {
         selectedDeliveryMethod ? selectedDeliveryMethod : 'SELF_PICK_UP',
         selectedCoupon?._id
       );
+    },
+  });
+
+  const {
+    data: priceDetail,
+    isPending: isPriceDetailLoading,
+    refetch: refetchPriceDetail,
+  } = useQuery({
+    queryKey: ['productPriceDetail', productId, orderContent],
+    queryFn: async () => {
+      return await getProductPriceDetail(token, `${productId}`, orderContent, selectedCoupon?._id);
     },
   });
 
@@ -230,6 +242,7 @@ const Checkout = () => {
   useEffect(() => {
     refetchItemDetail();
     refetchTotalPrice();
+    refetchPriceDetail();
   }, [selectedCoupon]);
 
   if (
@@ -237,6 +250,7 @@ const Checkout = () => {
     isItemDetailLoading ||
     !shop ||
     !itemDetail ||
+    !priceDetail ||
     !user ||
     isVerified == undefined ||
     isPlatformPayAvailable == undefined ||
@@ -435,7 +449,72 @@ const Checkout = () => {
           default:
             return <></>;
         }
+      case 'priceDetail':
+        const { subtotal, freeShippingPrice, nonfreeShippingFee, couponDiscount } = priceDetail;
 
+        switch (selectedDeliveryMethod) {
+          case DeliveryMethodEnum.SELF_PICK_UP:
+            return (
+              <YStack p="$2" space="$1">
+                <XStack justifyContent="space-between">
+                  <SizableText>{t('subtotal')}</SizableText>
+                  <SizableText
+                    numberOfLines={1}
+                    ellipsizeMode="tail">{`HK ${parseFloat(subtotal).toFixed(1)}`}</SizableText>
+                </XStack>
+                {couponDiscount ? (
+                  <XStack justifyContent="space-between">
+                    <SizableText>{t('redeemCoupon')}</SizableText>
+                    <SizableText
+                      numberOfLines={1}
+                      ellipsizeMode="tail">{`-HK ${parseFloat(couponDiscount).toFixed(1)}`}</SizableText>
+                  </XStack>
+                ) : null}
+                <XStack justifyContent="space-between">
+                  <SizableText>{t('totalPrice')}</SizableText>
+                  <SizableText
+                    numberOfLines={1}
+                    ellipsizeMode="tail">{`HK ${parseFloat(totalPrice).toFixed(1)}`}</SizableText>
+                </XStack>
+              </YStack>
+            );
+
+          case DeliveryMethodEnum.SFEXPRESS:
+            const subtotalWithDiscount = subtotal - couponDiscount;
+            const deliveryFee = freeShippingPrice > subtotalWithDiscount ? nonfreeShippingFee : 0;
+            return (
+              <YStack p="$2" space="$1">
+                <XStack justifyContent="space-between">
+                  <SizableText>{t('subtotal')}</SizableText>
+                  <SizableText
+                    numberOfLines={1}
+                    ellipsizeMode="tail">{`HK ${parseFloat(subtotal).toFixed(1)}`}</SizableText>
+                </XStack>
+                {couponDiscount ? (
+                  <XStack justifyContent="space-between">
+                    <SizableText>{t('redeemCoupon')}</SizableText>
+                    <SizableText
+                      numberOfLines={1}
+                      ellipsizeMode="tail">{`-HK ${parseFloat(couponDiscount).toFixed(1)}`}</SizableText>
+                  </XStack>
+                ) : null}
+                <XStack justifyContent="space-between">
+                  <SizableText>{t('deliveryFee')}</SizableText>
+                  <SizableText
+                    numberOfLines={1}
+                    ellipsizeMode="tail">{`+HK ${parseFloat(deliveryFee).toFixed(1)}`}</SizableText>
+                </XStack>
+                <XStack justifyContent="space-between">
+                  <SizableText>{t('totalPrice')}</SizableText>
+                  <SizableText
+                    numberOfLines={1}
+                    ellipsizeMode="tail">{`HK ${parseFloat(totalPrice).toFixed(1)}`}</SizableText>
+                </XStack>
+              </YStack>
+            );
+          default:
+            return <></>;
+        }
       default:
         return <></>;
     }
@@ -525,6 +604,7 @@ const Checkout = () => {
               { key: 'contact', data: [''] },
               { key: 'deliveryMethod', data: [''] },
               { key: 'address', data: [''] },
+              { key: 'priceDetail', data: [''] },
             ]}
             keyExtractor={(item, index) => item + index}
           />
