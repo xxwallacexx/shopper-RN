@@ -51,7 +51,7 @@ const Carts = () => {
 
   const {
     data: totalPrice,
-    isPending: isTotalPriceFetching,
+    isFetching: isTotalPriceFetching,
     refetch: refetchTotalPrice,
   } = useQuery({
     queryKey: ['cartItemGetTotalPrice', token],
@@ -67,7 +67,7 @@ const Carts = () => {
 
   const {
     data: priceDetail,
-    isPending: isPriceDetailFetching,
+    isFetching: isPriceDetailFetching,
     refetch: refetchPriceDetail,
   } = useQuery({
     queryKey: ['cartItemGetPriceDetail', token],
@@ -103,6 +103,8 @@ const Carts = () => {
     },
     onSuccess: async (res) => {
       refetchCartItems();
+      refetchPriceDetail();
+      refetchTotalPrice();
     },
     onError: (e) => {
       const error = e as Error;
@@ -119,6 +121,8 @@ const Carts = () => {
     },
     onSuccess: async (res) => {
       refetchCartItems();
+      refetchPriceDetail();
+      refetchTotalPrice();
     },
     onError: (e) => {
       const error = e as Error;
@@ -214,12 +218,21 @@ const Carts = () => {
     //to-do
     //coupon discount
 
+    const selectedCoupon = selectedCoupons.find((c) => {
+      return c.cartItemId;
+    })?.coupon;
+
+    if (selectedCoupon) {
+      totalPrice -= selectedCoupon.coupon.discount;
+    }
+
     return (
       <Stack m={'$2'}>
         <OrderCartItemCard
           photoUri={photos[0]}
           totalPrice={totalPrice}
           stock={stock}
+          coupon={selectedCoupon}
           singleItemPrice={singleItemPrice}
           product={product}
           orderContent={orderContent}
@@ -251,6 +264,9 @@ const Carts = () => {
     singleItemPrice = reservationOption?.price ?? 0;
     totalPrice = singleItemPrice * quantity;
 
+    const selectedCoupon = selectedCoupons.find((c) => {
+      return c.cartItemId;
+    })?.coupon;
     //to-do
     //coupon discount
     return (
@@ -259,6 +275,7 @@ const Carts = () => {
           photoUri={photos[0]}
           totalPrice={totalPrice}
           stock={reservation.userCountMax}
+          coupon={selectedCoupon}
           singleItemPrice={singleItemPrice}
           product={product}
           reservationContent={reservationContent}
@@ -305,7 +322,7 @@ const Carts = () => {
             {orders.length ? (
               <YStack flex={1}>
                 {isPriceDetailFetching ? (
-                  <Skeleton height={36} colorMode="light" width={'100%'} />
+                  <Skeleton height={46} colorMode="light" width={'100%'} />
                 ) : (
                   <SizableText>{shippingFeeHints}</SizableText>
                 )}
@@ -380,7 +397,13 @@ const Carts = () => {
         />
       </YStack>
       <BottomAction justifyContent="space-between">
-        <SizableText>{`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
+        <>
+          {isTotalPriceFetching ? (
+            <Skeleton width={'30%'} height={12} colorMode="light" />
+          ) : (
+            <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
+          )}
+        </>
         <Link
           asChild
           href={{
