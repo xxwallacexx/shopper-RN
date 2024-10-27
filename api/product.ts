@@ -9,6 +9,7 @@ import {
   OrderContent,
   PaymentMethodEnum,
   Product,
+  UserCoupon,
 } from '~/types';
 import { API_URL, SHOP } from '@env';
 const baseUrl = API_URL;
@@ -113,7 +114,6 @@ const getProductPriceDetail = async (
       currentCouponId,
     },
   };
-  console.log(options);
   let res = axios(options).then((res) => {
     return res.data;
   });
@@ -139,7 +139,6 @@ const getProductTotalPrice = async (
       currentCouponId,
     },
   };
-  console.log(options);
   let res = axios(options).then((res) => {
     return res.data;
   });
@@ -235,9 +234,33 @@ const createProductOrder = async (
       return res.data;
     })
     .catch((e) => {
-      console.log(e.response.data);
       throw new Error(e.response.data.errorCodes);
     });
+};
+
+const listProductAvailableCoupons = async (
+  token: string,
+  id: string,
+  orderContent: OrderContent
+) => {
+  const options = {
+    method: 'put',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${id}/availableCoupons`,
+    data: {
+      orderContent: orderContent,
+    },
+  };
+  let res: UserCoupon[] = await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      throw new Error(e.response.data.errorCodes);
+    });
+  return res;
 };
 
 export {
@@ -251,4 +274,5 @@ export {
   getProductStock,
   getProductIsBookmarked,
   createProductOrder,
+  listProductAvailableCoupons,
 };

@@ -17,7 +17,7 @@ import { AvailabelCoupon, CartItem, DeliveryMethodEnum, OrderContent } from '~/t
 import Toast from 'react-native-toast-message';
 import ReservationCartItemCard from '~/components/ReservationCartItemCard';
 import ActionSheet from '~/components/ActionSheet';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { Skeleton } from 'moti/skeleton';
@@ -49,8 +49,12 @@ const Carts = () => {
     },
   });
 
-  const { data: totalPrice, isPending: isTotalPriceFetching } = useQuery({
-    queryKey: ['cartItemGetTotalPrice', token, selectedCoupons],
+  const {
+    data: totalPrice,
+    isPending: isTotalPriceFetching,
+    refetch: refetchTotalPrice,
+  } = useQuery({
+    queryKey: ['cartItemGetTotalPrice', token],
     queryFn: async () => {
       return await cartItemGetTotalPrice(
         token,
@@ -61,8 +65,12 @@ const Carts = () => {
     },
   });
 
-  const { data: priceDetail, isPending: isPriceDetailFetching } = useQuery({
-    queryKey: ['cartItemGetPriceDetail', token, selectedCoupons],
+  const {
+    data: priceDetail,
+    isPending: isPriceDetailFetching,
+    refetch: refetchPriceDetail,
+  } = useQuery({
+    queryKey: ['cartItemGetPriceDetail', token],
     queryFn: async () => {
       return await cartItemGetPriceDetail(
         token,
@@ -82,6 +90,7 @@ const Carts = () => {
       return await cartItemListAvailableCoupons(token, cartItemId, quantity);
     },
   });
+
   const { isPending: isCartItemUpdating, mutate: cartItemMutate } = useMutation({
     mutationFn: async ({
       cartItemId,
@@ -119,6 +128,11 @@ const Carts = () => {
       });
     },
   });
+
+  useEffect(() => {
+    refetchTotalPrice();
+    refetchPriceDetail();
+  }, [selectedCoupons]);
   if (!shop) return <></>;
 
   const onDeductPress = (itemId: string) => {
@@ -280,9 +294,9 @@ const Carts = () => {
           includeDelivery &&
           (freeShippingDiff > 0
             ? t('freeShippingDiff', {
-              diff: freeShippingDiff.toFixed(1),
-              fee: nonfreeShippingFee.toFixed(1),
-            })
+                diff: freeShippingDiff.toFixed(1),
+                fee: nonfreeShippingFee.toFixed(1),
+              })
             : t('freeShippingHint'));
 
         return (
@@ -335,7 +349,6 @@ const Carts = () => {
     if (index !== -1) {
       // deslect
       if (_selectedCoupons[index].coupon._id == coupon._id) {
-        console.log('remove!!!!');
         _selectedCoupons.splice(index, 1);
       } else {
         _selectedCoupons[index] = {
