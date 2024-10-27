@@ -1,12 +1,12 @@
-import axios from 'axios'
-import { AvailabelCoupon, CartItem, OrderContent, ReservationContent } from '~/types';
-import { API_URL, SHOP } from '@env'
-const baseUrl = API_URL
-const shop = SHOP
+import axios from 'axios';
+import { AvailabelCoupon, CartItem, OrderContent, PriceDetail, ReservationContent } from '~/types';
+import { API_URL, SHOP } from '@env';
+const baseUrl = API_URL;
+const shop = SHOP;
 
 const listCartItems = async (token: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -16,27 +16,33 @@ const listCartItems = async (token: string) => {
     },
   };
   let res: CartItem[] = await axios(options).then((res) => {
-    return res.data
-  })
-  return res
-}
+    return res.data;
+  });
+  return res;
+};
 
 const countCartitem = async (token: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/cartItem/count`,
   };
 
-  let res: number = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res: number = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
-const reservationCreateCart = async (token: string, id: string, reservationContent: ReservationContent) => {
+const reservationCreateCart = async (
+  token: string,
+  id: string,
+  reservationContent: ReservationContent
+) => {
   const options = {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -44,14 +50,14 @@ const reservationCreateCart = async (token: string, id: string, reservationConte
     data: {
       reservationContent,
       shop,
-    }
-  }
-  return await axios(options)
-}
+    },
+  };
+  return await axios(options);
+};
 
 const productCreateCart = async (token: string, id: string, orderContent: OrderContent) => {
   const options = {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -60,13 +66,17 @@ const productCreateCart = async (token: string, id: string, orderContent: OrderC
       shop,
     },
     url: `${baseUrl}/product/${id}/cart`,
-  }
-  return await axios(options)
-}
+  };
+  return await axios(options);
+};
 
-const cartItemGetTotalPrice = async (token: string, currentCouponIds: string[], deliveryMethod?: string) => {
+const cartItemGetTotalPrice = async (
+  token: string,
+  currentCouponIds: string[],
+  deliveryMethod?: string
+) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -75,16 +85,22 @@ const cartItemGetTotalPrice = async (token: string, currentCouponIds: string[], 
       shop,
       currentCouponIds,
       deliveryMethod,
-    }
+    },
   };
-  let res: number = await axios(options).then((res) => { return res.data })
+  let res: number = await axios(options).then((res) => {
+    return res.data;
+  });
 
-  return res
-}
+  return res;
+};
 
-const cartItemGetPriceDetail = async (token: string, currentCouponIds: string[], deliveryMethod?: string) => {
+const cartItemGetPriceDetail = async (
+  token: string,
+  currentCouponIds: string[],
+  deliveryMethod?: string
+) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -95,12 +111,15 @@ const cartItemGetPriceDetail = async (token: string, currentCouponIds: string[],
       deliveryMethod,
     },
   };
-  return await axios(options).then((res) => { return res.data });
-}
+  let res: PriceDetail = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 const updateCartItem = async (token: string, id: string, orderContent: OrderContent) => {
   const options = {
-    method: "put",
+    method: 'put',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -110,22 +129,22 @@ const updateCartItem = async (token: string, id: string, orderContent: OrderCont
     url: `${baseUrl}/cartItem/${id}`,
   };
   return await axios(options);
-}
+};
 
 const removeCartItem = async (token: string, id: string) => {
   const options = {
-    method: "delete",
+    method: 'delete',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/cartItem/${id}`,
   };
   return await axios(options);
-}
+};
 
 const cartItemListAvailableCoupons = async (token: string, id: string, quantity: number) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -134,9 +153,11 @@ const cartItemListAvailableCoupons = async (token: string, id: string, quantity:
       quantity: quantity,
     },
   };
-  let res: AvailabelCoupon[] = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res: AvailabelCoupon[] = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 export {
   listCartItems,
@@ -147,5 +168,5 @@ export {
   cartItemGetPriceDetail,
   updateCartItem,
   removeCartItem,
-  cartItemListAvailableCoupons
-}
+  cartItemListAvailableCoupons,
+};

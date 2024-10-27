@@ -1,44 +1,44 @@
 export type Banner = {
-  photo: string
-  shop: string
-  detail: string
-  name: string
-  sort: number
-  status: "ACTIVE" | "INACTIVE"
-  createdAt: Date
-  updatedAt: Date
-}
+  photo: string;
+  shop: string;
+  detail: string;
+  name: string;
+  sort: number;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type Category = {
-  _id: string
-  name: string
-  priority: number
-  shop: string
-  status: "ACTIVE" | "INACTIVE"
-  createdAt: Date
-  updatedAt: Date
-  children: Category[]
-  parent?: string
-}
+  _id: string;
+  name: string;
+  priority: number;
+  shop: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: Date;
+  updatedAt: Date;
+  children: Category[];
+  parent?: string;
+};
 
 export type Photo = {
-  id: string
-  path: string
-}
+  id: string;
+  path: string;
+};
 
 export type ProductRating = {
-  count: number
-  rating: number
-}
+  count: number;
+  rating: number;
+};
 
 export enum DeliveryMethodEnum {
-  SFEXPRESS = "SFEXPRESS",
-  SELF_PICK_UP = "SELF_PICK_UP"
+  SFEXPRESS = 'SFEXPRESS',
+  SELF_PICK_UP = 'SELF_PICK_UP',
 }
 
 export enum PaymentMethodEnum {
-  APPLE_PAY = "APPLE_PAY",
-  CREDIT_CARD = "CREDIT_CARD"
+  APPLE_PAY = 'APPLE_PAY',
+  CREDIT_CARD = 'CREDIT_CARD',
 }
 
 export type Coupon = {
@@ -53,12 +53,12 @@ export type Coupon = {
   terms: string;
   minPriceRequired: number;
   maxPurchase: number;
-}
+};
 
 export type AvailabelCoupon = {
   _id: string;
   coupon: Coupon;
-}
+};
 
 export type Shop = {
   address: string;
@@ -72,12 +72,24 @@ export type Shop = {
   mallDomainName: string;
   couponCover: string;
   terms: string;
-}
+};
+
+export type PriceDetail = {
+  shippingItemsCount: number;
+  reservationItemsCount: number;
+  couponsDiscount: number;
+  subtotal: number;
+  reservationsSubtotal: number;
+  freeShippingPrice: number;
+  nonfreeShippingFee: number;
+  totalPrice: number;
+  shippingFee: number;
+};
 
 export type Product = {
   _id: string;
   name: string;
-  category: { name: string, status: "ACTIVE" | "INACTIVE" };
+  category: { name: string; status: 'ACTIVE' | 'INACTIVE' };
   shop: Shop;
   cost: number;
   description: string;
@@ -91,10 +103,10 @@ export type Product = {
   priority: number;
   productRating: ProductRating;
   stock: number;
-  productType: "ORDER" | "RESERVATION";
+  productType: 'ORDER' | 'RESERVATION';
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type ReservationOption = {
   _id: string;
@@ -102,8 +114,8 @@ export type ReservationOption = {
   price: number;
   stock: number;
   cost: number;
-  status: "ACTIVE" | "INACTIVE";
-}
+  status: 'ACTIVE' | 'INACTIVE';
+};
 
 export type Reservation = {
   _id: string;
@@ -113,59 +125,58 @@ export type Reservation = {
   userCountMax: number;
   userCountMin: number;
   options: ReservationOption[];
-}
+};
 
 export type ReservationContent = {
   reservation: string;
   option: string;
-  quantity: number
-}
+  quantity: number;
+};
 
 export type Choice = {
-  _id: string,
-  name: string,
-  photo: string,
-  productOption: string,
-  subchoices: Choice[]
-}
+  _id: string;
+  name: string;
+  photo: string;
+  productOption: string;
+  subchoices: Choice[];
+};
 
 export type Option = {
-  _id: string,
-  fieldName: string,
-  priority: number,
-  remark: string,
-  choices: Choice[]
-}
-
+  _id: string;
+  fieldName: string;
+  priority: number;
+  remark: string;
+  choices: Choice[];
+};
 
 export type OrderContent = {
-  choices: string[],
-  quantity: number
-}
+  choices: string[];
+  quantity: number;
+};
 
 export type Stock = {
   _id: string;
   priceAdjustment: number;
   stock: number;
-}
+};
 
 export type CartItemOrderContent = {
   choices: Choice[];
   quantity?: number;
   stock?: Stock;
-}
+};
 
 export type CartItemReservationContent = {
   reservation: Reservation;
   option: string;
   quantity: number;
-}
+};
 
 export type CartItemReservation = {
   reservation?: Reservation;
-  option?: string
-  quantity?: number
-}
+  option?: string;
+  quantity?: number;
+};
 
 export type CartItem = {
   _id: string;
@@ -177,59 +188,59 @@ export type CartItem = {
   shop: Shop;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 export type Address = {
-  name?:string,
-  room?: string,
-  street?: string,
-  district?: string,
-  phoneNumber?: string
-}
+  name?: string;
+  room?: string;
+  street?: string;
+  district?: string;
+  phoneNumber?: string;
+};
 
 export type Contact = {
   name: string;
   phoneNumber: string;
   //to-do
   //add other fields
-}
+};
 
 export type User = {
-  _id: string,
-  avatar: string,
-  address: Address,
-  email: string,
-  isTemp: boolean,
-  username: string
-}
+  _id: string;
+  avatar: string;
+  address: Address;
+  email: string;
+  isTemp: boolean;
+  username: string;
+};
 
 export type Bookmark = {
-  _id: string,
-  product: Product,
-  shop: Shop
-}
+  _id: string;
+  product: Product;
+  shop: Shop;
+};
 
 export type Auth = {
-  token: string,
-  tokenExpAt: string
-}
+  token: string;
+  tokenExpAt: string;
+};
 
 export type CheckoutProductOption = {
   _id: string;
   fieldName: string;
-}
+};
 
 export type CheckoutProductStock = {
   _id: string;
   priceAdjustment: number;
-}
+};
 
 export type CheckoutProductChoice = {
   _id: string;
   productOption: CheckoutProductOption;
   name: string;
   productsubchoices: any[];
-}
+};
 
 export type CheckoutProduct = {
   _id: string;
@@ -239,14 +250,14 @@ export type CheckoutProduct = {
   shop: Shop;
   choices: Choice[];
   productStock: CheckoutProductStock;
-}
+};
 
 export type CheckoutCoupon = {
   _id: string;
   coupon: Coupon;
-}
+};
 
 export type UserCoupon = {
   _id: string;
   coupon: Coupon;
-}
+};
