@@ -54,7 +54,7 @@ const Carts = () => {
     isFetching: isTotalPriceFetching,
     refetch: refetchTotalPrice,
   } = useQuery({
-    queryKey: ['cartItemGetTotalPrice', token],
+    queryKey: ['cartItemGetTotalPrice', token, cartItems],
     queryFn: async () => {
       return await cartItemGetTotalPrice(
         token,
@@ -70,7 +70,7 @@ const Carts = () => {
     isFetching: isPriceDetailFetching,
     refetch: refetchPriceDetail,
   } = useQuery({
-    queryKey: ['cartItemGetPriceDetail', token],
+    queryKey: ['cartItemGetPriceDetail', token, cartItems],
     queryFn: async () => {
       return await cartItemGetPriceDetail(
         token,
@@ -103,8 +103,6 @@ const Carts = () => {
     },
     onSuccess: async (res) => {
       refetchCartItems();
-      refetchPriceDetail();
-      refetchTotalPrice();
     },
     onError: (e) => {
       const error = e as Error;
@@ -121,8 +119,6 @@ const Carts = () => {
     },
     onSuccess: async (res) => {
       refetchCartItems();
-      refetchPriceDetail();
-      refetchTotalPrice();
     },
     onError: (e) => {
       const error = e as Error;
@@ -137,6 +133,7 @@ const Carts = () => {
     refetchTotalPrice();
     refetchPriceDetail();
   }, [selectedCoupons]);
+
   if (!shop) return <></>;
 
   const onDeductPress = (itemId: string) => {

@@ -61,6 +61,7 @@ const PaymentSheetCard = ({
 
       {isPlatformPayAvailable && Platform.OS == 'ios' ? (
         <PlatformPayButton
+          disabled={isLoading}
           onPress={onPlatformPayPress}
           type={PlatformPay.ButtonType.Order}
           appearance={PlatformPay.ButtonStyle.Black}

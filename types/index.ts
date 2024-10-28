@@ -203,6 +203,9 @@ export type Contact = {
   phoneNumber: string;
   //to-do
   //add other fields
+  district?: string;
+  street?: string;
+  room?: string;
 };
 
 export type User = {
