@@ -2,8 +2,18 @@ import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
-import { SectionList, RefreshControl, SafeAreaView, TouchableOpacity } from 'react-native';
-import { Label, ScrollView, Separator, SizableText, Spinner, Text, XStack, YStack } from 'tamagui';
+import { SectionList, SafeAreaView, TouchableOpacity } from 'react-native';
+import {
+  AlertDialog,
+  Label,
+  ScrollView,
+  Separator,
+  SizableText,
+  Spinner,
+  Text,
+  XStack,
+  YStack,
+} from 'tamagui';
 import {
   getProduct,
   listOptions,
@@ -16,7 +26,7 @@ import {
   reservationCreateCart,
   productCreateCart,
 } from '~/api';
-import { BannerCarousel, OptionSelection } from '~/components';
+import { BannerCarousel, Dialog, OptionSelection } from '~/components';
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from '~/components/ActionSheet';
@@ -29,6 +39,7 @@ import moment from 'moment';
 import ReservationCalendar from '~/components/ReservationCalendar';
 import { OrderContent, ReservationContent, ReservationOption } from '~/types';
 import Toast from 'react-native-toast-message';
+import { Stack } from 'tamagui';
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams<{ productId: string }>();
@@ -44,6 +55,7 @@ const ProductDetail = () => {
   );
   const [quantity, setQuantity] = useState(1);
   const [selectedCouponId, setSelectedCouponId] = useState();
+  const [isAddCartSuccessDialogOpen, setIsAddCartSuccessDialogOpen] = useState(false);
   const queryClient = useQueryClient();
 
   //reservations
@@ -69,6 +81,8 @@ const ProductDetail = () => {
         return await reservationCreateCart(token, reservationId, reservationContent);
       },
       onSuccess: async (res) => {
+        setIsOptionSheetOpen(false);
+        setIsAddCartSuccessDialogOpen(true);
         queryClient.invalidateQueries({ queryKey: ['cartItems'] });
       },
       onError: (e) => {
@@ -85,7 +99,8 @@ const ProductDetail = () => {
       return await productCreateCart(token, productId, orderContent);
     },
     onSuccess: async (res) => {
-      console.log('success');
+      setIsOptionSheetOpen(false);
+      setIsAddCartSuccessDialogOpen(true);
       queryClient.invalidateQueries({ queryKey: ['cartItems'] });
     },
     onError: (e) => {
@@ -194,8 +209,6 @@ const ProductDetail = () => {
   if (!product || isProductFetching || isOptionsFetching || !shop) {
     return <></>;
   }
-
-  console.log(product);
 
   const getStock = () => {
     switch (product.productType) {
@@ -433,8 +446,8 @@ const ProductDetail = () => {
                   onPress={() => setIsReservationOptionSheetOpen(true)}>
                   {selectedReservationOption
                     ? availableReservationOptions.find((o) => {
-                      return o._id == selectedReservationOption;
-                    })?.name
+                        return o._id == selectedReservationOption;
+                      })?.name
                     : t('pleaseSelect')}
                 </StyledButton>
               </YStack>
@@ -507,10 +520,9 @@ const ProductDetail = () => {
   };
 
   const onAddCartPress = () => {
+    if (stock < 1 || isProductCreateCartSubmiting || isReservationCreateCartSubmiting) return;
     switch (product.productType) {
       case 'ORDER':
-        console.log(selectedChoices);
-        console.log(quantity);
         const orderContent = {
           choices: selectedChoices.map((f) => {
             return f.choiceId;
@@ -573,7 +585,9 @@ const ProductDetail = () => {
               <SizableText>HK$ {priceDetail.subtotal}</SizableText>
             )}
             <XStack space="$2">
-              <StyledButton onPress={onAddCartPress}>
+              <StyledButton
+                disabled={stock < 1 || isProductCreateCartSubmiting}
+                onPress={onAddCartPress}>
                 {t('addToCart')}
                 <AntDesign name="shoppingcart" color="#fff" />
               </StyledButton>
@@ -585,6 +599,25 @@ const ProductDetail = () => {
           </XStack>
         </YStack>
       </ActionSheet>
+      <Dialog isOpen={isAddCartSuccessDialogOpen}>
+        <YStack space="$4">
+          <SizableText fontSize={'$6'}>{t('addSuccess')}</SizableText>
+          <Stack>
+            <Text>{t('addSuccessContent')}</Text>
+            <XStack>
+              <Text>{t('pleaseGoTo')}</Text>
+              <Text fontWeight={'700'}>{t('shoppingCart')}</Text>
+              <Text>{t('toCheck')}</Text>
+            </XStack>
+          </Stack>
+
+          <AlertDialog.Action asChild>
+            <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
+              {t('confirm')}
+            </StyledButton>
+          </AlertDialog.Action>
+        </YStack>
+      </Dialog>
     </SafeAreaView>
   );
 };

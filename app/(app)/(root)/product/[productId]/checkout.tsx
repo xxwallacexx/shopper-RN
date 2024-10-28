@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, RefreshControl, SafeAreaView, SectionList } from 'react-native';
@@ -18,6 +18,7 @@ import {
 import {
   AddressForm,
   CheckoutItemCard,
+  Dialog,
   PaymentSheetCard,
   RadioGroupItem,
   Spinner,
@@ -45,6 +46,10 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import ActionSheet from '~/components/ActionSheet';
 import { ScrollView } from 'tamagui';
+import { Skeleton } from 'moti/skeleton';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AlertDialog } from 'tamagui';
+import { Stack } from 'tamagui';
 
 const Checkout = () => {
   const { productId, orderContentStr } = useLocalSearchParams<{
@@ -65,6 +70,7 @@ const Checkout = () => {
 
   const [isUserCouponSheetOpen, setIsUserCouponSheetOpen] = useState(false);
   const [userCouponSheetPosition, setUserCouponSheetPosition] = useState(0);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
 
   const [selectedCoupon, setSelectedCoupon] = useState<UserCoupon>();
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
@@ -117,11 +123,7 @@ const Checkout = () => {
     },
   });
 
-  const {
-    data: itemDetail,
-    isPending: isItemDetailLoading,
-    refetch: refetchItemDetail,
-  } = useQuery({
+  const { data: itemDetail, refetch: refetchItemDetail } = useQuery({
     queryKey: ['itemDetail', productId, orderContent],
     queryFn: async () => {
       return await getProductCheckoutItemsDetail(
@@ -135,7 +137,7 @@ const Checkout = () => {
 
   const {
     data: totalPrice,
-    isPending: isTotalPriceLoading,
+    isFetching: isTotalPriceFetching,
     refetch: refetchTotalPrice,
   } = useQuery({
     queryKey: ['productTotalPrice', productId, orderContent, selectedDeliveryMethod],
@@ -152,7 +154,7 @@ const Checkout = () => {
 
   const {
     data: priceDetail,
-    isPending: isPriceDetailLoading,
+    isFetching: isPriceDetailFetching,
     refetch: refetchPriceDetail,
   } = useQuery({
     queryKey: ['productPriceDetail', productId, orderContent],
@@ -228,7 +230,9 @@ const Checkout = () => {
         );
       },
       onSuccess: (res) => {
-        console.log('success!');
+        console.log('paid');
+        setIsPaymentSheetOpen(false);
+        setIsSuccessDialogOpen(true);
       },
       onError: (e) => {
         Toast.show({
@@ -247,7 +251,6 @@ const Checkout = () => {
 
   if (
     isShopLoading ||
-    isItemDetailLoading ||
     !shop ||
     !itemDetail ||
     !priceDetail ||
@@ -531,6 +534,12 @@ const Checkout = () => {
       });
     }
     let stripeTokenId = stripeToken.id;
+    let contact: Contact = { name, phoneNumber };
+    if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
+      contact.district = address?.district;
+      contact.street = address?.street;
+      contact.room = address?.room;
+    }
     onCreateProductOrderSubmit({
       stripeTokenId,
       contact: { name, phoneNumber },
@@ -558,10 +567,16 @@ const Checkout = () => {
       },
     });
 
+    let contact: Contact = { name, phoneNumber };
+    if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
+      contact.district = address?.district;
+      contact.street = address?.street;
+      contact.room = address?.room;
+    }
     if (!token) return;
     onCreateProductOrderSubmit({
       stripeTokenId: token.id,
-      contact: { name, phoneNumber },
+      contact,
       orderContent,
       deliveryMethod: selectedDeliveryMethod ?? 'SELF_PICK_UP',
       paymentMethod: 'APPLE_PAY',
@@ -583,6 +598,24 @@ const Checkout = () => {
 
   const onPaymentPress = () => {
     setIsPaymentSheetOpen(true);
+  };
+
+  const isPayDisabled = () => {
+    if (phoneNumber == '' || name == '' || !isVerified) return true;
+    if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
+      if (!address?.room || !address?.street || !address?.district) {
+        return true;
+      }
+      if (address?.room == '' || address?.street == '' || address?.district == '') {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const onPaymentSuccessConfirmPress = () => {
+    setIsSuccessDialogOpen(false);
+    router.back();
   };
 
   return (
@@ -610,8 +643,17 @@ const Checkout = () => {
           />
         </KeyboardAwareScrollView>
       </YStack>
-      <BottomAction>
-        <StyledButton onPress={onPaymentPress}>pay</StyledButton>
+      <BottomAction justifyContent="space-between">
+        <>
+          {isTotalPriceFetching ? (
+            <Skeleton width={'30%'} height={12} colorMode="light" />
+          ) : (
+            <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
+          )}
+        </>
+        <TouchableOpacity disabled={isPayDisabled()} onPress={onPaymentPress}>
+          <StyledButton disabled={isPayDisabled()}>{t('pay')}</StyledButton>
+        </TouchableOpacity>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isPaymenySheetOpen}
@@ -621,8 +663,8 @@ const Checkout = () => {
         setSheetPosition={setPaymentSheetPosition}>
         <ScrollView space="$4">
           <PaymentSheetCard
-            isLoading={false}
-            cardPaymentDisabled={!isCardCompleted}
+            isLoading={isCreateProductOrderSubmitting}
+            cardPaymentDisabled={!isCardCompleted || isCreateProductOrderSubmitting}
             isPlatformPayAvailable={isPlatformPayAvailable}
             onCardCompleted={setIsCardCompleted}
             onCardPaymentPress={onCardPaymentPress}
@@ -673,6 +715,23 @@ const Checkout = () => {
           }}
         />
       </ActionSheet>
+      <Dialog isOpen={isSuccessDialogOpen}>
+        <YStack space="$4">
+          <SizableText fontSize={'$6'}>{t('paymentSuccess')}</SizableText>
+          <Stack>
+            <Text>{t('paymentSuccessContent')}</Text>
+            <XStack>
+              <Text>{t('pleaseGoTo')}</Text>
+              <Text fontWeight={'700'}>{t('myOrders')}</Text>
+              <Text>{t('toCheck')}</Text>
+            </XStack>
+          </Stack>
+
+          <AlertDialog.Action asChild>
+            <StyledButton onPress={onPaymentSuccessConfirmPress}>{t('confirm')}</StyledButton>
+          </AlertDialog.Action>
+        </YStack>
+      </Dialog>
     </SafeAreaView>
   );
 };
