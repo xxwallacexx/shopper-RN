@@ -1,13 +1,13 @@
-import axios from 'axios'
+import axios from 'axios';
 import moment from 'moment';
 import { Coupon, UserCoupon } from '~/types';
-import { API_URL, SHOP } from '@env'
-const baseUrl = API_URL
-const shop = SHOP
+import { API_URL, SHOP } from '@env';
+const baseUrl = API_URL;
+const shop = SHOP;
 
 const listCoupons = async (token: string, skip: number, sort: string, productId?: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -21,26 +21,30 @@ const listCoupons = async (token: string, skip: number, sort: string, productId?
       sort: sort,
     },
   };
-  let res: Coupon[] = await axios(options).then((res) => { return res.data.coupons })
-  return res
-}
+  let res: Coupon[] = await axios(options).then((res) => {
+    return res.data.coupons;
+  });
+  return res;
+};
 
 const getCoupon = async (token: string, couponId: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/coupon/${couponId}`,
   };
 
-  let res: Coupon = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res: Coupon = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 const createUserCoupon = async (token: string, couponId: string) => {
   const options = {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -49,12 +53,14 @@ const createUserCoupon = async (token: string, couponId: string) => {
     },
     url: `${baseUrl}/userCoupon`,
   };
-  return await axios(options);
-}
+  return await axios(options).catch((e) => {
+    throw e.response.data.errorCodes[0];
+  });
+};
 
 const listUserCoupon = async (token: string, skip: number) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -65,13 +71,10 @@ const listUserCoupon = async (token: string, skip: number) => {
       skip: skip,
     },
   };
-  let res: UserCoupon[] = await axios(options).then((res) => { return res.data.userCoupons })
-  return res
-}
+  let res: UserCoupon[] = await axios(options).then((res) => {
+    return res.data.userCoupons;
+  });
+  return res;
+};
 
-export {
-  listCoupons,
-  getCoupon,
-  createUserCoupon,
-  listUserCoupon
-}
+export { listCoupons, getCoupon, createUserCoupon, listUserCoupon };

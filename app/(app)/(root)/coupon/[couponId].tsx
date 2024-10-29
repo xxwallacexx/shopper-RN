@@ -47,10 +47,9 @@ const CouponDetail = () => {
     },
     onError: (e) => {
       console.log(e);
-      const error = e as Error;
       Toast.show({
         type: 'error',
-        text1: t(error.message),
+        text1: t(e.toString()),
       });
     },
   });
