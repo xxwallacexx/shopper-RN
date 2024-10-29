@@ -54,7 +54,6 @@ const ProductDetail = () => {
     []
   );
   const [quantity, setQuantity] = useState(1);
-  const [selectedCouponId, setSelectedCouponId] = useState();
   const [isAddCartSuccessDialogOpen, setIsAddCartSuccessDialogOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -144,7 +143,7 @@ const ProductDetail = () => {
   const { data: priceDetail, isFetching: isPriceDetailFetching } = useQuery({
     queryKey: ['priceDetail', productId, selectedChoices, quantity],
     queryFn: async () => {
-      return await getProductPriceDetail(token, `${productId}`, orderContent, selectedCouponId);
+      return await getProductPriceDetail(token, `${productId}`, orderContent);
     },
   });
 
@@ -267,9 +266,7 @@ const ProductDetail = () => {
     let searchParams: { orderContentStr: string; currentCouponId?: string } = {
       orderContentStr: JSON.stringify(orderContent),
     };
-    if (selectedCouponId) {
-      searchParams['currentCouponId'] = selectedCouponId;
-    }
+
     router.navigate({ pathname: `/product/${productId}/checkout`, params: searchParams });
   };
 
@@ -446,8 +443,8 @@ const ProductDetail = () => {
                   onPress={() => setIsReservationOptionSheetOpen(true)}>
                   {selectedReservationOption
                     ? availableReservationOptions.find((o) => {
-                        return o._id == selectedReservationOption;
-                      })?.name
+                      return o._id == selectedReservationOption;
+                    })?.name
                     : t('pleaseSelect')}
                 </StyledButton>
               </YStack>

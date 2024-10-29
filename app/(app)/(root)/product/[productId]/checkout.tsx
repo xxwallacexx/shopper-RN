@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, RefreshControl, SafeAreaView, SectionList } from 'react-native';
-import { H2, Label, RadioGroup, Input, YStack, XStack, Text, SizableText } from 'tamagui';
+import { H2, RadioGroup, YStack, XStack, Text, SizableText } from 'tamagui';
 import {
   checkIsVerified,
   createProductOrder,
@@ -18,6 +18,7 @@ import {
 import {
   AddressForm,
   CheckoutItemCard,
+  ContactForm,
   Dialog,
   PaymentSheetCard,
   RadioGroupItem,
@@ -42,8 +43,7 @@ import {
 } from '@stripe/stripe-react-native';
 import Toast from 'react-native-toast-message';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { tokens } from '@tamagui/themes';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ActionSheet from '~/components/ActionSheet';
 import { ScrollView } from 'tamagui';
 import { Skeleton } from 'moti/skeleton';
@@ -333,72 +333,20 @@ const Checkout = () => {
         );
       case 'contact':
         return (
-          <YStack space="$2" p="$2">
-            <Label>{t('name')}</Label>
-            <Input
-              value={name}
-              autoCapitalize="none"
-              autoCorrect={false}
-              disabled={isSubmitting}
-              onChangeText={(value) => setName(value)}
-            />
-            <XStack space="$2" alignItems="center">
-              <Label>{t('contactNumber')}</Label>
-              {isVerified ? (
-                <XStack space="$1" alignItems="center">
-                  <AntDesign color={tokens.color.green9Light.val} name="checkcircleo" />
-                  <Text color="$green9" fontSize={'$2'}>
-                    {t('verified')}
-                  </Text>
-                </XStack>
-              ) : null}
-            </XStack>
-            <XStack w="100%" alignItems="flex-start" space="$1">
-              <Input
-                flex={1}
-                value={phoneNumber}
-                keyboardType="number-pad"
-                autoCapitalize="none"
-                autoCorrect={false}
-                disabled={isSubmitting || isVerified}
-                onChangeText={(value) => setPhoneNumber(value)}
-              />
-              {isVerified ? null : (
-                <StyledButton
-                  disabled={phoneNumber.length !== 8 || seconds > 0 ? true : false}
-                  w="35%"
-                  size="$4"
-                  onPress={onGetVerifyCodePress}>
-                  {seconds > 0 ? `${t('verify')} (${seconds}s)` : t('getVerifyCode')}
-                </StyledButton>
-              )}
-            </XStack>
-
-            {isVerified ? null : (
-              <>
-                <Label>{t('verifyCode')}</Label>
-                <XStack w="100%" alignItems="flex-start" space="$1">
-                  <Input
-                    flex={1}
-                    value={verifyCode}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    disabled={isSubmitting || isVerified}
-                    onChangeText={(value) => setVerifyCode(value)}
-                  />
-                  {isVerified ? null : (
-                    <StyledButton
-                      disabled={!verifyCode.length || isVerifyCodeSubmitting}
-                      w="35%"
-                      size="$4"
-                      onPress={onVerifyCodePress}>
-                      {t('verify')}
-                    </StyledButton>
-                  )}
-                </XStack>
-              </>
-            )}
-          </YStack>
+          <ContactForm
+            name={name}
+            onNameChange={setName}
+            phoneNumber={phoneNumber}
+            onPhoneNumberChange={setPhoneNumber}
+            verifyCode={verifyCode}
+            seconds={seconds}
+            disabled={isSubmitting}
+            isVerifyCodeSubmitting={isVerifyCodeSubmitting}
+            isVerified={isVerified}
+            onVerifyCodePress={onVerifyCodePress}
+            onGetVerifyCodePress={onGetVerifyCodePress}
+            onVerifyCodeChange={setVerifyCode}
+          />
         );
 
       case 'deliveryMethod':
@@ -455,71 +403,56 @@ const Checkout = () => {
       case 'priceDetail':
         const { subtotal, freeShippingPrice, nonfreeShippingFee, couponDiscount } = priceDetail;
 
-        switch (selectedDeliveryMethod) {
-          case DeliveryMethodEnum.SELF_PICK_UP:
-            return (
-              <YStack p="$2" space="$1">
-                <XStack justifyContent="space-between">
-                  <SizableText>{t('subtotal')}</SizableText>
+        const subtotalWithDiscount = parseFloat(subtotal) - couponDiscount;
+        const deliveryFee = freeShippingPrice > subtotalWithDiscount ? nonfreeShippingFee : 0;
+        return (
+          <YStack p="$2" space="$1">
+            <XStack justifyContent="space-between">
+              <SizableText>{t('subtotal')}</SizableText>
+              {isPriceDetailFetching ? (
+                <Skeleton colorMode="light" width={80} height={16} />
+              ) : (
+                <SizableText
+                  numberOfLines={1}
+                  ellipsizeMode="tail">{`HK ${parseFloat(subtotal).toFixed(1)}`}</SizableText>
+              )}
+            </XStack>
+            {isPriceDetailFetching ? (
+              <XStack justifyContent="space-between">
+                <SizableText>{t('redeemCoupon')}</SizableText>
+                {isPriceDetailFetching ? (
+                  <Skeleton colorMode="light" width={80} height={16} />
+                ) : (
                   <SizableText
                     numberOfLines={1}
-                    ellipsizeMode="tail">{`HK ${parseFloat(subtotal).toFixed(1)}`}</SizableText>
-                </XStack>
-                {couponDiscount ? (
-                  <XStack justifyContent="space-between">
-                    <SizableText>{t('redeemCoupon')}</SizableText>
-                    <SizableText
-                      numberOfLines={1}
-                      ellipsizeMode="tail">{`-HK ${parseFloat(couponDiscount).toFixed(1)}`}</SizableText>
-                  </XStack>
-                ) : null}
-                <XStack justifyContent="space-between">
-                  <SizableText>{t('totalPrice')}</SizableText>
+                    ellipsizeMode="tail">{`-HK ${couponDiscount.toFixed(1)}`}</SizableText>
+                )}
+              </XStack>
+            ) : null}
+            {selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS ? (
+              <XStack justifyContent="space-between">
+                <SizableText>{t('deliveryFee')}</SizableText>
+                {isPriceDetailFetching ? (
+                  <Skeleton colorMode="light" width={80} height={16} />
+                ) : (
                   <SizableText
                     numberOfLines={1}
-                    ellipsizeMode="tail">{`HK ${parseFloat(totalPrice).toFixed(1)}`}</SizableText>
-                </XStack>
-              </YStack>
-            );
-
-          case DeliveryMethodEnum.SFEXPRESS:
-            const subtotalWithDiscount = subtotal - couponDiscount;
-            const deliveryFee = freeShippingPrice > subtotalWithDiscount ? nonfreeShippingFee : 0;
-            return (
-              <YStack p="$2" space="$1">
-                <XStack justifyContent="space-between">
-                  <SizableText>{t('subtotal')}</SizableText>
-                  <SizableText
-                    numberOfLines={1}
-                    ellipsizeMode="tail">{`HK ${parseFloat(subtotal).toFixed(1)}`}</SizableText>
-                </XStack>
-                {couponDiscount ? (
-                  <XStack justifyContent="space-between">
-                    <SizableText>{t('redeemCoupon')}</SizableText>
-                    <SizableText
-                      numberOfLines={1}
-                      ellipsizeMode="tail">{`-HK ${parseFloat(couponDiscount).toFixed(1)}`}</SizableText>
-                  </XStack>
-                ) : null}
-                <XStack justifyContent="space-between">
-                  <SizableText>{t('deliveryFee')}</SizableText>
-                  <SizableText
-                    numberOfLines={1}
-                    ellipsizeMode="tail">{`+HK ${parseFloat(deliveryFee).toFixed(1)}`}</SizableText>
-                </XStack>
-                <XStack justifyContent="space-between">
-                  <SizableText>{t('totalPrice')}</SizableText>
-                  <SizableText
-                    numberOfLines={1}
-                    ellipsizeMode="tail">{`HK ${parseFloat(totalPrice).toFixed(1)}`}</SizableText>
-                </XStack>
-              </YStack>
-            );
-          default:
-            return <></>;
-        }
-      default:
-        return <></>;
+                    ellipsizeMode="tail">{`+HK ${deliveryFee.toFixed(1)}`}</SizableText>
+                )}
+              </XStack>
+            ) : null}
+            <XStack justifyContent="space-between">
+              <SizableText>{t('totalPrice')}</SizableText>
+              {isTotalPriceFetching ? (
+                <Skeleton colorMode="light" width={80} height={16} />
+              ) : (
+                <SizableText
+                  numberOfLines={1}
+                  ellipsizeMode="tail">{`HK ${totalPrice?.toFixed(1)}`}</SizableText>
+              )}
+            </XStack>
+          </YStack>
+        );
     }
   };
 

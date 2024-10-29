@@ -9,6 +9,7 @@ import {
   OrderContent,
   PaymentMethodEnum,
   Product,
+  ProductPriceDetail,
   UserCoupon,
 } from '~/types';
 import { API_URL, SHOP } from '@env';
@@ -114,7 +115,7 @@ const getProductPriceDetail = async (
       currentCouponId,
     },
   };
-  let res = axios(options).then((res) => {
+  let res: ProductPriceDetail = axios(options).then((res) => {
     return res.data;
   });
   return res;

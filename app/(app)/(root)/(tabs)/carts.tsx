@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { FlatList, RefreshControl, SectionList, SafeAreaView } from 'react-native';
+import { FlatList, SectionList, SafeAreaView } from 'react-native';
 import { YStack, SizableText, Text, Stack, XStack } from 'tamagui';
 import {
   cartItemGetTotalPrice,
@@ -39,6 +39,7 @@ const Carts = () => {
   const { data: cartItems = [], refetch: refetchCartItems } = useQuery({
     queryKey: [`cartItems`, token],
     queryFn: async () => {
+      console.log('fetch cartitems');
       let res: CartItem[] = await listCartItems(token);
       checkCouponsAvailability(res);
       return res;
@@ -138,9 +139,6 @@ const Carts = () => {
   }, [selectedCoupons]);
 
   const checkCouponsAvailability = (cartItems: CartItem[]) => {
-    console.log(selectedCoupons);
-    console.log(cartItems);
-
     let _selectedCoupons = [...selectedCoupons];
 
     _selectedCoupons = _selectedCoupons.filter((c) => {
@@ -438,9 +436,6 @@ const Carts = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <YStack flex={1}>
         <SectionList
-          refreshControl={
-            <RefreshControl refreshing={false} onRefresh={() => console.log('refresh')} />
-          }
           renderItem={renderItem}
           sections={[
             { key: 'primary', data: [''] },
@@ -463,9 +458,11 @@ const Carts = () => {
           href={{
             pathname: '/cartCheckout',
             params: {
-              selectedCouponIds: selectedCoupons.map((c) => {
-                return c.coupon._id;
-              }),
+              selectedCouponIdsStr: JSON.stringify(
+                selectedCoupons.map((c) => {
+                  return c.coupon._id;
+                })
+              ),
             },
           }}>
           <StyledButton>{t('checkout')}</StyledButton>
