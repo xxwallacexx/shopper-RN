@@ -86,6 +86,13 @@ export type PriceDetail = {
   shippingFee: number;
 };
 
+export type ProductPriceDetail = {
+  couponDiscount: number;
+  subtotal: string;
+  freeShippingPrice: number;
+  nonfreeShippingFee: number;
+};
+
 export type Product = {
   _id: string;
   name: string;

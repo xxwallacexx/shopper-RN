@@ -1,5 +1,14 @@
 import axios from 'axios';
-import { AvailabelCoupon, CartItem, OrderContent, PriceDetail, ReservationContent } from '~/types';
+import {
+  AvailabelCoupon,
+  CartItem,
+  Contact,
+  DeliveryMethodEnum,
+  OrderContent,
+  PaymentMethodEnum,
+  PriceDetail,
+  ReservationContent,
+} from '~/types';
 import { API_URL, SHOP } from '@env';
 const baseUrl = API_URL;
 const shop = SHOP;
@@ -111,6 +120,8 @@ const cartItemGetPriceDetail = async (
       deliveryMethod,
     },
   };
+
+  console.log(options);
   let res: PriceDetail = await axios(options).then((res) => {
     return res.data;
   });
@@ -159,6 +170,40 @@ const cartItemListAvailableCoupons = async (token: string, id: string, quantity:
   return res;
 };
 
+const createCartItemOrder = async (
+  token: string,
+  stripeTokenId: string,
+  contact: Contact,
+  deliveryMethod: keyof typeof DeliveryMethodEnum,
+  paymentMethod: keyof typeof PaymentMethodEnum,
+  currentCouponIds: string[],
+  pickUpStore?: string
+) => {
+  const options = {
+    method: 'post',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/cartItem/order`,
+    data: {
+      currentCouponIds,
+      stripeTokenId,
+      contact,
+      shop,
+      deliveryMethod,
+      paymentMethod,
+      pickUpStore,
+    },
+  };
+  return await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      throw new Error(e.response.data.errorCodes);
+    });
+};
+
 export {
   listCartItems,
   countCartitem,
@@ -169,4 +214,5 @@ export {
   updateCartItem,
   removeCartItem,
   cartItemListAvailableCoupons,
+  createCartItemOrder,
 };

@@ -1,19 +1,21 @@
-import ImageGallery from './ImageGallery'
-import BannerCarousel from './BannerCarousel'
-import AnimatedTabs from './AnimatedTabs'
-import ProductCard from './ProductCard'
-import Spinner from './Spinner'
-import CheckoutItemCard from './CheckoutItemCard'
-import RadioGroupItem from './RadioGroupItem'
-import AddressForm from './AddressForm'
-import OptionSelection from './OptionSelection'
-import StoreCard from './StoreCard'
-import OrderCartItemCard from './OrderCartItemCard'
-import Dialog from './Dialog'
-import CouponCard from './CouponCard'
-import PaymentSheetCard from './PaymentSheetCard'
+import ImageGallery from './ImageGallery';
+import BannerCarousel from './BannerCarousel';
+import AnimatedTabs from './AnimatedTabs';
+import ProductCard from './ProductCard';
+import Spinner from './Spinner';
+import CheckoutItemCard from './CheckoutItemCard';
+import RadioGroupItem from './RadioGroupItem';
+import AddressForm from './AddressForm';
+import OptionSelection from './OptionSelection';
+import StoreCard from './StoreCard';
+import OrderCartItemCard from './OrderCartItemCard';
+import Dialog from './Dialog';
+import CouponCard from './CouponCard';
+import PaymentSheetCard from './PaymentSheetCard';
+import ContactForm from './ContactForm';
 
 export {
+  ContactForm,
   ProductCard,
   ImageGallery,
   BannerCarousel,
@@ -27,5 +29,5 @@ export {
   OrderCartItemCard,
   Dialog,
   CouponCard,
-  PaymentSheetCard
-}
+  PaymentSheetCard,
+};
