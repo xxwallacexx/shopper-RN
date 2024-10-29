@@ -19,12 +19,13 @@ import ReservationCartItemCard from '~/components/ReservationCartItemCard';
 import ActionSheet from '~/components/ActionSheet';
 import { useEffect, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Skeleton } from 'moti/skeleton';
 
 const Carts = () => {
   const { t } = useLocale();
   const { token } = useAuth();
+  const router = useRouter();
 
   const [isCouponSheetOpen, setIsCouponSheetOpen] = useState(false);
   const [sheetPosition, setSheetPosition] = useState(0);
@@ -38,7 +39,9 @@ const Carts = () => {
   const { data: cartItems = [], refetch: refetchCartItems } = useQuery({
     queryKey: [`cartItems`, token],
     queryFn: async () => {
-      return await listCartItems(token);
+      let res: CartItem[] = await listCartItems(token);
+      checkCouponsAvailability(res);
+      return res;
     },
   });
 
@@ -134,6 +137,50 @@ const Carts = () => {
     refetchPriceDetail();
   }, [selectedCoupons]);
 
+  const checkCouponsAvailability = (cartItems: CartItem[]) => {
+    console.log(selectedCoupons);
+    console.log(cartItems);
+
+    let _selectedCoupons = [...selectedCoupons];
+
+    _selectedCoupons = _selectedCoupons.filter((c) => {
+      return cartItems
+        .map((item) => {
+          return item._id;
+        })
+        .includes(c.cartItemId);
+    });
+    // check reach minPriceRequired
+    _selectedCoupons = _selectedCoupons.filter((c) => {
+      const cartItem = cartItems.find((i) => {
+        return i._id == c.cartItemId;
+      });
+      if (!cartItem) return false;
+      let price = 0;
+
+      switch (cartItem.type) {
+        case 'ORDER':
+          const priceAdjustment = cartItem.orderContent?.stock?.priceAdjustment ?? 0;
+          price = (cartItem.product.price + priceAdjustment) * cartItem.orderContent.quantity!;
+          console.log(price);
+          break;
+        case 'RESERVATION':
+          const reservationOption = cartItem.reservationContent.reservation.options.find((f) => {
+            return f._id == cartItem.reservationContent.option;
+          });
+          const singleItemPrice = reservationOption?.price ?? 0;
+          price = singleItemPrice * cartItem.reservationContent.quantity;
+          break;
+        default:
+          break;
+      }
+      if (price < c.coupon.coupon.minPriceRequired) return false;
+      return true;
+    });
+
+    setSelectedCoupons(_selectedCoupons);
+  };
+
   if (!shop) return <></>;
 
   const onDeductPress = (itemId: string) => {
@@ -216,7 +263,7 @@ const Carts = () => {
     //coupon discount
 
     const selectedCoupon = selectedCoupons.find((c) => {
-      return c.cartItemId;
+      return c.cartItemId == item._id;
     })?.coupon;
 
     if (selectedCoupon) {
@@ -233,7 +280,12 @@ const Carts = () => {
           singleItemPrice={singleItemPrice}
           product={product}
           orderContent={orderContent}
-          onProductPress={() => console.log(product)}
+          onProductPress={() =>
+            router.navigate({
+              pathname: '/product/[productId]',
+              params: { productId: product._id },
+            })
+          }
           onDeductPress={() => onDeductPress(item._id)}
           onAddPress={() => onAddPress(item._id)}
           onAvailableCouponPress={() => onAvailableCouponPress(item._id)}
@@ -276,7 +328,12 @@ const Carts = () => {
           singleItemPrice={singleItemPrice}
           product={product}
           reservationContent={reservationContent}
-          onProductPress={() => console.log(product)}
+          onProductPress={() =>
+            router.navigate({
+              pathname: '/product/[productId]',
+              params: { productId: product._id },
+            })
+          }
           onAvailableCouponPress={() => onAvailableCouponPress(item._id)}
           onRemovePress={() => onRemovePress(item._id)}
           isCartItemUpdating={isCartItemUpdating}
@@ -308,16 +365,16 @@ const Carts = () => {
           includeDelivery &&
           (freeShippingDiff > 0
             ? t('freeShippingDiff', {
-                diff: freeShippingDiff.toFixed(1),
-                fee: nonfreeShippingFee.toFixed(1),
-              })
+              diff: freeShippingDiff.toFixed(1),
+              fee: nonfreeShippingFee.toFixed(1),
+            })
             : t('freeShippingHint'));
 
         return (
           <YStack space="$4" overflow="hidden">
             <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />
             {orders.length ? (
-              <YStack flex={1}>
+              <YStack flex={1} space={'$2'}>
                 {isPriceDetailFetching ? (
                   <Skeleton height={46} colorMode="light" width={'100%'} />
                 ) : (
@@ -420,7 +477,16 @@ const Carts = () => {
         sheetPosition={sheetPosition}
         setSheetPosition={setSheetPosition}>
         <FlatList
-          data={availableCoupons}
+          data={availableCoupons.filter((c) => {
+            return !selectedCoupons
+              .filter((s) => {
+                return s.cartItemId !== selectedCartItemId;
+              })
+              .map((s) => {
+                return s.coupon._id;
+              })
+              .includes(c._id);
+          })}
           renderItem={({ item }) => {
             const selectedCouponIds = selectedCoupons
               .filter((c) => {
