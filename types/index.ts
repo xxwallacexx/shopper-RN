@@ -31,6 +31,11 @@ export type ProductRating = {
   rating: number;
 };
 
+export enum OrderStatusEnum {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETE = 'COMPLETE',
+}
 export enum DeliveryMethodEnum {
   SFEXPRESS = 'SFEXPRESS',
   SELF_PICK_UP = 'SELF_PICK_UP',
@@ -270,4 +275,33 @@ export type CheckoutCoupon = {
 export type UserCoupon = {
   _id: string;
   coupon: Coupon;
+};
+
+export type Order = {
+  _id: string;
+  products: {
+    product: Product;
+    choices: string[];
+    quantity: number;
+    price: number;
+  }[];
+  contact: Contact;
+  status: OrderStatusEnum;
+  reservations: {
+    reservation: Reservation;
+    option: string[];
+  }[];
+  userCoupons: {
+    coupon: UserCoupon;
+    name: string;
+    discount: number;
+  };
+  price: number;
+  orderId: string;
+  stripeTransactionId: string;
+  deliveryMethod: DeliveryMethodEnum;
+  pickUpStore: string;
+  shop: Shop;
+  shippingFee?: number;
+  createdAt: Date;
 };

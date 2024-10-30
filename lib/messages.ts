@@ -295,6 +295,10 @@ export const messages = {
     endDate: 'End Date',
     loading: 'Loading...',
     verified: 'Verified',
+    emptyOrderHistory: 'Empty Order History',
+    emptyBookmark: 'Empty Bookmark',
+    emptyCoupon: 'Empty Coupon',
+    emptyContent: 'Empty Content',
     /**
      * Error Code
      */
@@ -632,6 +636,10 @@ export const messages = {
     endDate: '完結日',
     loading: '載入中...',
     verified: '已驗證',
+    emptyOrderHistory: '沒有訂單紀錄',
+    emptyBookmark: '沒有收藏紀錄',
+    emptyCoupon: '沒有可用優恵券',
+    emptyContent: '沒有相關內容',
     /**
      * Error Code
      */
