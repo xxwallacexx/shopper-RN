@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import { Skeleton } from 'moti/skeleton';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Carts = () => {
   const { t } = useLocale();
@@ -371,35 +372,44 @@ const Carts = () => {
         return (
           <YStack space="$4" overflow="hidden">
             <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />
-            {orders.length ? (
-              <YStack flex={1} space={'$2'}>
-                {isPriceDetailFetching ? (
-                  <Skeleton height={46} colorMode="light" width={'100%'} />
-                ) : (
-                  <SizableText>{shippingFeeHints}</SizableText>
-                )}
-                <Text fontSize={'$7'}>{t('orders')}</Text>
-                <FlatList
-                  scrollEnabled={false}
-                  key={'orderList'}
-                  data={orders}
-                  renderItem={renderOrder}
-                  keyExtractor={(item, index) => item._id + index.toString()}
-                />
-              </YStack>
-            ) : null}
-            {reservations.length ? (
-              <YStack flex={1}>
-                <Text fontSize={'$7'}>{t('reservationOrders')}</Text>
-                <FlatList
-                  scrollEnabled={false}
-                  key={'reservationList'}
-                  data={reservations}
-                  renderItem={renderReservation}
-                  keyExtractor={(item, index) => item._id + index.toString()}
-                />
-              </YStack>
-            ) : null}
+            {!cartItems.length ? (
+              <Container pt="$8" alignItems="center">
+                <MaterialCommunityIcons name="cart-plus" size={120} color={'#666'} />
+                <Title>{t('emptyCart')}</Title>
+              </Container>
+            ) : (
+              <>
+                {orders.length ? (
+                  <YStack flex={1} space={'$2'}>
+                    {isPriceDetailFetching ? (
+                      <Skeleton height={46} colorMode="light" width={'100%'} />
+                    ) : (
+                      <SizableText>{shippingFeeHints}</SizableText>
+                    )}
+                    <Text fontSize={'$7'}>{t('orders')}</Text>
+                    <FlatList
+                      scrollEnabled={false}
+                      key={'orderList'}
+                      data={orders}
+                      renderItem={renderOrder}
+                      keyExtractor={(item, index) => item._id + index.toString()}
+                    />
+                  </YStack>
+                ) : null}
+                {reservations.length ? (
+                  <YStack flex={1}>
+                    <Text fontSize={'$7'}>{t('reservationOrders')}</Text>
+                    <FlatList
+                      scrollEnabled={false}
+                      key={'reservationList'}
+                      data={reservations}
+                      renderItem={renderReservation}
+                      keyExtractor={(item, index) => item._id + index.toString()}
+                    />
+                  </YStack>
+                ) : null}
+              </>
+            )}
           </YStack>
         );
       default:
@@ -432,6 +442,19 @@ const Carts = () => {
     setIsCouponSheetOpen(false);
   };
 
+  const onCheckoutPress = () => {
+    router.navigate({
+      pathname: '/cartCheckout',
+      params: {
+        selectedCouponIdsStr: JSON.stringify(
+          selectedCoupons.map((c) => {
+            return c.coupon._id;
+          })
+        ),
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <YStack flex={1}>
@@ -453,20 +476,9 @@ const Carts = () => {
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <Link
-          asChild
-          href={{
-            pathname: '/cartCheckout',
-            params: {
-              selectedCouponIdsStr: JSON.stringify(
-                selectedCoupons.map((c) => {
-                  return c.coupon._id;
-                })
-              ),
-            },
-          }}>
-          <StyledButton>{t('checkout')}</StyledButton>
-        </Link>
+        <TouchableOpacity disabled={cartItems.length == 0} onPress={onCheckoutPress}>
+          <StyledButton disabled={cartItems.length == 0}>{t('checkout')}</StyledButton>
+        </TouchableOpacity>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isCouponSheetOpen}
