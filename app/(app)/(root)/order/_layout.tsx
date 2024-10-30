@@ -7,8 +7,7 @@ const Layout = () => {
         title: '',
         headerShown: false,
       })}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="[productId]" />
+      <Stack.Screen name="[orderId]" />
     </Stack>
   );
 };

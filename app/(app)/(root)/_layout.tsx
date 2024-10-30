@@ -3,14 +3,15 @@ import { PRIMARY_COLOR } from '@env';
 
 const Layout = () => {
   return (
-    <Stack screenOptions={({ navigation }) => ({
-      title: "",
-      headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
-    })}>
+    <Stack
+      screenOptions={({ navigation }) => ({
+        title: '',
+        headerStyle: { backgroundColor: PRIMARY_COLOR ?? '#fff' },
+      })}>
       <Stack.Screen
         name="(tabs)"
         options={{
-          headerShown: false
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -32,14 +33,19 @@ const Layout = () => {
         }}
       />
       <Stack.Screen
-        name='cartCheckout'
+        name="cartCheckout"
         options={{
-          headerShown: false
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="order"
+        options={{
+          headerShown: false,
         }}
       />
     </Stack>
-
   );
-}
+};
 
-export default Layout
+export default Layout;

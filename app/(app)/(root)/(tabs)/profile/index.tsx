@@ -1,91 +1,118 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
-import { Link, } from "expo-router"
-import { useState } from "react"
-import { FlatList, RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from "react-native"
-import { Image, YStack, SizableText, AnimatePresence } from "tamagui"
-import { getSelf, listBookmarks, listUserCoupon } from "~/api"
-import { AnimatedTabs, CouponCard, ProductCard, Spinner } from "~/components"
-import { useAuth, useLocale } from "~/hooks"
-import { AnimatedYStack, Container, StyledButton } from "~/tamagui.config"
-import { Bookmark, UserCoupon } from "~/types"
+import { AntDesign } from '@expo/vector-icons';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { Link } from 'expo-router';
+import moment from 'moment';
+import { useState } from 'react';
+import { FlatList, SafeAreaView, SectionList, TouchableOpacity } from 'react-native';
+import { Image, YStack, SizableText, AnimatePresence, XStack } from 'tamagui';
+import { getSelf, listBookmarks, listUserCoupon, listOrders } from '~/api';
+import { AnimatedTabs, CouponCard, ProductCard, Spinner } from '~/components';
+import Loader from '~/components/Loader';
+import { useAuth, useLocale } from '~/hooks';
+import { AnimatedYStack, Container, StyledButton, Title } from '~/tamagui.config';
+import { Bookmark, Order, UserCoupon } from '~/types';
 
 const Profile = () => {
-  const { t } = useLocale()
-  const { token } = useAuth()
+  const { t } = useLocale();
+  const { token } = useAuth();
 
-  if (!token) return <></>
+  if (!token) return <></>;
   const tabs = [
-    { label: t("myBookmarks"), value: "myBookmarks" },
-    { label: t("myWallet"), value: "myWallet" },
-    { label: t("myOrders"), value: "myOrders" },
+    { label: t('myBookmarks'), value: 'myBookmarks' },
+    { label: t('myWallet'), value: 'myWallet' },
+    { label: t('myOrders'), value: 'myOrders' },
   ];
 
-
-  const { data: user } = useQuery({ queryKey: ['profile', token], queryFn: async () => { return await getSelf(token) } })
+  const { data: user } = useQuery({
+    queryKey: ['profile', token],
+    queryFn: async () => {
+      return await getSelf(token);
+    },
+  });
 
   const {
     data: bookmarks,
     isFetching: isBookmarksFetching,
     isFetchingNextPage: isFetchingMoreBookmarks,
     fetchNextPage: fetchMoreBookmarks,
-    hasNextPage: bookmarksHasNextPage,
-    refetch: refetchBookmarks,
   } = useInfiniteQuery({
     queryKey: ['bookmarks', token],
     initialPageParam: 0,
     queryFn: async ({ pageParam }: { pageParam: number }) => {
-      return await listBookmarks(token, pageParam)
+      return await listBookmarks(token, pageParam);
     },
     getNextPageParam: (lastPage, pages) => {
-      if (!lastPage) return null
-      if (!lastPage.length) return null
-      return pages.flat().length
+      if (!lastPage) return null;
+      if (!lastPage.length) return null;
+      return pages.flat().length;
     },
-  })
+  });
 
   const {
     data: userCoupons,
     isFetching: isUserCouponsFetching,
     isFetchingNextPage: isFetchingMoreUserCoupons,
     fetchNextPage: fetchMoreUserCoupons,
-    hasNextPage: userCouponsHasNextPage,
-    refetch: refetchUserCoupons,
   } = useInfiniteQuery({
     queryKey: ['userCoupons', token],
     initialPageParam: 0,
     queryFn: async ({ pageParam }: { pageParam: number }) => {
-      return await listUserCoupon(token, pageParam)
+      return await listUserCoupon(token, pageParam);
     },
     getNextPageParam: (lastPage, pages) => {
-      if (!lastPage) return null
-      if (!lastPage.length) return null
-      return pages.flat().length
+      if (!lastPage) return null;
+      if (!lastPage.length) return null;
+      return pages.flat().length;
     },
-  })
+  });
 
-  const bookmarksData = bookmarks?.pages
-    ? bookmarks.pages.flat()
-    : []
+  const {
+    data: orders,
+    isFetching: isOrdersFetching,
+    isFetchingNextPage: isFetchingMoreOrders,
+    fetchNextPage: fetchMoreOrders,
+  } = useInfiniteQuery({
+    queryKey: ['orders', token],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }: { pageParam: number }) => {
+      return await listOrders(token, pageParam);
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage) return null;
+      if (!lastPage.length) return null;
+      return pages.flat().length;
+    },
+  });
 
+  const bookmarksData = bookmarks?.pages ? bookmarks.pages.flat() : [];
+  const userCouponsData = userCoupons?.pages ? userCoupons.pages.flat() : [];
+  const ordersData = orders?.pages ? orders.pages.flat() : [];
 
-  const userCouponsData = userCoupons?.pages ? userCoupons.pages.flat() : []
-
-  const [selectedTab, setSelectedTab] = useState(tabs[0].value)
-  const onRefresh = () => {
-
-  }
+  const [selectedTab, setSelectedTab] = useState(tabs[0].value);
 
   const onEndReached = () => {
-    fetchMoreBookmarks()
-  }
+    switch (selectedTab) {
+      case 'myBookmarks':
+        fetchMoreBookmarks();
+        break;
+      case 'myWallet':
+        fetchMoreUserCoupons();
+        break;
+      case 'myOrders':
+        fetchMoreOrders();
+        break;
+      default:
+        break;
+    }
+  };
 
   const renderBookmark = ({ item }: { item: Bookmark }) => {
-    const { product } = item
-    const { _id, price, category, name, introduction, photos } = product
-    const uri = photos[0].path
+    const { product } = item;
+    const { _id, price, category, name, introduction, photos } = product;
+    const uri = photos[0].path;
     return (
-      <Link href={`/product/${_id}`} asChild >
-        <TouchableOpacity style={{ width: "48%" }} >
+      <Link href={`/product/${_id}`} asChild>
+        <TouchableOpacity style={{ width: '48%' }}>
           <ProductCard
             imageUri={uri}
             price={price}
@@ -95,29 +122,64 @@ const Profile = () => {
           />
         </TouchableOpacity>
       </Link>
-    )
-  }
+    );
+  };
 
   const renderUserCoupon = ({ item }: { item: UserCoupon }) => {
-    const { coupon } = item
-    const { _id, name, credit, photo, endDate } = coupon
+    const { coupon } = item;
+    const { _id, name, credit, photo, endDate } = coupon;
     return (
-      <Link href={`/coupon/${_id}`} asChild >
-        <TouchableOpacity style={{ width: "48%" }} >
-          <CouponCard
-            imageUri={photo}
-            name={name}
-            endDate={endDate}
-            credit={credit}
-          />
+      <Link href={`/coupon/${_id}`} asChild>
+        <TouchableOpacity style={{ width: '48%' }}>
+          <CouponCard imageUri={photo} name={name} endDate={endDate} credit={credit} />
         </TouchableOpacity>
       </Link>
-    )
-  }
+    );
+  };
+
+  const renderOrder = ({ item }: { item: Order }) => {
+    const { _id, products, createdAt, reservations, shippingFee, price } = item;
+    let totalProducts = products.reduce((acc, f) => {
+      return acc + f.quantity;
+    }, 0);
+    const ashippingFee = shippingFee ?? 0;
+    return (
+      <Link href={`/order/${_id}`} asChild>
+        <TouchableOpacity>
+          <YStack
+            flex={1}
+            backgroundColor={'white'}
+            p={'$2'}
+            m={'$2'}
+            space="$1"
+            borderRadius={'$radius.3'}
+            shadowColor={'black'}
+            shadowOffset={{
+              height: 2,
+              width: 0,
+            }}
+            shadowOpacity={0.25}
+            shadowRadius={3.84}>
+            <SizableText>
+              {t('orderCreatedAt', { date: moment(createdAt).format('YYYY-MM-DD') })}
+            </SizableText>
+            <SizableText numberOfLines={1}>
+              {t('orderSummary', {
+                totalProducts: totalProducts,
+                totalReservations: reservations.length,
+                shippingFee: ashippingFee,
+                price,
+              })}
+            </SizableText>
+          </YStack>
+        </TouchableOpacity>
+      </Link>
+    );
+  };
 
   const renderTabContent = () => {
     switch (selectedTab) {
-      case "myBookmarks":
+      case 'myBookmarks':
         return (
           <FlatList
             data={bookmarksData}
@@ -128,28 +190,28 @@ const Profile = () => {
             columnWrapperStyle={{
               flex: 1,
               padding: 12,
-              justifyContent: "space-between"
+              justifyContent: 'space-between',
             }}
             ListFooterComponent={() => {
               if (!isBookmarksFetching && !isFetchingMoreBookmarks) {
-                return null
+                return null;
               }
-              return (
-                <Spinner color="$color.primary" />
-              )
+              return <Loader />;
             }}
             ListEmptyComponent={() => {
               if (isBookmarksFetching || isFetchingMoreBookmarks) {
-                return null
+                return null;
               }
               return (
-                <Container alignItems='center'>
+                <Container alignItems="center">
+                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <Title>{t('emptyBookmark')}</Title>
                 </Container>
-              )
+              );
             }}
           />
-        )
-      case "myWallet":
+        );
+      case 'myWallet':
         return (
           <FlatList
             data={userCouponsData}
@@ -160,109 +222,117 @@ const Profile = () => {
             columnWrapperStyle={{
               flex: 1,
               padding: 12,
-              justifyContent: "space-between"
+              justifyContent: 'space-between',
             }}
             ListFooterComponent={() => {
               if (!isUserCouponsFetching && !isFetchingMoreUserCoupons) {
-                return null
+                return null;
               }
-              return (
-                <Spinner color="$color.primary" />
-              )
+              return <Loader />;
             }}
             ListEmptyComponent={() => {
               if (isUserCouponsFetching || isFetchingMoreUserCoupons) {
-                return null
+                return null;
               }
               return (
-                <Container alignItems='center'>
+                <Container alignItems="center">
+                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <Title>{t('emptyCoupon')}</Title>
                 </Container>
-              )
+              );
             }}
           />
-        )
-      case "myOrders":
+        );
+      case 'myOrders':
+        return (
+          <FlatList
+            data={ordersData}
+            renderItem={renderOrder}
+            keyExtractor={(item, index) => item._id}
+            style={{ flex: 1 }}
+            ListFooterComponent={() => {
+              if (!isOrdersFetching && !isFetchingMoreOrders) {
+                return null;
+              }
+              return <Loader />;
+            }}
+            ListEmptyComponent={() => {
+              if (isUserCouponsFetching || isFetchingMoreUserCoupons) {
+                return null;
+              }
+              return (
+                <Container alignItems="center">
+                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <Title>{t('emptyOrderHistory')}</Title>
+                </Container>
+              );
+            }}
+          />
+        );
+
       default:
-        return <></>
+        return <></>;
     }
-  }
+  };
 
   const renderSectionItem = ({ section }) => {
     switch (section.key) {
-      case "main":
+      case 'main':
         return (
           <YStack space="$2" p="$2" alignItems="center">
-            {
-              user?.isTemp ?
-                <StyledButton backgroundColor={"red"} width={"80%"}>
-                  <SizableText color="#fff">{t('tempAcc')}</SizableText>
-                </StyledButton>
-                : null
-            }
-            <TouchableOpacity style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+            {user?.isTemp ? (
+              <StyledButton backgroundColor={'red'} width={'80%'}>
+                <SizableText color="#fff">{t('tempAcc')}</SizableText>
+              </StyledButton>
+            ) : null}
+            <TouchableOpacity
+              style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
               <YStack w="100%" alignItems="center" space="$2">
                 <Image
                   resizeMode="contain"
                   aspectRatio={1}
                   source={{ uri: user?.avatar }}
-                  width={"20%"}
+                  width={'20%'}
                 />
-                <SizableText>
-                  {user?.username}
-                </SizableText>
+                <SizableText>{user?.username}</SizableText>
               </YStack>
             </TouchableOpacity>
           </YStack>
-        )
-      case "tabView":
+        );
+      case 'tabView':
         return (
-          <AnimatePresence
-            exitBeforeEnter
-            enterVariant={"defaultFade"}
-            exitVariant={"defaultFade"}
-          >
+          <AnimatePresence exitBeforeEnter enterVariant={'defaultFade'} exitVariant={'defaultFade'}>
             <AnimatedYStack key={selectedTab} animation="100ms" x={0} opacity={1} flex={1}>
               {renderTabContent()}
             </AnimatedYStack>
           </AnimatePresence>
-
         );
 
       default:
-        return <></>
+        return <></>;
     }
-  }
+  };
 
   const renderSectionHeader = ({ section }) => {
     switch (section.key) {
-      case "tabView":
+      case 'tabView':
         return (
-          <AnimatedTabs
-            tabs={tabs}
-            initialTab={tabs[0].value}
-            onTabChanged={setSelectedTab}
-          />
+          <AnimatedTabs tabs={tabs} initialTab={tabs[0].value} onTabChanged={setSelectedTab} />
         );
 
       default:
-        return <></>
+        return <></>;
     }
-  }
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <SectionList
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={onRefresh}
-          />
-        }
         onEndReached={onEndReached}
         renderItem={renderSectionItem}
         sections={[
-          { key: "main", data: [""] },
-          { key: "tabView", data: [""] },
+          { key: 'main', data: [''] },
+          { key: 'tabView', data: [''] },
         ]}
         renderSectionHeader={renderSectionHeader}
         stickyHeaderIndices={[0]}
@@ -270,8 +340,7 @@ const Profile = () => {
         keyExtractor={(item, index) => item + index}
       />
     </SafeAreaView>
+  );
+};
 
-  )
-}
-
-export default Profile
+export default Profile;
