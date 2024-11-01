@@ -140,7 +140,7 @@ export type Reservation = {
 };
 
 export type ReservationContent = {
-  reservation: string;
+  reservation?: string;
   option: string;
   quantity: number;
 };
@@ -149,8 +149,8 @@ export type Choice = {
   _id: string;
   name: string;
   photo: string;
-  productOption: string;
-  subchoices: Choice[];
+  productOption: { _id: string; fieldName: string };
+  productsubchoices: Choice[];
 };
 
 export type Option = {
@@ -172,8 +172,16 @@ export type Stock = {
   stock: number;
 };
 
+export type CartItemOrderContentChoice = {
+  _id: string;
+  name: string;
+  photo: string;
+  productOption: string;
+  productsubchoices: Choice[];
+};
+
 export type CartItemOrderContent = {
-  choices: Choice[];
+  choices: CartItemOrderContentChoice[];
   quantity?: number;
   stock?: Stock;
 };

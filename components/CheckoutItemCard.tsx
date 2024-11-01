@@ -45,9 +45,13 @@ const CheckoutItemCard = ({
           <SizableText numberOfLines={1} ellipsizeMode="tail">
             {product.name}
           </SizableText>
-          {/*
-            choices
-          */}
+          {product.choices.map((f) => {
+            return (
+              <SizableText size={'$2'} numberOfLines={1} ellipsizeMode="tail">
+                {f.productOption.fieldName}: {f.name}
+              </SizableText>
+            );
+          })}
         </YStack>
         <XStack space="$2">
           <SizableText>{t('orderQuantity', { quantity: quantity })}</SizableText>

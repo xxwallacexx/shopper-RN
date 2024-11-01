@@ -2,7 +2,7 @@ import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
-import { SectionList, SafeAreaView, TouchableOpacity } from 'react-native';
+import { SectionList, SafeAreaView } from 'react-native';
 import {
   AlertDialog,
   Label,
@@ -25,6 +25,7 @@ import {
   listReservations,
   reservationCreateCart,
   productCreateCart,
+  getReservationTotalPrice,
 } from '~/api';
 import { BannerCarousel, Dialog, OptionSelection } from '~/components';
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
@@ -40,6 +41,11 @@ import ReservationCalendar from '~/components/ReservationCalendar';
 import { OrderContent, ReservationContent, ReservationOption } from '~/types';
 import Toast from 'react-native-toast-message';
 import { Stack } from 'tamagui';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+const Price = ({ isLoading, price }: { isLoading: boolean; price: number }) => {
+  return <>{isLoading ? <Spinner /> : <SizableText>HK$ {price}</SizableText>}</>;
+};
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams<{ productId: string }>();
@@ -112,13 +118,6 @@ const ProductDetail = () => {
     },
   });
 
-  const orderContent = {
-    choices: selectedChoices.map((c) => {
-      return c.choiceId;
-    }),
-    quantity,
-  };
-
   const { data: shop } = useQuery({
     queryKey: ['shop'],
     queryFn: async () => {
@@ -140,11 +139,37 @@ const ProductDetail = () => {
     },
   });
 
+  const orderContent = {
+    choices: selectedChoices.map((c) => {
+      return c.choiceId;
+    }),
+    quantity,
+  };
+
   const { data: priceDetail, isFetching: isPriceDetailFetching } = useQuery({
     queryKey: ['priceDetail', productId, selectedChoices, quantity],
     queryFn: async () => {
-      return await getProductPriceDetail(token, `${productId}`, orderContent);
+      return await getProductPriceDetail(token, productId, orderContent);
     },
+    enabled: product?.productType == 'ORDER',
+  });
+
+  const { data: reservationTotalPrice, isFetching: isReservationTotalPriceFetching } = useQuery({
+    queryKey: ['reservationTotalPrice', selectedTime, selectedReservationOption, quantity],
+    queryFn: async () => {
+      const reservation = reservations.find((f) => {
+        return moment(f.time).toISOString() == moment(selectedTime).toISOString();
+      });
+      if (!reservation || !selectedReservationOption) throw new Error('no reservation');
+      const reservationContent = {
+        reservation: reservation._id,
+        option: selectedReservationOption,
+        quantity,
+      };
+
+      return await getReservationTotalPrice(token, reservation._id, reservationContent);
+    },
+    enabled: product?.productType == 'RESERVATION',
   });
 
   const { data: isBookmarked, refetch: refetchIsBookmarked } = useQuery({
@@ -263,11 +288,30 @@ const ProductDetail = () => {
 
   const onCheckoutPress = () => {
     setIsOptionSheetOpen(false);
-    let searchParams: { orderContentStr: string; currentCouponId?: string } = {
-      orderContentStr: JSON.stringify(orderContent),
-    };
+    switch (product.productType) {
+      case 'ORDER':
+        return router.navigate({
+          pathname: '/product/[productId]/checkout',
+          params: { productId, orderContentStr: JSON.stringify(orderContent) },
+        });
+      case 'RESERVATION':
+        const reservation = reservations.find((f) => {
+          return moment(f.time).toISOString() == moment(selectedTime).toISOString();
+        });
+        if (!reservation || !selectedReservationOption) return;
+        const reservationContent = {
+          option: selectedReservationOption,
+          quantity,
+        };
 
-    router.navigate({ pathname: `/product/${productId}/checkout`, params: searchParams });
+        return router.navigate({
+          pathname: '/reservation/[reservationId]/checkout',
+          params: {
+            reservationId: reservation._id,
+            reservationContentStr: JSON.stringify(reservationContent),
+          },
+        });
+    }
   };
 
   const onSharePress = async () => {
@@ -443,8 +487,8 @@ const ProductDetail = () => {
                   onPress={() => setIsReservationOptionSheetOpen(true)}>
                   {selectedReservationOption
                     ? availableReservationOptions.find((o) => {
-                      return o._id == selectedReservationOption;
-                    })?.name
+                        return o._id == selectedReservationOption;
+                      })?.name
                     : t('pleaseSelect')}
                 </StyledButton>
               </YStack>
@@ -532,10 +576,10 @@ const ProductDetail = () => {
         const reservation = reservations.find((f) => {
           return moment(f.time).toISOString() == moment(selectedTime).toISOString();
         });
-        if (!reservation) return;
+        if (!reservation || !selectedReservationOption) return;
         const reservationContent = {
           reservation: reservation._id!,
-          option: selectedReservationOption!,
+          option: selectedReservationOption,
           quantity: quantity!,
         };
         reservationCreateCartMutate({ reservationId: reservation._id, reservationContent });
@@ -543,6 +587,17 @@ const ProductDetail = () => {
     }
   };
 
+  const isDisabled = () => {
+    if (product.productType == 'ORDER') {
+      if (stock < 1 || isProductCreateCartSubmiting || isReservationCreateCartSubmiting)
+        return true;
+    } else if (product.productType == 'RESERVATION') {
+      if (!selectedTime || !selectedReservationOption) return true;
+    }
+    return false;
+  };
+
+  const disabled = isDisabled();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <YStack flex={1} alignItems="center">
@@ -576,22 +631,31 @@ const ProductDetail = () => {
           </ScrollView>
           <Separator borderColor={'lightslategrey'} />
           <XStack minHeight={'$6'} justifyContent="space-between">
-            {isPriceDetailFetching ? (
-              <Spinner />
-            ) : (
-              <SizableText>HK$ {priceDetail.subtotal}</SizableText>
-            )}
+            <Price
+              isLoading={
+                product.productType == 'ORDER'
+                  ? isPriceDetailFetching
+                  : isReservationTotalPriceFetching
+              }
+              price={
+                product.productType == 'ORDER'
+                  ? parseFloat(priceDetail?.subtotal ?? '0')
+                  : (reservationTotalPrice ?? 0)
+              }
+            />
             <XStack space="$2">
-              <StyledButton
-                disabled={stock < 1 || isProductCreateCartSubmiting}
-                onPress={onAddCartPress}>
-                {t('addToCart')}
-                <AntDesign name="shoppingcart" color="#fff" />
-              </StyledButton>
-              <StyledButton onPress={onCheckoutPress}>
-                {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
-                <Ionicons name="cash-outline" color="#fff" />
-              </StyledButton>
+              <TouchableOpacity disabled={disabled} onPress={onAddCartPress}>
+                <StyledButton disabled={disabled}>
+                  {t('addToCart')}
+                  <AntDesign name="shoppingcart" color="#fff" />
+                </StyledButton>
+              </TouchableOpacity>
+              <TouchableOpacity disabled={disabled} onPress={onCheckoutPress}>
+                <StyledButton disabled={disabled}>
+                  {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
+                  <Ionicons name="cash-outline" color="#fff" />
+                </StyledButton>
+              </TouchableOpacity>
             </XStack>
           </XStack>
         </YStack>
