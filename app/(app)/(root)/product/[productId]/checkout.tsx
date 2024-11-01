@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { FlatList, RefreshControl, SafeAreaView, SectionList } from 'react-native';
+import { FlatList, SafeAreaView, SectionList } from 'react-native';
 import { H2, RadioGroup, YStack, XStack, Text, SizableText } from 'tamagui';
 import {
   checkIsVerified,
@@ -56,6 +56,7 @@ const Checkout = () => {
     productId: string;
     orderContentStr: string;
   }>();
+
   const orderContent = JSON.parse(orderContentStr);
   const navigation = useNavigation();
   const router = useRouter();
@@ -261,10 +262,6 @@ const Checkout = () => {
   )
     return <></>;
 
-  const onRefresh = () => {
-    console.log('on refresh');
-  };
-
   const onAddressChange = (field: keyof Address, value: string) => {
     setAddress((prevAddress) => {
       let address = { ...prevAddress };
@@ -310,6 +307,8 @@ const Checkout = () => {
     if (!verifyCode.length || isVerifyCodeSubmitting) return;
     onVerifyCodeSubmit();
   };
+
+  console.log(orderContent);
 
   const renderSectionItem = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
@@ -453,6 +452,8 @@ const Checkout = () => {
             </XStack>
           </YStack>
         );
+      default:
+        return <></>;
     }
   };
 
@@ -556,7 +557,6 @@ const Checkout = () => {
       <YStack flex={1}>
         <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
           <SectionList
-            refreshControl={<RefreshControl refreshing={false} onRefresh={() => onRefresh()} />}
             style={{
               backgroundColor: '#fff',
             }}

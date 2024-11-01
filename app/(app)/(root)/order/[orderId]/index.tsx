@@ -148,6 +148,7 @@ const OrderDetail = () => {
           renderItem={({ item }) => {
             return (
               <OrderProductCard
+                choices={item.choices}
                 quantity={item.quantity}
                 product={item.product}
                 price={item.price}

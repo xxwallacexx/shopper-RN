@@ -44,6 +44,12 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="reservation"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

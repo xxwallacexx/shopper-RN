@@ -3,10 +3,12 @@ import { useLocale } from '~/hooks';
 import { Product } from '~/types';
 
 const OrderProductCard = ({
+  choices,
   quantity,
   product,
   price,
 }: {
+  choices: string[];
   quantity: number;
   product: Product;
   price: number;
@@ -31,9 +33,13 @@ const OrderProductCard = ({
           <SizableText numberOfLines={1} ellipsizeMode="tail">
             {product.name}
           </SizableText>
-          {/*
-            choices
-          */}
+          {choices.map((c) => {
+            return (
+              <SizableText size={'$2'} numberOfLines={1} ellipsizeMode="tail">
+                {c}
+              </SizableText>
+            );
+          })}
         </YStack>
         <XStack space="$2">
           <SizableText>{t('orderQuantity', { quantity: quantity })}</SizableText>

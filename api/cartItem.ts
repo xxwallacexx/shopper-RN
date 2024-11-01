@@ -61,7 +61,9 @@ const reservationCreateCart = async (
       shop,
     },
   };
-  return await axios(options);
+  return await axios(options).catch((e) => {
+    throw new Error(e.response.data.errorCodes);
+  });
 };
 
 const productCreateCart = async (token: string, id: string, orderContent: OrderContent) => {

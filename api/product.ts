@@ -115,7 +115,7 @@ const getProductPriceDetail = async (
       currentCouponId,
     },
   };
-  let res: ProductPriceDetail = axios(options).then((res) => {
+  let res: ProductPriceDetail = await axios(options).then((res) => {
     return res.data;
   });
   return res;
