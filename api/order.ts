@@ -20,8 +20,21 @@ const listOrders = async (token: string, skip: number) => {
   let res: Order[] = await axios(options).then((res) => {
     return res.data.orders;
   });
-  console.log(res);
   return res;
 };
 
-export { listOrders };
+const getOrder = async (token: string, id: string) => {
+  const options = {
+    method: 'get',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/order/${id}`,
+  };
+  let res: Order = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
+
+export { listOrders, getOrder };
