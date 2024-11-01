@@ -1,31 +1,22 @@
 import { Image, SizableText, XStack, YStack } from 'tamagui';
 import { useLocale } from '~/hooks';
-import { Badge } from '~/tamagui.config';
-import { CheckoutProduct, CheckoutCoupon } from '~/types';
+import { Product } from '~/types';
 
-const CheckoutItemCard = ({
+const OrderProductCard = ({
   quantity,
   product,
-  coupon,
+  price,
 }: {
   quantity: number;
-  product: CheckoutProduct;
-  coupon?: CheckoutCoupon;
+  product: Product;
+  price: number;
 }) => {
   const { t } = useLocale();
-  const priceAdjustment = product.productStock ? product.productStock.priceAdjustment : 0;
-  const singleItemPrice = product.price + priceAdjustment;
-  const singleItemDiscount = coupon ? coupon.coupon.discount : 0;
-  const singleItemSubtotal = singleItemPrice * quantity - singleItemDiscount;
+
   const photoUri = product.photos && product.photos.length ? product.photos[0].path : undefined;
 
   return (
-    <XStack
-      p={'$1'}
-      space="$2"
-      borderColor={'lightslategrey'}
-      borderRadius={'$radius.3'}
-      borderWidth={0.3}>
+    <XStack flex={1} backgroundColor={'white'} p={'$1'} space="$2">
       <YStack width={'40%'} borderRadius={'$radius.3'} overflow="hidden">
         <Image
           backgroundColor={'white'}
@@ -34,11 +25,6 @@ const CheckoutItemCard = ({
           source={{ uri: photoUri }}
           width={'100%'}
         />
-        <Badge position="absolute" top={8} right={8}>
-          <SizableText size={'$1'} color="#fff">
-            HK$ {(product.price + priceAdjustment).toFixed(2)}
-          </SizableText>
-        </Badge>
       </YStack>
       <YStack py={'$2'} space="$2" justifyContent="space-between">
         <YStack>
@@ -51,11 +37,11 @@ const CheckoutItemCard = ({
         </YStack>
         <XStack space="$2">
           <SizableText>{t('orderQuantity', { quantity: quantity })}</SizableText>
-          <SizableText color={'$primary'}>{`HK$ ${singleItemSubtotal.toFixed(2)}`}</SizableText>
+          <SizableText color={'$primary'}>{`HK$ ${price}`}</SizableText>
         </XStack>
       </YStack>
     </XStack>
   );
 };
 
-export default CheckoutItemCard;
+export default OrderProductCard;

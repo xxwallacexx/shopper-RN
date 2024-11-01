@@ -13,6 +13,7 @@ import Dialog from './Dialog';
 import CouponCard from './CouponCard';
 import PaymentSheetCard from './PaymentSheetCard';
 import ContactForm from './ContactForm';
+import OrderProductCard from './OrderProductCard';
 
 export {
   ContactForm,
@@ -30,4 +31,5 @@ export {
   Dialog,
   CouponCard,
   PaymentSheetCard,
+  OrderProductCard,
 };

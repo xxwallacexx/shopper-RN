@@ -295,7 +295,7 @@ export type Order = {
     coupon: UserCoupon;
     name: string;
     discount: number;
-  };
+  }[];
   price: number;
   orderId: string;
   stripeTransactionId: string;
