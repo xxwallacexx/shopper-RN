@@ -27,24 +27,68 @@ import {
   productCreateCart,
   getReservationTotalPrice,
 } from '~/api';
-import { BannerCarousel, Dialog, OptionSelection } from '~/components';
+import { BannerCarousel, Dialog, OptionSheetContent } from '~/components';
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from '~/components/ActionSheet';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import ProductOptionCard from '~/components/ProductOptionCard';
 import { useAuth, useLocale } from '~/hooks';
 import { PRIMARY_9_COLOR } from '@env';
 import * as Sharing from 'expo-sharing';
 import moment from 'moment';
-import ReservationCalendar from '~/components/ReservationCalendar';
-import { OrderContent, ReservationContent, ReservationOption } from '~/types';
+import { OrderContent, Product, ReservationContent, ReservationOption } from '~/types';
 import Toast from 'react-native-toast-message';
 import { Stack } from 'tamagui';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Price = ({ isLoading, price }: { isLoading: boolean; price: number }) => {
   return <>{isLoading ? <Spinner /> : <SizableText>HK$ {price}</SizableText>}</>;
+};
+
+const QuantitySelector = ({
+  productType,
+  quantity,
+  stock,
+  minQuantity,
+  selectedReservationOption,
+  onQuantityChange,
+}: {
+  productType: Product['productType'];
+  quantity: number;
+  stock: number;
+  minQuantity: number;
+  selectedReservationOption?: string;
+  onQuantityChange: (value: number) => void;
+}) => {
+  const { t } = useLocale();
+  if (productType == 'RESERVATION' && !selectedReservationOption) return;
+  return (
+    <YStack>
+      <Label>{t('quantity')}</Label>
+      <XStack ml={2} space={'$2'} alignItems="center">
+        <StyledButton
+          disabled={quantity < minQuantity + 1 || quantity < 2}
+          pressStyle={{ opacity: 0.5 }}
+          size="$2"
+          onPress={() => onQuantityChange(quantity - 1)}
+          icon={<AntDesign name="minus" />}
+        />
+        <SizableText>{quantity}</SizableText>
+        <StyledButton
+          disabled={quantity >= stock}
+          pressStyle={{ opacity: 0.5 }}
+          size="$2"
+          onPress={() => onQuantityChange(quantity + 1)}
+          icon={<AntDesign name="plus" />}
+        />
+        {stock < 20 ? (
+          <SizableText>
+            {t('stock')}: {stock}
+          </SizableText>
+        ) : null}
+      </XStack>
+    </YStack>
+  );
 };
 
 const ProductDetail = () => {
@@ -128,14 +172,14 @@ const ProductDetail = () => {
   const { data: product, isFetching: isProductFetching } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
-      return await getProduct(`${productId}`);
+      return await getProduct(productId);
     },
   });
 
   const { data: options = [], isFetching: isOptionsFetching } = useQuery({
     queryKey: ['productOption', productId],
     queryFn: async () => {
-      return await listOptions(`${productId}`);
+      return await listOptions(productId);
     },
   });
 
@@ -307,6 +351,7 @@ const ProductDetail = () => {
         return router.navigate({
           pathname: '/reservation/[reservationId]/checkout',
           params: {
+            productId,
             reservationId: reservation._id,
             reservationContentStr: JSON.stringify(reservationContent),
           },
@@ -434,132 +479,6 @@ const ProductDetail = () => {
     setSelectedReservationOption(value);
   };
 
-  const renderSheetContent = () => {
-    switch (product.productType) {
-      case 'ORDER':
-        return (
-          <YStack space="$4">
-            {options.map((option) => {
-              return (
-                <ProductOptionCard
-                  key={option._id}
-                  option={option}
-                  selectedChoice={
-                    selectedChoices.find((s) => {
-                      return s.optionId == option._id;
-                    })?.choiceId
-                  }
-                  onChoiceChange={onChoiceChange}
-                />
-              );
-            })}
-          </YStack>
-        );
-      case 'RESERVATION':
-        return (
-          <YStack space="$4">
-            <Label>{t('pleaseSelectDate')}</Label>
-            <ReservationCalendar
-              isLoading={isReservationsFetching}
-              reservations={reservations}
-              selectedDate={selectedDate}
-              onDayChange={onDayChange}
-            />
-            {availableTimes.length ? (
-              <OptionSelection
-                title={t('pleaseSelectTime')}
-                options={availableTimes.map((t) => {
-                  return { label: moment(t).format('HH:mm'), value: moment(t).toISOString() };
-                })}
-                selectedOption={selectedTime?.toISOString()}
-                onOptionChange={onTimeChange}
-              />
-            ) : null}
-            {availableReservationOptions.length ? (
-              <YStack>
-                <Label>{t('pleaseSelectOption')}</Label>
-                <StyledButton
-                  mx="$1"
-                  h="$3"
-                  backgroundColor={'#fff'}
-                  pressStyle={{ backgroundColor: 'ghostwhite' }}
-                  color="#000"
-                  onPress={() => setIsReservationOptionSheetOpen(true)}>
-                  {selectedReservationOption
-                    ? availableReservationOptions.find((o) => {
-                        return o._id == selectedReservationOption;
-                      })?.name
-                    : t('pleaseSelect')}
-                </StyledButton>
-              </YStack>
-            ) : null}
-            <ActionSheet
-              isSheetOpen={isReservationOptionSheetOpen}
-              setIsSheetOpen={setIsReservationOptionSheetOpen}
-              sheetPosition={reservationOptionsSheetPosition}
-              snapPoints={[40]}
-              setSheetPosition={setReservationOptionsSheetPosition}>
-              <ScrollView space="$4">
-                {availableReservationOptions.map((o) => {
-                  const selected = o._id == selectedReservationOption;
-                  return (
-                    <StyledButton
-                      backgroundColor={selected ? '$primary' : 'slategray'}
-                      key={o._id}
-                      onPress={() => onReservationOptionChange(o._id)}>
-                      <SizableText color="white">{o.name}</SizableText>
-                    </StyledButton>
-                  );
-                })}
-              </ScrollView>
-            </ActionSheet>
-          </YStack>
-        );
-      default:
-        return <></>;
-    }
-  };
-
-  const quantitySelector = () => {
-    return (
-      <YStack>
-        <Label>{t('quantity')}</Label>
-        <XStack ml={2} space={'$2'} alignItems="center">
-          <StyledButton
-            disabled={quantity < minQuantity + 1 || quantity < 2}
-            pressStyle={{ opacity: 0.5 }}
-            size="$2"
-            onPress={() => onQuantityChange(quantity - 1)}
-            icon={<AntDesign name="minus" />}
-          />
-          <SizableText>{quantity}</SizableText>
-          <StyledButton
-            disabled={quantity >= stock}
-            pressStyle={{ opacity: 0.5 }}
-            size="$2"
-            onPress={() => onQuantityChange(quantity + 1)}
-            icon={<AntDesign name="plus" />}
-          />
-          {stock < 20 ? (
-            <SizableText>
-              {t('stock')}: {stock}
-            </SizableText>
-          ) : null}
-        </XStack>
-      </YStack>
-    );
-  };
-
-  const renderQuantitySelector = () => {
-    switch (product.productType) {
-      case 'ORDER':
-        return quantitySelector();
-      case 'RESERVATION':
-        if (!selectedReservationOption) return <></>;
-        return quantitySelector();
-    }
-  };
-
   const onAddCartPress = () => {
     if (stock < 1 || isProductCreateCartSubmiting || isReservationCreateCartSubmiting) return;
     switch (product.productType) {
@@ -598,6 +517,7 @@ const ProductDetail = () => {
   };
 
   const disabled = isDisabled();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <YStack flex={1} alignItems="center">
@@ -612,12 +532,37 @@ const ProductDetail = () => {
           keyExtractor={(item, index) => item + index.toString()}
         />
         <BottomAction justifyContent="flex-end">
-          <StyledButton onPress={() => setIsOptionSheetOpen(true)}>
-            {t('addToCart')}
-            <AntDesign name="shoppingcart" color="#fff" />
-          </StyledButton>
+          <TouchableOpacity
+            onPress={() => {
+              setIsOptionSheetOpen(true);
+            }}>
+            <StyledButton>
+              {t('addToCart')}
+              <AntDesign name="shoppingcart" color="#fff" />
+            </StyledButton>
+          </TouchableOpacity>
         </BottomAction>
       </YStack>
+      <ActionSheet
+        isSheetOpen={isReservationOptionSheetOpen}
+        setIsSheetOpen={setIsReservationOptionSheetOpen}
+        sheetPosition={reservationOptionsSheetPosition}
+        snapPoints={[40]}
+        setSheetPosition={setReservationOptionsSheetPosition}>
+        <ScrollView space="$4">
+          {availableReservationOptions.map((o) => {
+            const selected = o._id == selectedReservationOption;
+            return (
+              <StyledButton
+                backgroundColor={selected ? '$primary' : 'slategray'}
+                key={o._id}
+                onPress={() => onReservationOptionChange(o._id)}>
+                <SizableText color="white">{o.name}</SizableText>
+              </StyledButton>
+            );
+          })}
+        </ScrollView>
+      </ActionSheet>
       <ActionSheet
         isSheetOpen={isOptionSheetOpen}
         setIsSheetOpen={setIsOptionSheetOpen}
@@ -626,8 +571,30 @@ const ProductDetail = () => {
         setSheetPosition={setSheetPosition}>
         <YStack flex={1} space="$2" justifyContent="space-between">
           <ScrollView>
-            {renderSheetContent()}
-            {renderQuantitySelector()}
+            <OptionSheetContent
+              productType={product.productType}
+              options={options}
+              selectedChoices={selectedChoices}
+              onChoiceChange={onChoiceChange}
+              isReservationsFetching={isReservationsFetching}
+              reservations={reservations}
+              selectedDate={selectedDate}
+              onDayChange={onDayChange}
+              availableTimes={availableTimes}
+              selectedTime={selectedTime}
+              onTimeChange={onTimeChange}
+              availableReservationOptions={availableReservationOptions}
+              onAvailableReservationOptionPress={() => setIsReservationOptionSheetOpen(true)}
+              selectedReservationOption={selectedReservationOption}
+            />
+            <QuantitySelector
+              productType={product.productType}
+              quantity={quantity}
+              stock={stock}
+              minQuantity={minQuantity}
+              selectedReservationOption={selectedReservationOption}
+              onQuantityChange={onQuantityChange}
+            />
           </ScrollView>
           <Separator borderColor={'lightslategrey'} />
           <XStack minHeight={'$6'} justifyContent="space-between">
@@ -660,6 +627,7 @@ const ProductDetail = () => {
           </XStack>
         </YStack>
       </ActionSheet>
+
       <Dialog isOpen={isAddCartSuccessDialogOpen}>
         <YStack space="$4">
           <SizableText fontSize={'$6'}>{t('addSuccess')}</SizableText>

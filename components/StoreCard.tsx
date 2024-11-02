@@ -1,24 +1,16 @@
-import { XStack, Stack, Image, YStack,  SizableText } from "tamagui"
-import { Title } from "~/tamagui.config";
+import { XStack, Stack, Image, YStack, SizableText } from 'tamagui';
+import { Title } from '~/tamagui.config';
 
-const StoreCard = ({
-  logo,
-  name,
-  address
-}: {
-  logo: string;
-  name: string;
-  address: string;
-}) => {
+const StoreCard = ({ logo, name, address }: { logo: string; name: string; address: string }) => {
   return (
-    <XStack space="$4" >
+    <XStack space="$4">
       <Stack w="$size.6">
         <Image
-          backgroundColor={"white"}
+          backgroundColor={'white'}
           resizeMode="contain"
           aspectRatio={1}
           source={{ uri: logo }}
-          width={"100%"}
+          width={'100%'}
         />
       </Stack>
       <YStack space="$1" flex={1}>
@@ -27,14 +19,12 @@ const StoreCard = ({
           color="slategray"
           textOverflow="ellipsis"
           numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+          ellipsizeMode="tail">
           {address}
         </SizableText>
       </YStack>
     </XStack>
+  );
+};
 
-  )
-}
-
-export default StoreCard
+export default StoreCard;

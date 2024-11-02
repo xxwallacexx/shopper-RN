@@ -14,6 +14,8 @@ import CouponCard from './CouponCard';
 import PaymentSheetCard from './PaymentSheetCard';
 import ContactForm from './ContactForm';
 import OrderProductCard from './OrderProductCard';
+import CheckoutReservationCard from './CheckoutReservationCard';
+import OptionSheetContent from './OptionSheetContent';
 
 export {
   ContactForm,
@@ -32,4 +34,6 @@ export {
   CouponCard,
   PaymentSheetCard,
   OrderProductCard,
+  CheckoutReservationCard,
+  OptionSheetContent,
 };

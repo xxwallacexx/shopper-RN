@@ -114,7 +114,7 @@ const Checkout = () => {
     },
   });
 
-  const { data: shop, isLoading: isShopLoading } = useQuery({
+  const { data: shop, isLoading: isShopFetching } = useQuery({
     queryKey: ['shop'],
     queryFn: async () => {
       let response = await getShop();
@@ -251,7 +251,7 @@ const Checkout = () => {
   }, [selectedCoupon]);
 
   if (
-    isShopLoading ||
+    isShopFetching ||
     !shop ||
     !itemDetail ||
     !priceDetail ||
@@ -289,8 +289,6 @@ const Checkout = () => {
           default:
             return <></>;
         }
-      case 'paymentMethod':
-        return <H2 backgroundColor={'#fff'}>{t('paymentMethod')}</H2>;
       default:
         return <></>;
     }
@@ -307,8 +305,6 @@ const Checkout = () => {
     if (!verifyCode.length || isVerifyCodeSubmitting) return;
     onVerifyCodeSubmit();
   };
-
-  console.log(orderContent);
 
   const renderSectionItem = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
@@ -615,7 +611,8 @@ const Checkout = () => {
           renderItem={({ item }) => {
             return (
               <StyledButton
-                bg={selectedCoupon ? '$primary' : 'slategrey'}
+                my={'$2'}
+                bg={selectedCoupon?._id == item._id ? '$primary' : 'slategrey'}
                 onPress={() => onCouponPress(item)}>
                 {item.coupon.name}
               </StyledButton>
