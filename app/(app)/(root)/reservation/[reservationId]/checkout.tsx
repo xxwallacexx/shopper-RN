@@ -1,4 +1,9 @@
-import { isPlatformPaySupported } from '@stripe/stripe-react-native';
+import {
+  createPlatformPayToken,
+  createToken,
+  isPlatformPaySupported,
+  PlatformPay,
+} from '@stripe/stripe-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useAuth, useCountdown, useLocale } from '~/hooks';
@@ -11,19 +16,30 @@ import {
   verifyCode as verifySms,
   listReservationAvailableCoupons,
   getProduct,
-  listOptions,
   getReservation,
+  createReservationOrder,
 } from '~/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { UserCoupon } from '~/types';
+import { Contact, PaymentMethodEnum, ReservationContent, UserCoupon } from '~/types';
 import Toast from 'react-native-toast-message';
-import { FlatList, SafeAreaView } from 'react-native';
-import { H2, SizableText, YStack, XStack, ScrollView } from 'tamagui';
-import { CheckoutReservationCard, StoreCard, Spinner, ContactForm } from '~/components';
-import { Container, StyledButton, Title } from '~/tamagui.config';
+import { FlatList, Platform, SafeAreaView } from 'react-native';
+import { H2, SizableText, YStack, XStack, ScrollView, Stack, Text, AlertDialog } from 'tamagui';
+import {
+  CheckoutReservationCard,
+  StoreCard,
+  Spinner,
+  ContactForm,
+  PaymentSheetCard,
+  Dialog,
+} from '~/components';
+import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
 import ActionSheet from '~/components/ActionSheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Skeleton } from 'moti/skeleton';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import * as Calendar from 'expo-calendar';
+import { PermissionStatus } from 'expo-calendar';
+import moment from 'moment';
 
 const Checkout = () => {
   const { productId, reservationId, reservationContentStr } = useLocalSearchParams<{
@@ -158,6 +174,72 @@ const Checkout = () => {
     },
   });
 
+  const { mutate: onCreateReservationOrderSubmit, isPending: isCreateReservationOrderSubmitting } =
+    useMutation({
+      mutationFn: async ({
+        stripeTokenId,
+        contact,
+        reservationContent,
+        paymentMethod,
+        selectedCouponId,
+      }: {
+        stripeTokenId: string;
+        contact: Contact;
+        reservationContent: ReservationContent;
+        paymentMethod: keyof typeof PaymentMethodEnum;
+        selectedCouponId?: string;
+      }) => {
+        return await createReservationOrder(
+          token,
+          reservationId,
+          stripeTokenId,
+          contact,
+          reservationContent,
+          paymentMethod,
+          selectedCouponId
+        );
+      },
+      onSuccess: async (res) => {
+        const { status: calendarStatus } = await Calendar.requestCalendarPermissionsAsync();
+        await Calendar.requestRemindersPermissionsAsync();
+        if (calendarStatus == PermissionStatus.GRANTED) {
+          let notesToken = [];
+          for (const reservation of res.reservations) {
+            const { time, duration, options, product } = reservation.reservation;
+            const option = options.find((f) => {
+              return f._id == reservation.option;
+            });
+            notesToken.push(`${option?.name}: ${reservation?.quantity}`);
+            const startDate = moment(time).toDate();
+            const endDate = moment(time).add(duration, 'minutes').toDate();
+            const calendars = await Calendar.getCalendarsAsync();
+            const [defaultCalendar] = calendars.filter((each) => each.source.name === 'Default');
+            const calendarId = defaultCalendar.id;
+            if (calendarId) {
+              const event = {
+                title: product.name,
+                startDate: startDate,
+                endDate: endDate,
+                timeZone: Platform.OS === 'ios' ? undefined : 'GMT+8',
+                notes: notesToken.join(),
+              };
+              await Calendar.createEventAsync(calendarId, event);
+            }
+          }
+        }
+        setIsPaymentSheetOpen(false);
+        setIsSuccessDialogOpen(true);
+      },
+      onError: (e) => {
+        console.log(e);
+        Toast.show({
+          position: 'top',
+          type: 'error',
+          text1: t(e.message),
+        });
+      },
+    });
+
   useEffect(() => {
     refetchTotalPrice();
   }, [selectedCoupon]);
@@ -174,7 +256,18 @@ const Checkout = () => {
   };
   const isSubmitting = false;
 
-  if (isShopFetching || !shop || !product || !reservation || !totalPrice) return <></>;
+  if (
+    isShopFetching ||
+    !shop ||
+    !product ||
+    !reservation ||
+    !totalPrice ||
+    !user ||
+    isVerified == undefined ||
+    isPlatformPayAvailable == undefined ||
+    isPlatformPaySupportedLoading
+  )
+    return <></>;
 
   const onGetVerifyCodePress = () => {
     if (phoneNumber.length !== 8 || isGetVerifyCodeSubmitting || seconds > 0) return;
@@ -184,6 +277,66 @@ const Checkout = () => {
   const onVerifyCodePress = () => {
     if (!verifyCode.length || isVerifyCodeSubmitting) return;
     onVerifyCodeSubmit();
+  };
+
+  const isPayDisabled = () => {
+    if (phoneNumber == '' || name == '' || !isVerified) return true;
+    return false;
+  };
+
+  const onPaymentSuccessConfirmPress = () => {
+    setIsSuccessDialogOpen(false);
+    router.back();
+  };
+
+  const onCardPaymentPress = async () => {
+    const { token: stripeToken, error } = await createToken({
+      type: 'Card',
+    });
+    if (error) {
+      return Toast.show({
+        type: 'error',
+        text1: t('creditCardInfoError'),
+      });
+    }
+    let stripeTokenId = stripeToken.id;
+    let contact: Contact = { name, phoneNumber };
+
+    onCreateReservationOrderSubmit({
+      stripeTokenId,
+      contact,
+      reservationContent: { reservation: reservationId, ...reservationContent },
+      paymentMethod: 'CREDIT_CARD',
+      selectedCouponId: selectedCoupon?._id,
+    });
+  };
+
+  const onPlatformPayPress = async () => {
+    const platformPayCartItems: PlatformPay.CartSummaryItem[] = [
+      {
+        label: shop.name,
+        paymentType: PlatformPay.PaymentType.Immediate,
+        amount: totalPrice.toString() ?? '0',
+      },
+    ];
+    const { token } = await createPlatformPayToken({
+      applePay: {
+        merchantCountryCode: 'HK',
+        currencyCode: 'HKD',
+        cartItems: platformPayCartItems,
+      },
+    });
+
+    let contact: Contact = { name, phoneNumber };
+
+    if (!token) return;
+    onCreateReservationOrderSubmit({
+      stripeTokenId: token.id,
+      contact,
+      reservationContent: { reservation: reservationId, ...reservationContent },
+      paymentMethod: 'APPLE_PAY',
+      selectedCouponId: selectedCoupon?._id,
+    });
   };
 
   return (
@@ -231,6 +384,36 @@ const Checkout = () => {
           </XStack>
         </YStack>
       </ScrollView>
+      <BottomAction justifyContent="space-between">
+        <>
+          {isTotalPriceFetching ? (
+            <Skeleton width={'30%'} height={12} colorMode="light" />
+          ) : (
+            <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
+          )}
+        </>
+        <TouchableOpacity disabled={isPayDisabled()} onPress={() => setIsPaymentSheetOpen(true)}>
+          <StyledButton disabled={isPayDisabled()}>{t('pay')}</StyledButton>
+        </TouchableOpacity>
+      </BottomAction>
+      <ActionSheet
+        isSheetOpen={isPaymenySheetOpen}
+        setIsSheetOpen={setIsPaymentSheetOpen}
+        sheetPosition={paymentSheetPosition}
+        snapPoints={[80]}
+        setSheetPosition={setPaymentSheetPosition}>
+        <ScrollView space="$4">
+          <PaymentSheetCard
+            isLoading={isCreateReservationOrderSubmitting}
+            cardPaymentDisabled={!isCardCompleted || isCreateReservationOrderSubmitting}
+            isPlatformPayAvailable={isPlatformPayAvailable}
+            onCardCompleted={setIsCardCompleted}
+            onCardPaymentPress={onCardPaymentPress}
+            onPlatformPayPress={onPlatformPayPress}
+          />
+        </ScrollView>
+      </ActionSheet>
+
       <ActionSheet
         isSheetOpen={isUserCouponSheetOpen}
         setIsSheetOpen={setIsUserCouponSheetOpen}
@@ -275,6 +458,23 @@ const Checkout = () => {
           }}
         />
       </ActionSheet>
+      <Dialog isOpen={isSuccessDialogOpen}>
+        <YStack space="$4">
+          <SizableText fontSize={'$6'}>{t('paymentSuccess')}</SizableText>
+          <Stack>
+            <Text>{t('paymentSuccessContent')}</Text>
+            <XStack>
+              <Text>{t('pleaseGoTo')}</Text>
+              <Text fontWeight={'700'}>{t('myOrders')}</Text>
+              <Text>{t('toCheck')}</Text>
+            </XStack>
+          </Stack>
+
+          <AlertDialog.Action asChild>
+            <StyledButton onPress={onPaymentSuccessConfirmPress}>{t('confirm')}</StyledButton>
+          </AlertDialog.Action>
+        </YStack>
+      </Dialog>
     </SafeAreaView>
   );
 };

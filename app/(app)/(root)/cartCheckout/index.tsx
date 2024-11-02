@@ -419,7 +419,7 @@ const CartCheckout = () => {
       stripeTokenId,
       contact: { name, phoneNumber },
       deliveryMethod: selectedDeliveryMethod ?? 'SELF_PICK_UP',
-      paymentMethod: 'APPLE_PAY',
+      paymentMethod: 'CREDIT_CARD',
       selectedCouponIds,
       pickUpStore: selectedDeliveryMethod == 'SELF_PICK_UP' ? selectedStore : undefined,
     });

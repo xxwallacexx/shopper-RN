@@ -475,7 +475,7 @@ const Checkout = () => {
       contact: { name, phoneNumber },
       orderContent,
       deliveryMethod: selectedDeliveryMethod ?? 'SELF_PICK_UP',
-      paymentMethod: 'APPLE_PAY',
+      paymentMethod: 'CREDIT_CARD',
       selectedCouponId: selectedCoupon?._id,
       pickUpStore: selectedDeliveryMethod == 'SELF_PICK_UP' ? selectedStore : undefined,
     });
