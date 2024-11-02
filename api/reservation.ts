@@ -80,4 +80,24 @@ const getReservationTotalPrice = async (
   });
   return res;
 };
-export { listReservations, listReservationAvailableCoupons, getReservationTotalPrice };
+
+const getReservation = async (token: string, id: string) => {
+  const options = {
+    method: 'get',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/reservation/${id}`,
+  };
+  let res: Reservation = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
+
+export {
+  listReservations,
+  listReservationAvailableCoupons,
+  getReservationTotalPrice,
+  getReservation,
+};
