@@ -297,7 +297,8 @@ export type Order = {
   status: OrderStatusEnum;
   reservations: {
     reservation: Reservation;
-    option: string[];
+    option: string;
+    quantity: number;
   }[];
   userCoupons: {
     coupon: UserCoupon;

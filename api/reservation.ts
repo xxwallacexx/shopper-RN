@@ -1,8 +1,16 @@
 import axios from 'axios';
 
-import { API_URL } from '@env';
-import { Reservation, UserCoupon, ReservationContent } from '~/types';
+import { API_URL, SHOP } from '@env';
+import {
+  Reservation,
+  UserCoupon,
+  ReservationContent,
+  PaymentMethodEnum,
+  Contact,
+  Order,
+} from '~/types';
 const baseUrl = API_URL;
+const shop = SHOP;
 
 const listReservations = async (
   token: string,
@@ -95,9 +103,43 @@ const getReservation = async (token: string, id: string) => {
   return res;
 };
 
+const createReservationOrder = async (
+  token: string,
+  id: string,
+  stripeTokenId: string,
+  contact: Contact,
+  reservationContent: ReservationContent,
+  paymentMethod: keyof typeof PaymentMethodEnum,
+  currentCouponId?: string
+) => {
+  const options = {
+    method: 'post',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/reservation/${id}/order`,
+    data: {
+      currentCouponId,
+      stripeTokenId,
+      contact,
+      shop,
+      reservationContent,
+      paymentMethod,
+    },
+  };
+  let res: Order = await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      throw new Error(e.response.data.errorCodes);
+    });
+  return res;
+};
 export {
   listReservations,
   listReservationAvailableCoupons,
   getReservationTotalPrice,
   getReservation,
+  createReservationOrder,
 };
