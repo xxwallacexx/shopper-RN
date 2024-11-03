@@ -299,6 +299,7 @@ export type Order = {
     reservation: Reservation;
     option: string;
     quantity: number;
+    price: number;
   }[];
   userCoupons: {
     coupon: UserCoupon;
