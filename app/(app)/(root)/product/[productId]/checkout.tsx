@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, SectionList } from 'react-native';
@@ -57,6 +57,7 @@ const Checkout = () => {
     orderContentStr: string;
   }>();
 
+  const queryClient = useQueryClient();
   const orderContent = JSON.parse(orderContentStr);
   const navigation = useNavigation();
   const router = useRouter();
@@ -231,7 +232,8 @@ const Checkout = () => {
         );
       },
       onSuccess: (res) => {
-        console.log('paid');
+        queryClient.resetQueries({ queryKey: ['userCoupons'] });
+        queryClient.resetQueries({ queryKey: ['orders'] });
         setIsPaymentSheetOpen(false);
         setIsSuccessDialogOpen(true);
       },
