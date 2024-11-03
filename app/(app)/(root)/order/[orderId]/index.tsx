@@ -5,7 +5,7 @@ import { FlatList } from 'react-native';
 import { Separator, SizableText, XStack } from 'tamagui';
 import { ScrollView, YStack } from 'tamagui';
 import { getOrder } from '~/api';
-import { CheckoutItemCard, OrderProductCard } from '~/components';
+import { CheckoutItemCard, OrderProductCard, OrderReservationCard } from '~/components';
 import Loader from '~/components/Loader';
 import { useAuth, useLocale } from '~/hooks';
 import { Contact, DeliveryMethodEnum } from '~/types';
@@ -61,7 +61,6 @@ const OrderDetail = () => {
   let price = order?.price ?? 0;
   let shippingFee = order?.shippingFee ?? 0;
 
-  console.log(order?.userCoupons);
   let discount = order?.userCoupons.reduce((acc, f) => {
     return acc + f.discount;
   }, 0);
@@ -80,6 +79,7 @@ const OrderDetail = () => {
 
   const status = orderStatus();
 
+  console.log(order);
   return (
     <ScrollView>
       <YStack
@@ -142,7 +142,7 @@ const OrderDetail = () => {
             pickUpStore={order?.pickUpStore}
           />
         ) : null}
-        {order?.products.length ? <Separator /> : null}
+        {order?.products.length || order?.reservations.length ? <Separator /> : null}
         <FlatList
           data={order?.products}
           renderItem={({ item }) => {
@@ -151,6 +151,27 @@ const OrderDetail = () => {
                 choices={item.choices}
                 quantity={item.quantity}
                 product={item.product}
+                price={item.price}
+              />
+            );
+          }}
+          scrollEnabled={false}
+          ItemSeparatorComponent={() => {
+            return <Separator />;
+          }}
+        />
+        <FlatList
+          data={order?.reservations}
+          renderItem={({ item }) => {
+            const option = item.reservation.options.find((o) => {
+              return o._id == item.option;
+            });
+            return (
+              <OrderReservationCard
+                option={option}
+                time={item.reservation.time}
+                quantity={item.quantity}
+                product={item.reservation.product}
                 price={item.price}
               />
             );

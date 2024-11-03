@@ -1,35 +1,27 @@
 import moment from 'moment';
 import { Image, SizableText, XStack, YStack } from 'tamagui';
 import { useLocale } from '~/hooks';
-import { Badge } from '~/tamagui.config';
-import { CheckoutProduct, CheckoutCoupon, Reservation, ReservationContent, Product } from '~/types';
+import { Product, ReservationOption } from '~/types';
 
-const CheckoutReservationCard = ({
+const OrderReservationCard = ({
+  option,
+  quantity,
   product,
-  reservationContent,
-  reservation,
+  time,
   price,
-  coupon,
 }: {
+  option?: ReservationOption;
+  quantity: number;
   product: Product;
-  reservationContent: ReservationContent;
-  reservation: Reservation;
+  time: Date;
   price: number;
-  coupon?: CheckoutCoupon;
 }) => {
   const { t } = useLocale();
+
   const photoUri = product.photos && product.photos.length ? product.photos[0].path : undefined;
 
-  const option = reservation.options.find((o) => {
-    return o._id == reservationContent.option;
-  });
   return (
-    <XStack
-      p={'$1'}
-      space="$2"
-      borderColor={'lightslategrey'}
-      borderRadius={'$radius.3'}
-      borderWidth={0.3}>
+    <XStack flex={1} backgroundColor={'white'} p={'$1'} space="$2">
       <YStack width={'40%'} borderRadius={'$radius.3'} overflow="hidden">
         <Image
           backgroundColor={'white'}
@@ -45,21 +37,21 @@ const CheckoutReservationCard = ({
             {product.name}
           </SizableText>
           <SizableText size="$2">
-            {t('time')}: {moment(reservation.time).format('YYYY-MM-DD')}
+            {t('time')}: {moment(time).format('YYYY-MM-DD')}
           </SizableText>
           <SizableText size="$2">
             {t('option')}: {option?.name}
           </SizableText>
           <SizableText size="$2">
-            {t('quantity')}: {reservationContent.quantity}
+            {t('quantity')}: {quantity}
           </SizableText>
         </YStack>
         <XStack space="$2">
-          <SizableText color={'$primary'}>{`HK$ ${price.toFixed(2)}`}</SizableText>
+          <SizableText color={'$primary'}>{`HK$ ${price}`}</SizableText>
         </XStack>
       </YStack>
     </XStack>
   );
 };
 
-export default CheckoutReservationCard;
+export default OrderReservationCard;
