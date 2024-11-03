@@ -199,7 +199,8 @@ const CartCheckout = () => {
         queryClient.invalidateQueries({
           queryKey: ['cartItems'],
         });
-
+        queryClient.resetQueries({ queryKey: ['userCoupons'] });
+        queryClient.resetQueries({ queryKey: ['orders'] });
         setIsPaymentSheetOpen(false);
         setIsSuccessDialogOpen(true);
       },

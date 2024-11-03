@@ -19,7 +19,7 @@ import {
   getReservation,
   createReservationOrder,
 } from '~/api';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Contact, PaymentMethodEnum, ReservationContent, UserCoupon } from '~/types';
 import Toast from 'react-native-toast-message';
 import { FlatList, Platform, SafeAreaView } from 'react-native';
@@ -47,6 +47,8 @@ const Checkout = () => {
     reservationId: string;
     reservationContentStr: string;
   }>();
+
+  const queryClient = useQueryClient();
   const reservationContent = JSON.parse(reservationContentStr);
   const router = useRouter();
   const { t } = useLocale();
@@ -227,6 +229,8 @@ const Checkout = () => {
             }
           }
         }
+        queryClient.resetQueries({ queryKey: ['userCoupons'] });
+        queryClient.resetQueries({ queryKey: ['orders'] });
         setIsPaymentSheetOpen(false);
         setIsSuccessDialogOpen(true);
       },
