@@ -35,7 +35,21 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "允許存取以加入預約"
+          "calendarPermission": "允許 $(PRODUCT_NAME) 存取以加入預約"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "允許 $(PRODUCT_NAME) 存取以掃描QRCode或用以上傳圖片",
+          "microphonePermission": "允許 $(PRODUCT_NAME) 存取以掃描QRCode或用以上傳圖片",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "允許存取以上傳商品評價圖片影片及頭像"
         }
       ]
     ],

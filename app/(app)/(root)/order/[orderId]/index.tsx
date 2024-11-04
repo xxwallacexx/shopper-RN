@@ -1,13 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import moment from 'moment';
+import { useState } from 'react';
 import { FlatList } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Separator, SizableText, XStack } from 'tamagui';
 import { ScrollView, YStack } from 'tamagui';
 import { getOrder } from '~/api';
 import { CheckoutItemCard, OrderProductCard, OrderReservationCard } from '~/components';
+import ActionSheet from '~/components/ActionSheet';
 import Loader from '~/components/Loader';
 import { useAuth, useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 import { Contact, DeliveryMethodEnum } from '~/types';
 
 const DeliveryMethod = ({
@@ -44,6 +48,10 @@ const OrderDetail = () => {
   const { token } = useAuth();
   if (!token) return <></>;
 
+  const [selectedProductId, setSelectedProductId] = useState<string>();
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
+  const [actionSheetPosition, setActionSheetPosition] = useState(0);
+
   const { isPending: isOrderLoading, data: order } = useQuery({
     queryKey: ['order', orderId],
     queryFn: async () => {
@@ -79,7 +87,12 @@ const OrderDetail = () => {
 
   const status = orderStatus();
 
-  console.log(order);
+  const onOrderPress = (productId: string) => {
+    setSelectedProductId(productId);
+    setIsActionSheetOpen(true);
+    //router.navigate({ pathname: '/product/[productId]/createComment', params: { productId } });
+  };
+
   return (
     <ScrollView>
       <YStack
@@ -147,12 +160,14 @@ const OrderDetail = () => {
           data={order?.products}
           renderItem={({ item }) => {
             return (
-              <OrderProductCard
-                choices={item.choices}
-                quantity={item.quantity}
-                product={item.product}
-                price={item.price}
-              />
+              <TouchableOpacity onPress={() => onOrderPress(item.product._id)}>
+                <OrderProductCard
+                  choices={item.choices}
+                  quantity={item.quantity}
+                  product={item.product}
+                  price={item.price}
+                />
+              </TouchableOpacity>
             );
           }}
           scrollEnabled={false}
@@ -167,13 +182,18 @@ const OrderDetail = () => {
               return o._id == item.option;
             });
             return (
-              <OrderReservationCard
-                option={option}
-                time={item.reservation.time}
-                quantity={item.quantity}
-                product={item.reservation.product}
-                price={item.price}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  onOrderPress(item.reservation.product._id);
+                }}>
+                <OrderReservationCard
+                  option={option}
+                  time={item.reservation.time}
+                  quantity={item.quantity}
+                  product={item.reservation.product}
+                  price={item.price}
+                />
+              </TouchableOpacity>
             );
           }}
           scrollEnabled={false}
@@ -182,6 +202,35 @@ const OrderDetail = () => {
           }}
         />
       </YStack>
+      <ActionSheet
+        isSheetOpen={isActionSheetOpen}
+        setIsSheetOpen={setIsActionSheetOpen}
+        sheetPosition={actionSheetPosition}
+        snapPoints={[40]}
+        setSheetPosition={setActionSheetPosition}>
+        <ScrollView space="$4">
+          <StyledButton
+            onPress={() => {
+              setIsActionSheetOpen(false);
+              router.navigate({
+                pathname: '/product/[productId]',
+                params: { productId: selectedProductId },
+              });
+            }}>
+            {t('productDetail')}
+          </StyledButton>
+          <StyledButton
+            onPress={() => {
+              setIsActionSheetOpen(false);
+              router.navigate({
+                pathname: '/product/[productId]/createComment',
+                params: { productId: selectedProductId },
+              });
+            }}>
+            {t('createProductReview')}
+          </StyledButton>
+        </ScrollView>
+      </ActionSheet>
     </ScrollView>
   );
 };

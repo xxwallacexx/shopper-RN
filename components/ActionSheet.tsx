@@ -1,5 +1,5 @@
-import { ReactNode } from "react"
-import { Sheet } from 'tamagui'
+import { ReactNode } from 'react';
+import { Sheet } from 'tamagui';
 
 const ActionSheet = ({
   isSheetOpen = false,
@@ -7,16 +7,15 @@ const ActionSheet = ({
   sheetPosition,
   snapPoints = [40],
   setSheetPosition,
-  children
+  children,
 }: {
-  isSheetOpen?: boolean,
-  setIsSheetOpen: (value: boolean) => void,
-  sheetPosition: number,
+  isSheetOpen?: boolean;
+  setIsSheetOpen: (value: boolean) => void;
+  sheetPosition: number;
   snapPoints?: [number];
-  setSheetPosition: (value: number) => void,
-  children: ReactNode
-}
-) => {
+  setSheetPosition: (value: number) => void;
+  children: ReactNode;
+}) => {
   return (
     <Sheet
       disableDrag={true}
@@ -24,27 +23,24 @@ const ActionSheet = ({
       modal={true}
       open={isSheetOpen}
       onOpenChange={setIsSheetOpen}
-      snapPointsMode={"percent"}
+      snapPointsMode={'percent'}
       snapPoints={snapPoints}
       dismissOnSnapToBottom
       position={sheetPosition}
       onPositionChange={setSheetPosition}
       zIndex={100_000}
-      animation="quick"
-    >
+      animation="quick">
       <Sheet.Overlay
-        style={{ opacity: 0.5, backgroundColor: "lightslategrey" }}
+        style={{ opacity: 0.5, backgroundColor: 'lightslategrey' }}
         animation="100ms"
         enterStyle={{ opacity: 0 }}
         exitStyle={{ opacity: 0 }}
       />
-      <Sheet.Frame padding="$4" backgroundColor={"ghostwhite"} >
+      <Sheet.Frame padding={snapPoints.includes(100) ? '$0' : '$4'} backgroundColor={'ghostwhite'}>
         {children}
       </Sheet.Frame>
     </Sheet>
+  );
+};
 
-  )
-}
-
-
-export default ActionSheet
+export default ActionSheet;

@@ -1,3 +1,5 @@
+import { useCameraPermissions } from 'expo-image-picker';
+
 export const messages = {
   en: {
     username: 'Username',
@@ -256,6 +258,10 @@ export const messages = {
     searchAddress: 'Search Address',
     locationPermissionAlertHeading: 'Location Permission Enable',
     locationPermissionAlert: 'Please Go Settings -> Shopper -> Location Allow Access',
+    cameraPermission: 'Enable Camera Access',
+    cameraPermissionMessage: 'Enable Camera to upload photos and scan qr code',
+    cameraSetting: 'Camera Permission Setting',
+    cameraSettingMessage: 'Enable Camera to upload photos and scan qr code',
     deliveryAddressTooFar: 'Delivery Address Is Too Far From Store',
     subtotal: 'Subtotal',
     diffToMin: 'Difference to minimum (HK$ {{minPrice}})',
@@ -299,6 +305,10 @@ export const messages = {
     emptyBookmark: 'Empty Bookmark',
     emptyCoupon: 'Empty Coupon',
     emptyContent: 'Empty Content',
+    createProductReview: 'Create Product Review',
+    editProductReview: 'Edit Product Review',
+    removeProductReview: 'Remove Product Review',
+    remove: 'Remove',
     /**
      * Error Code
      */
@@ -596,6 +606,10 @@ export const messages = {
     searchAddress: '搜索地址',
     locationPermissionAlertHeading: '位置存取',
     locationPermissionAlert: '請到 設置 -> Shopper -> 位置 設定存取',
+    cameraPermission: '相機權限存取',
+    cameraPermissionMessage: '需要存取相機以掃描QRCode或用以上存圖片',
+    cameraSetting: '相機權限設定',
+    cameraSettingMessage: '需要到設定開始權限存取相機以掃描QRCode或用以上存圖片',
     deliveryAddressTooFar: '外賣地址離店鋪太遠了',
     subtotal: '小計',
     selfPickUpPrice: '自取價',
@@ -640,6 +654,10 @@ export const messages = {
     emptyBookmark: '沒有收藏紀錄',
     emptyCoupon: '沒有可用優恵券',
     emptyContent: '沒有相關內容',
+    createProductReview: '新增產品評論',
+    editProductReview: '修改產品評論',
+    removeProductReview: '刪除產品評論',
+    remove: '刪除',
     /**
      * Error Code
      */
