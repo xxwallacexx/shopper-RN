@@ -57,7 +57,7 @@ const CartCheckout = () => {
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyCode, setVerifyCode] = useState('');
-  const [isPaymenySheetOpen, setIsPaymentSheetOpen] = useState(false);
+  const [isPaymentSheetOpen, setIsPaymentSheetOpen] = useState(false);
   const [paymentSheetPosition, setPaymentSheetPosition] = useState(0);
 
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
@@ -516,7 +516,7 @@ const CartCheckout = () => {
         </TouchableOpacity>
       </BottomAction>
       <ActionSheet
-        isSheetOpen={isPaymenySheetOpen}
+        isSheetOpen={isPaymentSheetOpen}
         setIsSheetOpen={setIsPaymentSheetOpen}
         sheetPosition={paymentSheetPosition}
         snapPoints={[80]}

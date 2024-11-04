@@ -264,6 +264,25 @@ const listProductAvailableCoupons = async (
   return res;
 };
 
+const createProductComment = async (token: string, id: string, formData: FormData) => {
+  const options = {
+    method: 'post',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/product/${id}/comment`,
+    data: formData,
+  };
+  const res = await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      throw new Error(e.response.data.errorCodes);
+    });
+  return res;
+};
+
 export {
   listCategories,
   listProducts,
@@ -276,4 +295,5 @@ export {
   getProductIsBookmarked,
   createProductOrder,
   listProductAvailableCoupons,
+  createProductComment,
 };

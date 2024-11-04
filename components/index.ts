@@ -18,6 +18,8 @@ import CheckoutReservationCard from './CheckoutReservationCard';
 import OptionSheetContent from './OptionSheetContent';
 import ProductOptionCard from './ProductOptionCard';
 import OrderReservationCard from './OrderReservationCard';
+import ImageInput from './ImageInput';
+import ImageCard from './ImageCard';
 
 export {
   ContactForm,
@@ -40,4 +42,6 @@ export {
   OptionSheetContent,
   ProductOptionCard,
   OrderReservationCard,
+  ImageInput,
+  ImageCard,
 };
