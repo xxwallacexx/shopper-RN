@@ -64,6 +64,7 @@ const EditComment = () => {
     },
     onSuccess: async (res) => {
       queryClient.resetQueries({ queryKey: ['productComments'] });
+      queryClient.invalidateQueries({ queryKey: ['product'] });
       router.back();
     },
     onError: (e) => {
@@ -137,8 +138,10 @@ const EditComment = () => {
             setComment(value);
           }}
         />
-        <TouchableOpacity disabled={isEditCommentSubmitting} onPress={() => editCommentMutate()}>
-          <StyledButton w="100%" disabled={isEditCommentSubmitting}>
+        <TouchableOpacity
+          disabled={isEditCommentSubmitting || comment.length == 0}
+          onPress={() => editCommentMutate()}>
+          <StyledButton w="100%" disabled={isEditCommentSubmitting || comment.length == 0}>
             {t('confirm')}
           </StyledButton>
         </TouchableOpacity>

@@ -121,9 +121,9 @@ const CreateProductComment = () => {
           }}
         />
         <TouchableOpacity
-          disabled={isCreateCommentSubmitting}
+          disabled={isCreateCommentSubmitting || comment.length == 0}
           onPress={() => createCommentMutate()}>
-          <StyledButton w="100%" disabled={isCreateCommentSubmitting}>
+          <StyledButton w="100%" disabled={isCreateCommentSubmitting || comment.length == 0}>
             {t('confirm')}
           </StyledButton>
         </TouchableOpacity>
