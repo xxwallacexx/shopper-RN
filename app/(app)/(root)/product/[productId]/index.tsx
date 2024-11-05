@@ -1,8 +1,8 @@
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
-import { SectionList, SafeAreaView } from 'react-native';
+import { FlatList, SafeAreaView } from 'react-native';
 import {
   AlertDialog,
   Label,
@@ -26,8 +26,10 @@ import {
   reservationCreateCart,
   productCreateCart,
   getReservationTotalPrice,
+  listProductComments,
+  getSelf,
 } from '~/api';
-import { BannerCarousel, Dialog, OptionSheetContent } from '~/components';
+import { BannerCarousel, Dialog, OptionSheetContent, ProductCommentCard } from '~/components';
 import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
 import HTMLView from 'react-native-htmlview';
 import ActionSheet from '~/components/ActionSheet';
@@ -40,6 +42,8 @@ import { OrderContent, Product, ReservationContent, ReservationOption } from '~/
 import Toast from 'react-native-toast-message';
 import { Stack } from 'tamagui';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StarRatingDisplay } from 'react-native-star-rating-widget';
+import { Image } from 'tamagui';
 
 const Price = ({ isLoading, price }: { isLoading: boolean; price: number }) => {
   return <>{isLoading ? <Spinner /> : <SizableText>HK$ {price}</SizableText>}</>;
@@ -118,6 +122,19 @@ const ProductDetail = () => {
   const [isReservationOptionSheetOpen, setIsReservationOptionSheetOpen] = useState(false);
   const [reservationOptionsSheetPosition, setReservationOptionsSheetPosition] = useState(0);
 
+  //comments
+  const [isCommentsSheetOpen, setIsCommentsSheetOpen] = useState(false);
+  const [commentsSheetPosition, setCommentsSheetPosition] = useState(0);
+
+  //photo
+  const [isPhotoSheetOpen, setIsPhotoSheetOpen] = useState(false);
+  const [photoSheetPosition, setPhotoSheetPosition] = useState(0);
+  const [selectedPhoto, setSelectedPhoto] = useState<string>();
+
+  const [isCommentActionSheetOpen, setIsCommentActionSheetOpen] = useState(false);
+  const [commentActionSheetPosition, setCommentActionSheetPosition] = useState(0);
+  const [selectedCommentId, setSelectedCommentId] = useState<string>();
+
   const { isPending: isReservationCreateCartSubmiting, mutate: reservationCreateCartMutate } =
     useMutation({
       mutationFn: async ({
@@ -162,6 +179,13 @@ const ProductDetail = () => {
     },
   });
 
+  const { data: user } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      return await getSelf(token);
+    },
+  });
+
   const { data: shop } = useQuery({
     queryKey: ['shop'],
     queryFn: async () => {
@@ -182,6 +206,27 @@ const ProductDetail = () => {
       return await listOptions(productId);
     },
   });
+
+  const {
+    data: productComments,
+    isFetching: isProductCommentsFetching,
+    isFetchingNextPage: isFetchingMoreProductComments,
+    fetchNextPage: fetchMoreProductComments,
+  } = useInfiniteQuery({
+    queryKey: ['productComments', productId, token],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }: { pageParam: number }) => {
+      return await listProductComments(productId, pageParam);
+    },
+    getNextPageParam: (lastPage, pages) => {
+      console.log(lastPage);
+      if (!lastPage) return null;
+      if (!lastPage.length) return null;
+      return pages.flat().length;
+    },
+  });
+
+  const productCommentsData = productComments?.pages ? productComments.pages.flat() : [];
 
   const orderContent = {
     choices: selectedChoices.map((c) => {
@@ -274,7 +319,7 @@ const ProductDetail = () => {
     }, [navigation])
   );
 
-  if (!product || isProductFetching || isOptionsFetching || !shop) {
+  if (!product || isProductFetching || isOptionsFetching || !shop || !user) {
     return <></>;
   }
 
@@ -368,75 +413,6 @@ const ProductDetail = () => {
     });
   };
 
-  const renderItem = ({ item, index, section }) => {
-    const { price, photos, category, name, introduction, shop, description, logisticDescription } =
-      product;
-
-    switch (section.key) {
-      case 'photos':
-        return (
-          <BannerCarousel
-            banners={photos.map((p) => {
-              return p.path;
-            })}
-          />
-        );
-      case 'primary':
-        return (
-          <Container space="$2">
-            <YStack space="$2">
-              <XStack justifyContent="space-between">
-                <Subtitle size="$4">{category.name}</Subtitle>
-                <StyledButton onPress={onSharePress}>
-                  {t('shareProduct')}
-                  <AntDesign name="link" color="#fff" />
-                </StyledButton>
-              </XStack>
-              <Text>{name}</Text>
-              <Text>{introduction}</Text>
-              <Badge>
-                <SizableText fontSize={8} color="#fff">
-                  $ {price.toFixed(2)} {t('up')}
-                </SizableText>
-              </Badge>
-              <XStack space="$2" alignItems="center">
-                <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-                <Text fontSize={'$2'} color={'lightslategray'}>
-                  {shop.name}
-                </Text>
-              </XStack>
-              <XStack space="$2" alignItems="center">
-                <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-                <Text fontSize={'$2'} color="lightslategray">
-                  {shop.address}
-                </Text>
-              </XStack>
-            </YStack>
-          </Container>
-        );
-      case 'productRating':
-        if (!product.productRating.count) {
-          return <></>;
-        }
-        const rating = Math.round(product.productRating.rating);
-        return <></>;
-      case 'secondary':
-        return (
-          <Container space="$2">
-            <Separator borderColor={'lightslategray'} />
-            <YStack space="$4">
-              <Title>{t('productDetail')}</Title>
-              <HTMLView value={description} />
-              <Title>{t('TnC')}</Title>
-              <HTMLView value={logisticDescription} />
-            </YStack>
-          </Container>
-        );
-      default:
-        return <> </>;
-    }
-  };
-
   const onDayChange = (value?: string) => {
     setSelectedDate(value);
     setSeletedTime(undefined);
@@ -520,29 +496,75 @@ const ProductDetail = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack flex={1} alignItems="center">
-        <SectionList
-          renderItem={renderItem}
-          sections={[
-            { key: 'photos', data: [''] },
-            { key: 'primary', data: [''] },
-            { key: 'productRating', data: [''] },
-            { key: 'secondary', data: [''] },
-          ]}
-          keyExtractor={(item, index) => item + index.toString()}
+      <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
+        <BannerCarousel
+          banners={product.photos.map((p) => {
+            return p.path;
+          })}
         />
-        <BottomAction justifyContent="flex-end">
-          <TouchableOpacity
-            onPress={() => {
-              setIsOptionSheetOpen(true);
-            }}>
-            <StyledButton>
-              {t('addToCart')}
-              <AntDesign name="shoppingcart" color="#fff" />
+        <Container w="100%" space="$2">
+          <XStack justifyContent="space-between">
+            <Subtitle size="$4">{product.category.name}</Subtitle>
+            <StyledButton onPress={onSharePress}>
+              {t('shareProduct')}
+              <AntDesign name="link" color="#fff" />
             </StyledButton>
+          </XStack>
+          <SizableText>{product.name}</SizableText>
+          <SizableText numberOfLines={1} ellipsizeMode="tail">
+            {product.introduction}
+          </SizableText>
+          <Badge>
+            <SizableText fontSize={8} color="#fff">
+              $ {product.price.toFixed(2)} {t('up')}
+            </SizableText>
+          </Badge>
+          <XStack space="$2" alignItems="center">
+            <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
+            <Text fontSize={'$2'} color={'lightslategray'}>
+              {shop.name}
+            </Text>
+          </XStack>
+          <XStack space="$2" alignItems="center">
+            <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
+            <Text fontSize={'$2'} color="lightslategray">
+              {shop.address}
+            </Text>
+          </XStack>
+        </Container>
+        <Container w="100%" space="$2">
+          <Separator borderColor={'lightslategray'} />
+          <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
+            <XStack justifyContent="space-between">
+              {product.productRating ? (
+                <StarRatingDisplay rating={Math.ceil(product.productRating.rating)} starSize={28} />
+              ) : null}
+              <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
+            </XStack>
           </TouchableOpacity>
-        </BottomAction>
-      </YStack>
+        </Container>
+        <Container w="100%" space="$2">
+          <Separator borderColor={'lightslategray'} />
+          <YStack space="$4">
+            <Title>{t('productDetail')}</Title>
+            <HTMLView value={product.description} />
+            <Title>{t('TnC')}</Title>
+            <HTMLView value={product.logisticDescription} />
+          </YStack>
+        </Container>
+      </ScrollView>
+
+      <BottomAction justifyContent="flex-end">
+        <TouchableOpacity
+          onPress={() => {
+            setIsOptionSheetOpen(true);
+          }}>
+          <StyledButton>
+            {t('addToCart')}
+            <AntDesign name="shoppingcart" color="#fff" />
+          </StyledButton>
+        </TouchableOpacity>
+      </BottomAction>
       <ActionSheet
         isSheetOpen={isReservationOptionSheetOpen}
         setIsSheetOpen={setIsReservationOptionSheetOpen}
@@ -626,6 +648,103 @@ const ProductDetail = () => {
             </XStack>
           </XStack>
         </YStack>
+      </ActionSheet>
+      <ActionSheet
+        isSheetOpen={isCommentActionSheetOpen}
+        setIsSheetOpen={setIsCommentActionSheetOpen}
+        snapPoints={[60]}
+        sheetPosition={commentActionSheetPosition}
+        setSheetPosition={setCommentActionSheetPosition}>
+        <ScrollView space="$4">
+          <StyledButton
+            onPress={() => {
+              setIsCommentsSheetOpen(false)
+              setIsCommentActionSheetOpen(false)
+              router.navigate({
+                pathname: '/comment/[commentId]/editComment',
+                params: { commentId: selectedCommentId },
+              });
+            }}>
+            {t('editComment')}
+          </StyledButton>
+          <StyledButton
+            onPress={() => {
+              console.log('edit');
+            }}>
+            {t('removeComment')}
+          </StyledButton>
+        </ScrollView>
+      </ActionSheet>
+      <ActionSheet
+        isSheetOpen={isPhotoSheetOpen}
+        setIsSheetOpen={setIsPhotoSheetOpen}
+        snapPoints={[100]}
+        sheetPosition={photoSheetPosition}
+        setSheetPosition={setPhotoSheetPosition}>
+        <YStack bg="black" flex={1} justifyContent="center" alignItems="center">
+          <YStack position="absolute" l="$4" t="$10">
+            <TouchableOpacity
+              onPress={() => {
+                setIsPhotoSheetOpen(false);
+              }}>
+              <Ionicons size={20} name="arrow-back" color="white" />
+            </TouchableOpacity>
+          </YStack>
+          <Stack aspectRatio={1} w={'100%'}>
+            <Image flex={1} resizeMode="contain" source={{ uri: selectedPhoto }} />
+          </Stack>
+        </YStack>
+      </ActionSheet>
+      <ActionSheet
+        bg={'white'}
+        isSheetOpen={isCommentsSheetOpen}
+        setIsSheetOpen={setIsCommentsSheetOpen}
+        snapPoints={[60]}
+        sheetPosition={commentsSheetPosition}
+        setSheetPosition={setCommentsSheetPosition}>
+        <FlatList
+          data={productCommentsData}
+          scrollIndicatorInsets={{ right: 0 }}
+          renderItem={({ item }) => {
+            return (
+              <ProductCommentCard
+                username={item.user.username}
+                userAvatar={item.user.avatar}
+                isSelf={Boolean(item.user._id == user._id)}
+                rating={item.rating}
+                photos={item.photos.map((p) => {
+                  return p.path;
+                })}
+                comment={item.comment}
+                createdAt={item.createdAt}
+                onPhotoPress={(photo) => {
+                  setSelectedPhoto(photo);
+                  setIsPhotoSheetOpen(true);
+                }}
+                onActionPress={() => {
+                  setSelectedCommentId(item._id);
+                  setIsCommentActionSheetOpen(true);
+                }}
+              />
+            );
+          }}
+          contentContainerStyle={{ backgroundColor: '#fff' }}
+          ItemSeparatorComponent={() => {
+            return <Separator my={'$4'} />;
+          }}
+          onEndReached={() => fetchMoreProductComments()}
+          ListFooterComponent={() => {
+            if (!isProductCommentsFetching && !isFetchingMoreProductComments) {
+              return null;
+            }
+            return (
+              <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+                <Spinner color="$color.primary" />
+                <SizableText color="slategrey">{t('loading')}</SizableText>
+              </XStack>
+            );
+          }}
+        />
       </ActionSheet>
 
       <Dialog isOpen={isAddCartSuccessDialogOpen}>
