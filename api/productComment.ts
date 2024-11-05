@@ -32,4 +32,21 @@ const editProductComment = async (token: string, id: string, formData: FormData)
     });
 };
 
-export { getProductComment, editProductComment };
+const removeProductComment = async (token: string, id: string) => {
+  const options = {
+    method: 'delete',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/productComment/${id}`,
+  };
+  return await axios(options)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => {
+      throw new Error(e.response.data.errorCodes);
+    });
+};
+
+export { getProductComment, editProductComment, removeProductComment };

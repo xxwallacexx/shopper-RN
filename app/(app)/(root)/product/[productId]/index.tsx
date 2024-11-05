@@ -27,6 +27,7 @@ import {
   productCreateCart,
   getReservationTotalPrice,
   listProductComments,
+  removeProductComment,
   getSelf,
 } from '~/api';
 import { BannerCarousel, Dialog, OptionSheetContent, ProductCommentCard } from '~/components';
@@ -193,7 +194,11 @@ const ProductDetail = () => {
     },
   });
 
-  const { data: product, isFetching: isProductFetching } = useQuery({
+  const {
+    data: product,
+    isFetching: isProductFetching,
+    refetch: refetchProduct,
+  } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
       return await getProduct(productId);
@@ -212,6 +217,7 @@ const ProductDetail = () => {
     isFetching: isProductCommentsFetching,
     isFetchingNextPage: isFetchingMoreProductComments,
     fetchNextPage: fetchMoreProductComments,
+    refetch: refetchProductComments,
   } = useInfiniteQuery({
     queryKey: ['productComments', productId, token],
     initialPageParam: 0,
@@ -294,6 +300,25 @@ const ProductDetail = () => {
       );
     },
     enabled: product?.productType == 'RESERVATION',
+  });
+
+  const { isPending: isRemoveCommentSubmiting, mutate: removeCommentMutate } = useMutation({
+    mutationFn: async ({ commentId }: { commentId: string }) => {
+      return await removeProductComment(token, commentId);
+    },
+    onSuccess: async (res) => {
+      setIsCommentActionSheetOpen(false);
+      refetchProductComments();
+      queryClient.invalidateQueries({ queryKey: ['product'] });
+    },
+    onError: (e) => {
+      console.log(e);
+      const error = e as Error;
+      Toast.show({
+        type: 'error',
+        text1: t(error.message),
+      });
+    },
   });
 
   useLayoutEffect(() => {
@@ -532,17 +557,17 @@ const ProductDetail = () => {
             </Text>
           </XStack>
         </Container>
-        <Container w="100%" space="$2">
-          <Separator borderColor={'lightslategray'} />
-          <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
-            <XStack justifyContent="space-between">
-              {product.productRating ? (
+        {productCommentsData.length && product.productRating.count ? (
+          <Container w="100%" space="$2">
+            <Separator borderColor={'lightslategray'} />
+            <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
+              <XStack justifyContent="space-between">
                 <StarRatingDisplay rating={Math.ceil(product.productRating.rating)} starSize={28} />
-              ) : null}
-              <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
-            </XStack>
-          </TouchableOpacity>
-        </Container>
+                <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
+              </XStack>
+            </TouchableOpacity>
+          </Container>
+        ) : null}
         <Container w="100%" space="$2">
           <Separator borderColor={'lightslategray'} />
           <YStack space="$4">
@@ -656,23 +681,27 @@ const ProductDetail = () => {
         sheetPosition={commentActionSheetPosition}
         setSheetPosition={setCommentActionSheetPosition}>
         <ScrollView space="$4">
-          <StyledButton
+          <TouchableOpacity
+            disabled={isRemoveCommentSubmiting}
             onPress={() => {
-              setIsCommentsSheetOpen(false)
-              setIsCommentActionSheetOpen(false)
+              setIsCommentsSheetOpen(false);
+              setIsCommentActionSheetOpen(false);
               router.navigate({
                 pathname: '/comment/[commentId]/editComment',
                 params: { commentId: selectedCommentId },
               });
             }}>
-            {t('editComment')}
-          </StyledButton>
-          <StyledButton
+            <StyledButton disabled={isRemoveCommentSubmiting}>{t('editComment')}</StyledButton>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            disabled={isRemoveCommentSubmiting}
             onPress={() => {
-              console.log('edit');
+              if (!selectedCommentId) return;
+              removeCommentMutate({ commentId: selectedCommentId });
             }}>
-            {t('removeComment')}
-          </StyledButton>
+            <StyledButton disabled={isRemoveCommentSubmiting}> {t('removeComment')}</StyledButton>
+          </TouchableOpacity>
         </ScrollView>
       </ActionSheet>
       <ActionSheet
@@ -733,6 +762,17 @@ const ProductDetail = () => {
             return <Separator my={'$4'} />;
           }}
           onEndReached={() => fetchMoreProductComments()}
+          ListEmptyComponent={() => {
+            if (isProductCommentsFetching || isFetchingMoreProductComments) {
+              return null;
+            }
+            return (
+              <Container alignItems="center">
+                <AntDesign name="folderopen" size={120} color={'#666'} />
+                <Title>{t('emptyContent')}</Title>
+              </Container>
+            );
+          }}
           ListFooterComponent={() => {
             if (!isProductCommentsFetching && !isFetchingMoreProductComments) {
               return null;
