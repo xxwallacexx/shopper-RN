@@ -315,3 +315,14 @@ export type Order = {
   shippingFee?: number;
   createdAt: Date;
 };
+
+export type ProductComment = {
+  _id: string;
+  rating: number;
+  product: string;
+  photos: { _id: string; path: string }[];
+  comment: string;
+  user: User;
+  createdAt: Date;
+  updatedAt: Date;
+};

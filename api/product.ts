@@ -9,6 +9,7 @@ import {
   OrderContent,
   PaymentMethodEnum,
   Product,
+  ProductComment,
   ProductPriceDetail,
   UserCoupon,
 } from '~/types';
@@ -283,6 +284,21 @@ const createProductComment = async (token: string, id: string, formData: FormDat
   return res;
 };
 
+const listProductComments = async (id: string, skip: number) => {
+  const options = {
+    method: 'get',
+    params: {
+      skip: skip,
+      limit: 10,
+    },
+    url: `${baseUrl}/product/${id}/comment`,
+  };
+  let res: ProductComment[] = await axios(options).then((res) => {
+    return res.data.productComments;
+  });
+  return res;
+};
+
 export {
   listCategories,
   listProducts,
@@ -296,4 +312,5 @@ export {
   createProductOrder,
   listProductAvailableCoupons,
   createProductComment,
+  listProductComments,
 };

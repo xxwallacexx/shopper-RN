@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Sheet } from 'tamagui';
 
 const ActionSheet = ({
+  bg = 'ghostwhite',
   isSheetOpen = false,
   setIsSheetOpen,
   sheetPosition,
@@ -9,6 +10,7 @@ const ActionSheet = ({
   setSheetPosition,
   children,
 }: {
+  bg?: string;
   isSheetOpen?: boolean;
   setIsSheetOpen: (value: boolean) => void;
   sheetPosition: number;
@@ -36,7 +38,7 @@ const ActionSheet = ({
         enterStyle={{ opacity: 0 }}
         exitStyle={{ opacity: 0 }}
       />
-      <Sheet.Frame padding={snapPoints.includes(100) ? '$0' : '$4'} backgroundColor={'ghostwhite'}>
+      <Sheet.Frame padding={snapPoints.includes(100) ? '$0' : '$4'} backgroundColor={bg}>
         {children}
       </Sheet.Frame>
     </Sheet>

@@ -20,6 +20,7 @@ import ProductOptionCard from './ProductOptionCard';
 import OrderReservationCard from './OrderReservationCard';
 import ImageInput from './ImageInput';
 import ImageCard from './ImageCard';
+import ProductCommentCard from './ProductCommentCard';
 
 export {
   ContactForm,
@@ -44,4 +45,5 @@ export {
   OrderReservationCard,
   ImageInput,
   ImageCard,
+  ProductCommentCard,
 };

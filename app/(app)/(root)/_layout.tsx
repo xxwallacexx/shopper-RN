@@ -50,6 +50,12 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="comment"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };
