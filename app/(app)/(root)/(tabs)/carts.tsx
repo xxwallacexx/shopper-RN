@@ -364,9 +364,9 @@ const Carts = () => {
           includeDelivery &&
           (freeShippingDiff > 0
             ? t('freeShippingDiff', {
-              diff: freeShippingDiff.toFixed(1),
-              fee: nonfreeShippingFee.toFixed(1),
-            })
+                diff: freeShippingDiff.toFixed(1),
+                fee: nonfreeShippingFee.toFixed(1),
+              })
             : t('freeShippingHint'));
 
         return (
@@ -507,6 +507,7 @@ const Carts = () => {
             const selected = selectedCouponIds.includes(item._id);
             return (
               <StyledButton
+                my={'$2'}
                 bg={selected ? '$primary' : 'slategrey'}
                 onPress={() => onCouponPress(item)}>
                 {item.coupon.name}
