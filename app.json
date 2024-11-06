@@ -51,7 +51,8 @@
         {
           "photosPermission": "允許存取以上傳商品評價圖片影片及頭像"
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -65,18 +66,19 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSRemindersFullAccessUsageDescription": "允許 $(PRODUCT_NAME) 存取以加入預約",
-        "NSRemindersUsageDescription": "允許 $(PRODUCT_NAME) 存取以加入預約",
+        "NSRemindersUsageDescription": "允許存取以加入預約",
         "NSCameraUsageDescription": "允許存取以掃描QRCode或用以上傳圖片",
         "NSLocationWhenInUseUsageDescription": "允許存取定位尋找付近店鋪",
         "NSMicrophoneUsageDescription": "允許存取以上傳商品評價圖片影片及頭像",
         "NSPhotoLibraryAddUsageDescription": "允許存取以上傳商品評價圖片及頭像",
         "NSPhotoLibraryUsageDescription": "允許存取以上傳商品評價圖片及頭像",
-        "NSRemindersUsageDescription": "允許存取以加入預約",
         "NSUserTrackingUsageDescription": "允許上傳報錯以改善應用程式質素"
       },
       "bundleIdentifier": "com.sailorhouse.v1",
@@ -94,7 +96,6 @@
       },
       "package": "com.sailorhouse.v1",
       "googleServicesFile": "./google-services.json"
-    },
-    "scheme": "sailorhouse"
+    }
   }
 }

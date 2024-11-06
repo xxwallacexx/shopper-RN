@@ -524,7 +524,7 @@ const ProductDetail = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
         <BannerCarousel
           banners={product.photos.map((p) => {
-            return p.path;
+            return { type: 'IMAGE', uri: p.path };
           })}
         />
         <Container w="100%" space="$2">

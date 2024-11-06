@@ -38,6 +38,11 @@ const ReservationCartItemCard = ({
   const option = reservationContent.reservation?.options.find((o) => {
     return o._id == reservationContent.option;
   });
+  console.log(coupon);
+  let price = totalPrice;
+  if (coupon) {
+    price = price - coupon.coupon.discount;
+  }
   return (
     <YStack
       flex={1}
@@ -88,7 +93,7 @@ const ReservationCartItemCard = ({
               {isCartItemUpdating ? (
                 <Skeleton height={12} colorMode="light" width={80} />
               ) : (
-                <SizableText color={'$primary'}>HK$ {totalPrice.toFixed(2)}</SizableText>
+                <SizableText color={'$primary'}>HK$ {price.toFixed(2)}</SizableText>
               )}
               <Text fontWeight={'300'} fontSize={'$2'}>
                 {t('stock')}: {stock}
@@ -101,7 +106,7 @@ const ReservationCartItemCard = ({
       <Separator />
       <XStack px="$2" flex={1} h="$3" alignItems="center" justifyContent="space-between">
         <StyledButton w="40%" onPress={onAvailableCouponPress}>
-          {t('redeemCoupon')}
+          {coupon ? coupon.coupon.name : t('redeemCoupon')}
         </StyledButton>
         {isCartItemRemoving ? (
           <Skeleton height={18} colorMode="light" width={22} />
