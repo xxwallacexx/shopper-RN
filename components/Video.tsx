@@ -1,7 +1,7 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import * as VideoThumbnails from 'expo-video-thumbnails';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { YStack } from 'tamagui';
 import { Stack, Image } from 'tamagui';
@@ -14,31 +14,19 @@ const Video = ({ uri }: { uri: string }) => {
   const [sheetPosition, setSheetPosition] = useState(0);
   const player = useVideoPlayer(uri, (player) => {
     player.loop = false;
-    player.play();
   });
 
-  const { data: thumbnail } = useQuery({
-    queryKey: ['video', uri],
-    queryFn: async () => {
-      let res = await VideoThumbnails.getThumbnailAsync(uri);
-      return res.uri;
-    },
-  });
-
-  if (!thumbnail) return <></>;
+  useEffect(() => {
+    if (isSheetOpen) {
+      player.replay();
+      player.play();
+    }
+  }, [isSheetOpen]);
 
   return (
     <YStack>
       <TouchableOpacity onPress={() => setIsSheetOpen(true)}>
-        <Image
-          position="relative"
-          source={{ uri: thumbnail }}
-          width={'100%'}
-          height={'100%'}
-          aspectRatio={1.778}
-          resizeMode="contain"
-        />
-        <Stack p="$1" bg="black" position="absolute" l="$2" t="$2">
+        <Stack bg="black" h="100%" w="100%" justifyContent="center" alignItems="center">
           <AntDesign color={'white'} name="playcircleo" size={24} />
         </Stack>
       </TouchableOpacity>

@@ -86,8 +86,9 @@ const BannerCarousel = ({ banners }: { banners: { type: 'IMAGE' | 'VIDEO'; uri: 
   }, []);
 
   return (
-    <YStack overflow="hidden" width={'100%'} aspectRatio={1.77} position="relative">
+    <YStack width={'100%'} aspectRatio={1.77} position="relative">
       <Carousel
+        style={{ width: '100%' }}
         width={width}
         data={banners}
         autoPlay={banners.length > 1 ? true : false}
