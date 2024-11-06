@@ -326,3 +326,17 @@ export type ProductComment = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Feed = {
+  _id: string;
+  view: number;
+  likeCount: number;
+  commentCount: number;
+  title: string;
+  detail: string;
+  photos: { _id: string; path: string; type: 'IMAGE' | 'VIDEO' }[];
+  status: 'ACTIVE' | 'INACTIVE' | 'DELETED';
+  shop: Shop;
+  createdAt: Date;
+  updatedAt: Date;
+};

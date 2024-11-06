@@ -14,35 +14,36 @@ const Layout = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarInactiveTintColor: "#fff",
+        tabBarInactiveTintColor: '#fff',
         tabBarActiveTintColor: '#000',
-        headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" },
-        tabBarStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" },
-        headerTitle: ""
+        headerStyle: { backgroundColor: PRIMARY_COLOR ?? '#fff' },
+        tabBarStyle: { backgroundColor: PRIMARY_COLOR ?? '#fff' },
+        headerTitle: '',
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          headerTitle: "",
+          headerTitle: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />
+          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="feed"
         options={{
-          headerTitle: "",
+          headerShown: false,
+          headerTitle: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />
+          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
         name="carts"
         options={{
           headerShown: false,
-          headerTitle: "",
+          headerTitle: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />
+          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
@@ -50,21 +51,21 @@ const Layout = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />
+          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
-        name={"profile"}
+        name={'profile'}
         options={{
-          tabBarLabel: "profile",
+          tabBarLabel: 'profile',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />
+          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
     </Tabs>
   );
-}
+};
 
 const styles = StyleSheet.create({
   tabBarIcon: {
@@ -72,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Layout
+export default Layout;

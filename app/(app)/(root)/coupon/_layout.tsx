@@ -1,28 +1,29 @@
-import { AntDesign } from "@expo/vector-icons"
-import { Stack } from "expo-router"
-import { TouchableOpacity } from "react-native"
+import { AntDesign } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import { PRIMARY_COLOR } from '@env';
 
 const CouponLayout = () => {
   return (
     <Stack
       screenOptions={({ navigation }) => ({
-        title: "",
+        title: '',
         headerShown: true,
         headerLeft: () => {
           return (
-            <TouchableOpacity onPress={() => { return navigation.goBack() }}>
-              <AntDesign name="arrowleft" size={24} color={"#fff"} />
+            <TouchableOpacity
+              onPress={() => {
+                return navigation.goBack();
+              }}>
+              <AntDesign name="arrowleft" size={24} color={'#fff'} />
             </TouchableOpacity>
-          )
+          );
         },
-        headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
+        headerStyle: { backgroundColor: PRIMARY_COLOR ?? '#fff' },
       })}>
-      <Stack.Screen
-        name="[couponId]"
-      />
+      <Stack.Screen name="[couponId]" />
     </Stack>
-  )
-}
+  );
+};
 
-export default CouponLayout
+export default CouponLayout;

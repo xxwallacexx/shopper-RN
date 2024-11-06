@@ -21,6 +21,8 @@ import OrderReservationCard from './OrderReservationCard';
 import ImageInput from './ImageInput';
 import ImageCard from './ImageCard';
 import ProductCommentCard from './ProductCommentCard';
+import FeedCard from './FeedCard';
+import Video from './Video';
 
 export {
   ContactForm,
@@ -46,4 +48,6 @@ export {
   ImageInput,
   ImageCard,
   ProductCommentCard,
+  FeedCard,
+  Video,
 };
