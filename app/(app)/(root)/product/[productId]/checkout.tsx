@@ -323,7 +323,7 @@ const Checkout = () => {
       case 'coupon':
         return (
           <StyledButton
-            bg={selectedCoupon ? '$primary' : 'slategrey'}
+            bg={ '$primary' }
             onPress={() => setIsUserCouponSheetOpen(true)}>
             {selectedCoupon ? selectedCoupon.coupon.name : t('redeemCoupon')}
           </StyledButton>
