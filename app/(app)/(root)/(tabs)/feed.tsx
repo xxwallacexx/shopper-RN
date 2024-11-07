@@ -1,5 +1,6 @@
 import { AntDesign } from '@expo/vector-icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 import { FlatList, SafeAreaView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { XStack } from 'tamagui';
@@ -14,6 +15,8 @@ import { Container, Title } from '~/tamagui.config';
 const Feeds = () => {
   const { t } = useLocale();
   const { token } = useAuth();
+  const router = useRouter();
+
   if (!token) return <></>;
 
   const {
@@ -45,7 +48,10 @@ const Feeds = () => {
           contentContainerStyle={{ padding: 12, gap: 20 }}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity onPress={() => console.log(item._id)}>
+              <TouchableOpacity
+                onPress={() =>
+                  router.navigate({ pathname: '/feed/[feedId]', params: { feedId: item._id } })
+                }>
                 <FeedCard
                   shopName={item.shop.name}
                   createdAt={item.createdAt}

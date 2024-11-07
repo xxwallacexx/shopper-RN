@@ -51,7 +51,19 @@ const Layout = () => {
         }}
       />
       <Stack.Screen
-        name="comment"
+        name="productComment"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="feed"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="feedComment"
         options={{
           headerShown: false,
         }}

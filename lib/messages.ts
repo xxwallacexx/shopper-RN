@@ -659,6 +659,7 @@ export const messages = {
     createProductReview: '新增產品評論',
     editProductReview: '修改產品評論',
     removeProductReview: '刪除產品評論',
+    emptyComment: '沒有相關回應',
     remove: '刪除',
     /**
      * Error Code

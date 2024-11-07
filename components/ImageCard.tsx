@@ -1,18 +1,10 @@
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ScrollView, YStack, Image } from 'tamagui';
-import ActionSheet from './ActionSheet';
-import { useState } from 'react';
-import { StyledButton } from '~/tamagui.config';
-import { useLocale } from '~/hooks';
+import { YStack, Image } from 'tamagui';
 
-const ImageCard = ({ imageUri, onRemove }: { imageUri: string; onRemove: () => void }) => {
-  const { t } = useLocale();
-  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
-  const [actionSheetPosition, setActionSheetPosition] = useState(0);
-
+const ImageCard = ({ imageUri, onPhotoPress }: { imageUri: string; onPhotoPress: () => void }) => {
   return (
     <YStack>
-      <TouchableOpacity onPress={() => setIsActionSheetOpen(true)}>
+      <TouchableOpacity onPress={() => onPhotoPress()}>
         <YStack
           backgroundColor={'white'}
           w="$14"
@@ -32,16 +24,6 @@ const ImageCard = ({ imageUri, onRemove }: { imageUri: string; onRemove: () => v
           </YStack>
         </YStack>
       </TouchableOpacity>
-      <ActionSheet
-        isSheetOpen={isActionSheetOpen}
-        setIsSheetOpen={setIsActionSheetOpen}
-        sheetPosition={actionSheetPosition}
-        snapPoints={[40]}
-        setSheetPosition={setActionSheetPosition}>
-        <ScrollView space="$4">
-          <StyledButton onPress={onRemove}>{t('remove')}</StyledButton>
-        </ScrollView>
-      </ActionSheet>
     </YStack>
   );
 };

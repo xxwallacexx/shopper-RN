@@ -10,3 +10,4 @@ export * from './reservation';
 export * from './order';
 export * from './productComment';
 export * from './feed';
+export * from './feedComment';
