@@ -219,7 +219,7 @@ const ProductDetail = () => {
     fetchNextPage: fetchMoreProductComments,
     refetch: refetchProductComments,
   } = useInfiniteQuery({
-    queryKey: ['productComments', productId, token],
+    queryKey: ['productComments', productId],
     initialPageParam: 0,
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       return await listProductComments(productId, pageParam);
@@ -687,7 +687,7 @@ const ProductDetail = () => {
               setIsCommentsSheetOpen(false);
               setIsCommentActionSheetOpen(false);
               router.navigate({
-                pathname: '/comment/[commentId]/editComment',
+                pathname: '/productComment/[commentId]/editComment',
                 params: { commentId: selectedCommentId },
               });
             }}>

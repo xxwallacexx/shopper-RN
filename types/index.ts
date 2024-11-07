@@ -340,3 +340,13 @@ export type Feed = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type FeedComment = {
+  _id: string;
+  feed: Feed;
+  photos: { _id: string; path: string }[];
+  comment: string;
+  user: User;
+  createdAt: Date;
+  updatedAt: Date;
+};

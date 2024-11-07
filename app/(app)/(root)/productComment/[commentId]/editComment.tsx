@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, SizableText, YStack, ScrollView, Separator, TextArea } from 'tamagui';
-import { createProductComment, getSelf } from '~/api';
+import { getProductComment, editProductComment, getSelf } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import StarRating from 'react-native-star-rating-widget';
 import { ImageCard, ImageInput } from '~/components';
@@ -10,20 +10,44 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { StyledButton } from '~/tamagui.config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
+import ActionSheet from '~/components/ActionSheet';
 
-const CreateProductComment = () => {
-  const queryClient = useQueryClient();
-  const { productId } = useLocalSearchParams<{ productId: string }>();
+const EditComment = () => {
   const { t } = useLocale();
   const router = useRouter();
+  const { commentId } = useLocalSearchParams<{ commentId: string }>();
   const { token } = useAuth();
   const [rating, setRating] = useState(5);
   const [photos, setPhotos] = useState<string[]>([]);
   const [comment, setComment] = useState('');
+  const queryClient = useQueryClient();
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
+  const [actionSheetPosition, setActionSheetPosition] = useState(0);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number>();
 
   if (!token) return <></>;
+  const { data: user } = useQuery({
+    queryKey: ['profile', token],
+    queryFn: async () => {
+      return await getSelf(token);
+    },
+  });
+  const { data: commentData } = useQuery({
+    queryKey: ['comment', commentId],
+    queryFn: async () => {
+      let res = await getProductComment(commentId);
+      setRating(res.rating);
+      setPhotos(
+        res.photos.map((p) => {
+          return p.path;
+        })
+      );
+      setComment(res.comment);
+      return res;
+    },
+  });
 
-  const { isPending: isCreateCommentSubmitting, mutate: createCommentMutate } = useMutation({
+  const { isPending: isEditCommentSubmitting, mutate: editCommentMutate } = useMutation({
     mutationFn: async () => {
       let formData = new FormData();
       for (const photo of photos) {
@@ -40,13 +64,15 @@ const CreateProductComment = () => {
       }
       formData.append('rating', rating.toString());
       formData.append('comment', comment);
-      return await createProductComment(token, productId, formData);
+      return await editProductComment(token, commentId, formData);
     },
     onSuccess: async (res) => {
       queryClient.resetQueries({ queryKey: ['productComments'] });
+      queryClient.invalidateQueries({ queryKey: ['product'] });
       router.back();
     },
     onError: (e) => {
+      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -55,13 +81,7 @@ const CreateProductComment = () => {
     },
   });
 
-  const { data: user } = useQuery({
-    queryKey: ['profile', token],
-    queryFn: async () => {
-      return await getSelf(token);
-    },
-  });
-  if (!user) return <></>;
+  if (!commentData || !user) return <></>;
 
   const onImageInputChange = (value: string) => {
     let _photos = [...photos];
@@ -69,10 +89,12 @@ const CreateProductComment = () => {
     setPhotos(_photos);
   };
 
-  const onImageRemove = (index: number) => {
+  const onImageRemove = () => {
+    if (selectedPhotoIndex == undefined) return;
     let _photos = [...photos];
-    _photos.splice(index, 1);
+    _photos.splice(selectedPhotoIndex, 1);
     setPhotos(_photos);
+    setIsActionSheetOpen(false);
   };
 
   return (
@@ -103,8 +125,9 @@ const CreateProductComment = () => {
               <ImageCard
                 key={index.toString() + p}
                 imageUri={p}
-                onRemove={() => {
-                  onImageRemove(index);
+                onPhotoPress={() => {
+                  setSelectedPhotoIndex(index);
+                  setIsActionSheetOpen(true);
                 }}
               />
             );
@@ -123,14 +146,25 @@ const CreateProductComment = () => {
           }}
         />
         <TouchableOpacity
-          disabled={isCreateCommentSubmitting || comment.length == 0}
-          onPress={() => createCommentMutate()}>
-          <StyledButton w="100%" disabled={isCreateCommentSubmitting || comment.length == 0}>
+          disabled={isEditCommentSubmitting || comment.length == 0}
+          onPress={() => editCommentMutate()}>
+          <StyledButton w="100%" disabled={isEditCommentSubmitting || comment.length == 0}>
             {t('confirm')}
           </StyledButton>
         </TouchableOpacity>
       </ScrollView>
+      <ActionSheet
+        isSheetOpen={isActionSheetOpen}
+        setIsSheetOpen={setIsActionSheetOpen}
+        sheetPosition={actionSheetPosition}
+        snapPoints={[40]}
+        setSheetPosition={setActionSheetPosition}>
+        <ScrollView space="$4">
+          <StyledButton onPress={onImageRemove}>{t('remove')}</StyledButton>
+        </ScrollView>
+      </ActionSheet>
     </KeyboardAwareScrollView>
   );
 };
-export default CreateProductComment;
+
+export default EditComment;

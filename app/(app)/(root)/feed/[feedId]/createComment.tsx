@@ -1,49 +1,32 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Image, SizableText, YStack, ScrollView, Separator, TextArea } from 'tamagui';
-import { getProductComment, editProductComment, getSelf } from '~/api';
-import { useAuth, useLocale } from '~/hooks';
-import StarRating from 'react-native-star-rating-widget';
-import { ImageCard, ImageInput } from '~/components';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { StyledButton } from '~/tamagui.config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-toast-message';
+import { TextArea } from 'tamagui';
+import { SizableText, YStack } from 'tamagui';
+import { Image } from 'tamagui';
+import { Separator } from 'tamagui';
+import { ScrollView } from 'tamagui';
+import { createFeedComment, getSelf } from '~/api';
+import { ImageCard, ImageInput } from '~/components';
+import { useAuth, useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 
-const EditComment = () => {
+const CreateFeedComment = () => {
+  const queryClient = useQueryClient();
+  const { feedId } = useLocalSearchParams<{ feedId: string }>();
   const { t } = useLocale();
   const router = useRouter();
-  const { commentId } = useLocalSearchParams<{ commentId: string }>();
   const { token } = useAuth();
-  const [rating, setRating] = useState(5);
   const [photos, setPhotos] = useState<string[]>([]);
   const [comment, setComment] = useState('');
-  const queryClient = useQueryClient();
 
   if (!token) return <></>;
-  const { data: user } = useQuery({
-    queryKey: ['profile', token],
-    queryFn: async () => {
-      return await getSelf(token);
-    },
-  });
-  const { data: commentData } = useQuery({
-    queryKey: ['comment', commentId],
-    queryFn: async () => {
-      let res = await getProductComment(commentId);
-      setRating(res.rating);
-      setPhotos(
-        res.photos.map((p) => {
-          return p.path;
-        })
-      );
-      setComment(res.comment);
-      return res;
-    },
-  });
 
-  const { isPending: isEditCommentSubmitting, mutate: editCommentMutate } = useMutation({
+  const { isPending: isCreateCommentSubmitting, mutate: createCommentMutate } = useMutation({
     mutationFn: async () => {
       let formData = new FormData();
       for (const photo of photos) {
@@ -58,17 +41,14 @@ const EditComment = () => {
           type: type,
         });
       }
-      formData.append('rating', rating.toString());
       formData.append('comment', comment);
-      return await editProductComment(token, commentId, formData);
+      return await createFeedComment(token, feedId, formData);
     },
     onSuccess: async (res) => {
-      queryClient.resetQueries({ queryKey: ['productComments'] });
-      queryClient.invalidateQueries({ queryKey: ['product'] });
+      queryClient.resetQueries({ queryKey: ['feedComments'] });
       router.back();
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -77,7 +57,13 @@ const EditComment = () => {
     },
   });
 
-  if (!commentData || !user) return <></>;
+  const { data: user } = useQuery({
+    queryKey: ['profile', token],
+    queryFn: async () => {
+      return await getSelf(token);
+    },
+  });
+  if (!user) return <></>;
 
   const onImageInputChange = (value: string) => {
     let _photos = [...photos];
@@ -104,7 +90,6 @@ const EditComment = () => {
           <SizableText>{user?.username}</SizableText>
         </YStack>
         <Separator width={'90%'} />
-        <StarRating enableHalfStar={false} rating={rating} onChange={setRating} />
         <Separator width={'90%'} />
         <ScrollView
           w="100%"
@@ -139,9 +124,9 @@ const EditComment = () => {
           }}
         />
         <TouchableOpacity
-          disabled={isEditCommentSubmitting || comment.length == 0}
-          onPress={() => editCommentMutate()}>
-          <StyledButton w="100%" disabled={isEditCommentSubmitting || comment.length == 0}>
+          disabled={isCreateCommentSubmitting || comment.length == 0}
+          onPress={() => createCommentMutate()}>
+          <StyledButton w="100%" disabled={isCreateCommentSubmitting || comment.length == 0}>
             {t('confirm')}
           </StyledButton>
         </TouchableOpacity>
@@ -150,4 +135,4 @@ const EditComment = () => {
   );
 };
 
-export default EditComment;
+export default CreateFeedComment;
