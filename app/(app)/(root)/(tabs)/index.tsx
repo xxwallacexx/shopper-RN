@@ -236,14 +236,6 @@ const Home = () => {
   return (
     <YStack flex={1} alignItems="center">
       <SectionList
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => {
-              console.log('on refresh');
-            }}
-          />
-        }
         renderItem={renderItem}
         onEndReached={onEndReached}
         sections={[
