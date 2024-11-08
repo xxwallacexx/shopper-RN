@@ -17,7 +17,7 @@ const EditComment = () => {
   const router = useRouter();
   const { commentId } = useLocalSearchParams<{ commentId: string }>();
   const { token } = useAuth();
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photoObjects, setPhotoObjects] = useState<{ _id?: string; path: string }[]>([]);
   const [comment, setComment] = useState('');
   const queryClient = useQueryClient();
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
@@ -35,11 +35,7 @@ const EditComment = () => {
     queryKey: ['comment', commentId],
     queryFn: async () => {
       let res = await getFeedComment(commentId);
-      setPhotos(
-        res.photos.map((p) => {
-          return p.path;
-        })
-      );
+      setPhotoObjects(res.photos);
       setComment(res.comment);
       return res;
     },
@@ -48,18 +44,33 @@ const EditComment = () => {
   const { isPending: isEditCommentSubmitting, mutate: editCommentMutate } = useMutation({
     mutationFn: async () => {
       let formData = new FormData();
-      for (const photo of photos) {
-        const filename = photo.split('/').pop();
-        if (!filename) return;
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : `image`;
+      for (const photoObject of photoObjects) {
+        if (!photoObject._id) {
+          const filename = photoObject.path.split('/').pop();
+          if (!filename) return;
+          const match = /\.(\w+)$/.exec(filename);
+          const type = match ? `image/${match[1]}` : `image`;
 
-        formData.append('photos', {
-          uri: photo,
-          name: filename,
-          type: type,
-        });
+          formData.append('photos', {
+            uri: photoObject.path,
+            name: filename,
+            type: type,
+          });
+        }
       }
+
+      const removePhotos =
+        commentData?.photos.filter((p) => {
+          return !photoObjects
+            .map((po) => {
+              return po._id;
+            })
+            .includes(p._id);
+        }) || [];
+      for (const removePhoto of removePhotos) {
+        formData.append('removePhotos[]', removePhoto._id);
+      }
+
       formData.append('comment', comment);
       return await editFeedComment(token, commentId, formData);
     },
@@ -80,21 +91,23 @@ const EditComment = () => {
   if (!commentData || !user) return <></>;
 
   const onImageInputChange = (value: string) => {
-    let _photos = [...photos];
-    _photos.push(value);
-    setPhotos(_photos);
+    let _photoObjects = [...photoObjects];
+    _photoObjects.push({ path: value });
+    setPhotoObjects(_photoObjects);
   };
 
   const onImageRemove = () => {
     if (selectedPhotoIndex == undefined) return;
-    let _photos = [...photos];
-    _photos.splice(selectedPhotoIndex, 1);
-    setPhotos(_photos);
+    let _photoObjects = [...photoObjects];
+    _photoObjects.splice(selectedPhotoIndex, 1);
+    setPhotoObjects(_photoObjects);
     setIsActionSheetOpen(false);
   };
 
   return (
-    <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
+    <KeyboardAwareScrollView
+      extraHeight={140}
+      style={{ flex: 1, backgroundColor: 'white', width: '100%' }}>
       <ScrollView flex={1} space="$2" contentContainerStyle={{ alignItems: 'center' }}>
         <YStack w="100%" alignItems="center" space="$2">
           <Image
@@ -115,11 +128,11 @@ const EditComment = () => {
             gap: 16,
           }}
           horizontal>
-          {photos.map((p, index) => {
+          {photoObjects.map((p, index) => {
             return (
               <ImageCard
                 key={index.toString() + p}
-                imageUri={p}
+                imageUri={p.path}
                 onPhotoPress={() => {
                   setSelectedPhotoIndex(index);
                   setIsActionSheetOpen(true);
@@ -127,7 +140,7 @@ const EditComment = () => {
               />
             );
           })}
-          {photos.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
+          {photoObjects.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
         </ScrollView>
         <Separator width={'90%'} />
         <TextArea

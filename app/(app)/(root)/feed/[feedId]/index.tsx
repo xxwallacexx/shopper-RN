@@ -199,7 +199,6 @@ const FeedDetail = () => {
     data: feedComments,
     isFetching: isFeedCommentsFetching,
     isFetchingNextPage: isFetchingMoreFeedComments,
-    refetch: refetchFeedComments,
     fetchNextPage: fetchMoreFeedComments,
   } = useInfiniteQuery({
     queryKey: ['feedComments', feedId],
@@ -234,7 +233,7 @@ const FeedDetail = () => {
     },
     onSuccess: async (res) => {
       setIsCommentActionSheetOpen(false);
-      refetchFeedComments();
+      queryClient.resetQueries({ queryKey: ['feedComments'] });
       queryClient.invalidateQueries({ queryKey: ['feeds'] });
     },
     onError: (e) => {
