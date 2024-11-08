@@ -68,6 +68,12 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="qrPayment"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

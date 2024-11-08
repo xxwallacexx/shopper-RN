@@ -23,6 +23,7 @@ import ImageCard from './ImageCard';
 import ProductCommentCard from './ProductCommentCard';
 import FeedCard from './FeedCard';
 import Video from './Video';
+import QRCodeScanner from './QRCodeScanner';
 
 export {
   ContactForm,
@@ -50,4 +51,5 @@ export {
   ProductCommentCard,
   FeedCard,
   Video,
+  QRCodeScanner,
 };
