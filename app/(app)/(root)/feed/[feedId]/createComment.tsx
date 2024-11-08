@@ -78,7 +78,9 @@ const CreateFeedComment = () => {
   };
 
   return (
-    <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
+    <KeyboardAwareScrollView
+      extraHeight={140}
+      style={{ backgroundColor: 'white', flex: 1, width: '100%' }}>
       <ScrollView flex={1} space="$2" contentContainerStyle={{ alignItems: 'center' }}>
         <YStack w="100%" alignItems="center" space="$2">
           <Image
