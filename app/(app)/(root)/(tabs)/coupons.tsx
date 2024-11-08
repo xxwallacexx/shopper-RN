@@ -115,62 +115,65 @@ const Coupons = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <ScrollView
-        bg="white"
-        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}>
-        <YStack>
-          <Image aspectRatio={16 / 9} source={{ uri: shop.couponCover }} width={'100%'} />
-          <Badge position="absolute" bottom={22} left={22}>
-            <SizableText size={8} color="#fff">
-              {t('credit')}: {credit}
-            </SizableText>
-          </Badge>
-        </YStack>
-        <YStack p={'$4'} flex={1} alignItems="flex-end" justifyContent="flex-end">
-          <StyledButton onPress={() => setIsSortingSheetOpen(true)}>
-            {
-              sortOptions.find((s) => {
-                return s.value == selectedSortOption;
-              })?.label
-            }
-          </StyledButton>
-        </YStack>
-        <FlatList
-          onEndReached={onEndReached}
-          data={couponsData}
-          renderItem={renderCoupons}
-          numColumns={2}
-          keyExtractor={(item, index) => index.toString()}
-          style={{ flex: 1 }}
-          columnWrapperStyle={{
-            flex: 1,
-            padding: 12,
-            justifyContent: 'space-between',
-          }}
-          ListFooterComponent={() => {
-            if (!isCouponsFetching && !isFetchingMoreCoupons) {
-              return null;
-            }
-            return (
-              <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
-                <Spinner color="$color.primary" />
-                <SizableText color="slategrey">{t('loading')}</SizableText>
-              </XStack>
-            );
-          }}
-          ListEmptyComponent={() => {
-            if (isCouponsFetching || isFetchingMoreCoupons) {
-              return null;
-            }
-            return (
-              <Container alignItems="center">
-                <AntDesign name="folderopen" size={120} color="$666" />
-                <Title>{t('emptyContent')}</Title>
-              </Container>
-            );
-          }}
-        />
-      </ScrollView>
+      <FlatList
+        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
+        onEndReached={onEndReached}
+        data={couponsData}
+        renderItem={renderCoupons}
+        numColumns={2}
+        keyExtractor={(item, index) => index.toString()}
+        style={{ flex: 1 }}
+        ListHeaderComponent={() => {
+          return (
+            <YStack>
+              <YStack>
+                <Image aspectRatio={16 / 9} source={{ uri: shop.couponCover }} width={'100%'} />
+                <Badge position="absolute" bottom={22} left={22}>
+                  <SizableText size={8} color="#fff">
+                    {t('credit')}: {credit}
+                  </SizableText>
+                </Badge>
+              </YStack>
+              <YStack p={'$4'} flex={1} alignItems="flex-end" justifyContent="flex-end">
+                <StyledButton onPress={() => setIsSortingSheetOpen(true)}>
+                  {
+                    sortOptions.find((s) => {
+                      return s.value == selectedSortOption;
+                    })?.label
+                  }
+                </StyledButton>
+              </YStack>
+            </YStack>
+          );
+        }}
+        columnWrapperStyle={{
+          flex: 1,
+          padding: 12,
+          justifyContent: 'space-between',
+        }}
+        ListFooterComponent={() => {
+          if (!isCouponsFetching && !isFetchingMoreCoupons) {
+            return null;
+          }
+          return (
+            <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+              <Spinner color="$color.primary" />
+              <SizableText color="slategrey">{t('loading')}</SizableText>
+            </XStack>
+          );
+        }}
+        ListEmptyComponent={() => {
+          if (isCouponsFetching || isFetchingMoreCoupons) {
+            return null;
+          }
+          return (
+            <Container alignItems="center">
+              <AntDesign name="folderopen" size={120} color="$666" />
+              <Title>{t('emptyContent')}</Title>
+            </Container>
+          );
+        }}
+      />
       <ActionSheet
         isSheetOpen={isSortingSheetOpen}
         setIsSheetOpen={setIsSortingSheetOpen}
