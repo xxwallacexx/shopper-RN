@@ -1,12 +1,15 @@
 import { AntDesign } from '@expo/vector-icons';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import moment from 'moment';
 import { useState } from 'react';
-import { FlatList, SafeAreaView, SectionList, TouchableOpacity } from 'react-native';
+import { FlatList, SafeAreaView, SectionList } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, Stack } from 'tamagui';
 import { Image, YStack, SizableText, AnimatePresence, XStack } from 'tamagui';
 import { getSelf, listBookmarks, listUserCoupon, listOrders } from '~/api';
 import { AnimatedTabs, CouponCard, ProductCard, Spinner } from '~/components';
+import ActionSheet from '~/components/ActionSheet';
 import Loader from '~/components/Loader';
 import { useAuth, useLocale } from '~/hooks';
 import { AnimatedYStack, Container, StyledButton, Title } from '~/tamagui.config';
@@ -15,6 +18,10 @@ import { Bookmark, Order, UserCoupon } from '~/types';
 const Profile = () => {
   const { t } = useLocale();
   const { token } = useAuth();
+  const router = useRouter();
+
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [sheetPosition, setSheetPoistion] = useState(0);
 
   if (!token) return <></>;
   const tabs = [
@@ -112,7 +119,7 @@ const Profile = () => {
     const uri = photos[0].path;
     return (
       <Link href={`/product/${_id}`} asChild>
-        <TouchableOpacity style={{ width: '48%' }}>
+        <Stack w="48%" pressStyle={{ opacity: 0.5 }}>
           <ProductCard
             imageUri={uri}
             price={price}
@@ -120,7 +127,7 @@ const Profile = () => {
             name={name}
             introduction={introduction}
           />
-        </TouchableOpacity>
+        </Stack>
       </Link>
     );
   };
@@ -130,9 +137,9 @@ const Profile = () => {
     const { _id, name, credit, photo, endDate } = coupon;
     return (
       <Link href={`/coupon/${_id}`} asChild>
-        <TouchableOpacity style={{ width: '48%' }}>
+        <Stack w="48%" pressStyle={{ opacity: 0.5 }}>
           <CouponCard imageUri={photo} name={name} endDate={endDate} credit={credit} />
-        </TouchableOpacity>
+        </Stack>
       </Link>
     );
   };
@@ -286,7 +293,8 @@ const Profile = () => {
               </StyledButton>
             ) : null}
             <TouchableOpacity
-              style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+              style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}
+              onPress={() => setIsSheetOpen(true)}>
               <YStack w="100%" alignItems="center" space="$2">
                 <Image
                   resizeMode="contain"
@@ -325,6 +333,16 @@ const Profile = () => {
     }
   };
 
+  const onQRPaymentPress = () => {
+    setIsSheetOpen(false);
+    router.navigate({ pathname: '/qrPayment' });
+  };
+
+  const onQRPaymentHistoryPress = () => {
+    setIsSheetOpen(false);
+    router.navigate({ pathname: '/qrPayment/history' });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <SectionList
@@ -337,8 +355,24 @@ const Profile = () => {
         renderSectionHeader={renderSectionHeader}
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => item + index}
+        keyExtractor={(item, index) => index}
       />
+      <ActionSheet
+        isSheetOpen={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
+        sheetPosition={sheetPosition}
+        setSheetPosition={setSheetPoistion}>
+        <ScrollView>
+          <YStack space={'$4'}>
+            <TouchableOpacity onPress={onQRPaymentPress}>
+              <StyledButton>{t('QRPayment')}</StyledButton>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onQRPaymentHistoryPress}>
+              <StyledButton>{t('QRPaymentHistory')}</StyledButton>
+            </TouchableOpacity>
+          </YStack>
+        </ScrollView>
+      </ActionSheet>
     </SafeAreaView>
   );
 };
