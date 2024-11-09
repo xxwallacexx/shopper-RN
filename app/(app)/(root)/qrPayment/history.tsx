@@ -54,7 +54,7 @@ const QRPaymentHistory = () => {
           {t('QRPaymentDate')}: {moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
         </SizableText>
         <SizableText>
-          {t('totalPrice')}: {item.totalPrice}
+          {t('totalPrice')}: HK$ {item.totalPrice}
         </SizableText>
         <SizableText>
           {t('TransactionId')}: {item.stripeTransactionId}
