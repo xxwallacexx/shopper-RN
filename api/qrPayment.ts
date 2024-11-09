@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { API_URL, SHOP } from '@env';
-import { PaymentMethodEnum } from '~/types';
+import { PaymentMethodEnum, QRPayment } from '~/types';
 const baseUrl = API_URL;
 const shop = SHOP;
 
@@ -33,4 +33,22 @@ const createQRPayment = async (
     });
 };
 
-export { createQRPayment };
+const listQRPayment = async (token: string, skip: number) => {
+  const options = {
+    method: 'get',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/shop/${shop}/QRPayment`,
+    params: {
+      limit: 10,
+      skip,
+    },
+  };
+  let res: QRPayment[] = await axios(options).then((res) => {
+    return res.data.qrPayments;
+  });
+  return res;
+};
+
+export { createQRPayment, listQRPayment };
