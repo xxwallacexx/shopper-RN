@@ -1,37 +1,41 @@
-import axios from 'axios'
+import axios from 'axios';
 import { Address, User } from '~/types';
-import { API_URL, SHOP } from '@env'
-const baseUrl = API_URL
-const shop = SHOP
+import { API_URL, SHOP } from '@env';
+const baseUrl = API_URL;
+const shop = SHOP;
 
 const getCredit = async (token: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/shop/${shop}/chainCredit`,
   };
-  let res: number = await axios(options).then((res) => { return res.data })
-  return res
-}
+  let res: number = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 const getSelf = async (token: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/user/self`,
   };
-  let res: User = await axios(options).then((res) => { return res.data })
-  console.log(res)
-  return res
-}
+  let res: User = await axios(options).then((res) => {
+    return res.data;
+  });
+  console.log(res);
+  return res;
+};
 
 const updateSelf = async (token: string, username: string, email?: string, address?: Address) => {
   const options = {
-    method: "put",
+    method: 'put',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -43,27 +47,28 @@ const updateSelf = async (token: string, username: string, email?: string, addre
     url: `${baseUrl}/user/self`,
   };
   return await axios(options).catch((e) => {
-    console.log(e)
-    let error = new Error(e.response.data.errorCodes)
-    throw (error)
-  })
-}
+    console.log(e);
+    let error = new Error(e.response.data.errorCodes);
+    throw error;
+  });
+};
 
 const checkIsVerified = async (token: string) => {
   const options = {
-    method: "get",
+    method: 'get',
     headers: {
       Authorization: `JWT ${token}`,
     },
     url: `${baseUrl}/smsVerification/isVerified`,
   };
-  return await axios(options).then((res => { return res.data }));
-
-}
+  return await axios(options).then((res) => {
+    return res.data;
+  });
+};
 
 const getVerifyCode = async (token: string, phoneNumber: string) => {
   const options = {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -73,11 +78,11 @@ const getVerifyCode = async (token: string, phoneNumber: string) => {
     url: `${baseUrl}/smsVerification`,
   };
   return await axios(options);
-}
+};
 
 const verifyCode = async (token: string, code: string) => {
   const options = {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -87,7 +92,23 @@ const verifyCode = async (token: string, code: string) => {
     url: `${baseUrl}/smsVerification/verify`,
   };
   return await axios(options);
-}
+};
+
+const updateInstallation = async (fcmToken: string, scheme: string, token: string) => {
+  const options = {
+    method: 'put',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    data: {
+      token: fcmToken,
+      scheme,
+      shop,
+    },
+    url: `${baseUrl}/user/installation`,
+  };
+  return await axios(options);
+};
 
 export {
   getCredit,
@@ -95,5 +116,6 @@ export {
   updateSelf,
   checkIsVerified,
   getVerifyCode,
-  verifyCode
-}
+  verifyCode,
+  updateInstallation,
+};

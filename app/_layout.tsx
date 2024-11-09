@@ -6,12 +6,15 @@ import Providers from './providers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
-import { createUserTemp } from '~/api';
+import { createUserTemp, updateInstallation } from '~/api';
 import moment from 'moment';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import messaging from '@react-native-firebase/messaging';
 import Toast, { ErrorToast } from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
 import { PRIMARY_COLOR } from '@env';
+import Constants from 'expo-constants';
+const scheme = Constants.expoConfig?.scheme as string;
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -58,6 +61,16 @@ const RootLayout = () => {
       }
       setToken(storedToken);
       setIsInitializing(false);
+
+      //fcm
+      const authStatus = await messaging().hasPermission();
+      if (authStatus !== messaging.AuthorizationStatus.AUTHORIZED) {
+        await messaging().requestPermission();
+      } else {
+        const fcmToken = await messaging().getToken();
+        console.log(fcmToken);
+        await updateInstallation(fcmToken, scheme, storedToken);
+      }
     })();
   }, []);
 
