@@ -52,7 +52,16 @@
           "photosPermission": "允許存取以上傳商品評價圖片影片及頭像"
         }
       ],
-      "expo-video"
+      "expo-video",
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -66,11 +75,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
+      "entitlements": {
+        "aps-environment": "production"
+      },
       "infoPlist": {
         "NSRemindersFullAccessUsageDescription": "允許 $(PRODUCT_NAME) 存取以加入預約",
         "NSRemindersUsageDescription": "允許存取以加入預約",
