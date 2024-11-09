@@ -37,8 +37,8 @@ const listCategories = async () => {
 };
 
 const listProducts = async (
-  isRecommended: true,
   skip: number,
+  isRecommended?: boolean,
   category?: string[],
   sort?: string,
   name?: string,
