@@ -350,3 +350,12 @@ export type FeedComment = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type QRPayment = {
+  _id: string;
+  totalPrice: number;
+  user: string;
+  shop: string;
+  stripeTransactionId: string;
+  createdAt: Date;
+};

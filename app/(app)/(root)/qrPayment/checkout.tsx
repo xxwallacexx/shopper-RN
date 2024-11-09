@@ -53,7 +53,6 @@ const QRPaymentCheckout = () => {
     setIsPaymentSheetOpen(true);
   };
 
-  console.log(shop);
   if (!token || !shop || isPlatformPayAvailable == undefined) return <></>;
 
   const { mutate: onCreateQRPaymentSubmit, isPending: isCreateQRPaymentSubmitting } = useMutation({
@@ -68,7 +67,7 @@ const QRPaymentCheckout = () => {
       return await createQRPayment(token, Number(totalPrice), stripeTokenId, paymentMethod);
     },
     onSuccess: (res) => {
-      queryClient.resetQueries({ queryKey: ['qrPaymentHistory'] });
+      queryClient.resetQueries({ queryKey: ['qrPayments'] });
       setIsPaymentSheetOpen(false);
       setIsSuccessDialogOpen(true);
     },
