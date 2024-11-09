@@ -1,20 +1,35 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
 import { YStack, XStack, ScrollView, SizableText } from 'tamagui';
 import { listCategories, listProducts, listAdsBanners } from '~/api';
 import { BannerCarousel, ProductCard, Spinner } from '~/components';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
 import { useLocale } from '~/hooks';
 import { Container, StyledButton, Title } from '~/tamagui.config';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import ActionSheet from '~/components/ActionSheet';
+import { Product } from '~/types';
 
 const Home = () => {
+  const navigation = useNavigation();
   const { t } = useLocale();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string>();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Link href={'/product'} asChild>
+            <TouchableOpacity style={{ marginRight: 12 }}>
+              <MaterialCommunityIcons name="magnify" size={24} color="#fff" />
+            </TouchableOpacity>
+          </Link>
+        );
+      },
+    });
+  }, [navigation]);
 
   const { data: adsBanners = [] } = useQuery({ queryKey: ['adsBanners'], queryFn: listAdsBanners });
   const { data: categories = [] } = useQuery({
@@ -93,8 +108,8 @@ const Home = () => {
     initialPageParam: 0,
     queryFn: ({ pageParam }: { pageParam: number }) => {
       return listProducts(
-        true,
         pageParam,
+        true,
         categoriesQuery(),
         undefined,
         undefined,
