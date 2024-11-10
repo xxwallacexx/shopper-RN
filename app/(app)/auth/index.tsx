@@ -4,25 +4,16 @@ import { Platform, SafeAreaView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import HTMLView from 'react-native-htmlview';
 import { Button, H2, ScrollView } from 'tamagui';
-import { appleLogin, facebookLogin, getShop } from '~/api';
+import { appleLogin, facebookLogin, getShop, googleLogin } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { Container, StyledButton } from '~/tamagui.config';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import Toast from 'react-native-toast-message';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import FBAccessToken from 'react-native-fbsdk-next/lib/typescript/src/FBAccessToken';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { YStack } from 'tamagui';
 
-const AppleLogin = ({ onPress }: { onPress: () => void }) => {
-  return (
-    <AppleAuthentication.AppleAuthenticationButton
-      buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-      buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-      cornerRadius={5}
-      style={{ height: 32, width: '100%', alignSelf: 'center' }}
-      onPress={onPress}
-    />
-  );
-};
 const Auth = () => {
   const { t } = useLocale();
   const { signin } = useAuth();
@@ -32,6 +23,13 @@ const Auth = () => {
     queryKey: ['shop'],
     queryFn: async () => {
       return await getShop();
+    },
+  });
+
+  const { data: hasPlayServices } = useQuery({
+    queryKey: ['googlePlayService'],
+    queryFn: async () => {
+      return await GoogleSignin.hasPlayServices();
     },
   });
 
@@ -83,7 +81,36 @@ const Auth = () => {
     },
   });
 
-  if (!shop) return <></>;
+  const { isPending: isGoogleLoginSubmitting, mutate: googleLoginMutate } = useMutation({
+    mutationFn: ({
+      email,
+      username,
+      googleId,
+      identityToken,
+    }: {
+      email: string;
+      username: string;
+      googleId: string;
+      identityToken: string | null;
+    }) => {
+      return googleLogin(email, username, googleId, identityToken);
+    },
+    onSuccess: async (res) => {
+      await signin(res.token, res.tokenExpAt);
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      router.replace('/(app)/(root)/(tabs)/profile');
+    },
+    onError: (e) => {
+      console.log(e);
+      const error = e as Error;
+      Toast.show({
+        type: 'error',
+        text1: t(error.message),
+      });
+    },
+  });
+
+  if (!shop || hasPlayServices == undefined) return <></>;
 
   const onAppleLoginPress = async () => {
     try {
@@ -118,7 +145,21 @@ const Auth = () => {
     }
   };
 
-  const disabled = isAppleLoginSubmitting || isFacebookLoginSubmitting;
+  const onGoogleSigninPress = async () => {
+    try {
+      const isSignedIn = await GoogleSignin.isSignedIn();
+      if (isSignedIn) {
+        await GoogleSignin.signOut();
+      }
+      const { idToken: identityToken, user } = await GoogleSignin.signIn();
+      const { email, name, id: googleId } = user;
+      googleLoginMutate({ email, username: name ?? '', googleId, identityToken });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const disabled = isAppleLoginSubmitting || isFacebookLoginSubmitting || isGoogleLoginSubmitting;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -135,10 +176,34 @@ const Auth = () => {
             {t('facebookLogin')}
           </StyledButton>
         </TouchableOpacity>
-        {Platform.OS == 'ios' ? <AppleLogin onPress={onAppleLoginPress} /> : null}
-        <Button disabled={disabled} variant="outlined" color={'$primary'}>
-          {t('createVisitorAcc')}
-        </Button>
+        {hasPlayServices ? (
+          <GoogleSigninButton
+            disabled={disabled}
+            style={{ width: '100%', height: 40 }}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Light}
+            onPress={onGoogleSigninPress}
+          />
+        ) : null}
+        {Platform.OS == 'ios' ? (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={5}
+            style={{ height: 32, width: '100%', alignSelf: 'center' }}
+            onPress={onAppleLoginPress}
+          />
+        ) : null}
+        <YStack>
+          <Link disabled={disabled} href="/auth/register" asChild>
+            <Button disabled={disabled} variant="outlined" color={'$primary'}>
+              {t('createAcc')}
+            </Button>
+          </Link>
+          <Button disabled={disabled} variant="outlined" color={'$primary'}>
+            {t('createVisitorAcc')}
+          </Button>
+        </YStack>
       </Container>
     </SafeAreaView>
   );

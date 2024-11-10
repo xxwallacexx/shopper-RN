@@ -77,7 +77,7 @@ const googleLogin = async (
   email: string,
   username: string,
   googleId: string,
-  identityToken: string
+  identityToken: string | null
 ) => {
   const options = {
     method: 'post',
@@ -90,7 +90,15 @@ const googleLogin = async (
       identityToken,
     },
   };
-  return await axios(options);
+  let res: Auth = await axios(options)
+    .then((res) => {
+      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
+    })
+    .catch((e) => {
+      let error = new Error(e.response.data.errorCodes);
+      throw error;
+    });
+  return res;
 };
 
 const createUser = async (username: string, email: string, password: string) => {
@@ -104,7 +112,15 @@ const createUser = async (username: string, email: string, password: string) => 
       shop,
     },
   };
-  return await axios(options);
+  let res: Auth = await axios(options)
+    .then((res) => {
+      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
+    })
+    .catch((e) => {
+      let error = new Error(e.response.data.errorCodes);
+      throw error;
+    });
+  return res;
 };
 
 const createUserTemp = async () => {

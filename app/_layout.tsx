@@ -15,6 +15,7 @@ SplashScreen.preventAutoHideAsync();
 import { PRIMARY_COLOR } from '@env';
 import Constants from 'expo-constants';
 const scheme = Constants.expoConfig?.scheme as string;
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -41,6 +42,7 @@ const RootLayout = () => {
 
   useEffect(() => {
     (async () => {
+      GoogleSignin.configure();
       const locale = await AsyncStorage.getItem('locale');
       if (locale) {
         setLocale(locale);

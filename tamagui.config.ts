@@ -5,11 +5,11 @@ import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
 import { XStack } from 'tamagui';
 import { createTamagui, styled, SizableText, H1, YStack, Button } from 'tamagui';
-import { PRIMARY_COLOR, PRIMARY_8_COLOR, PRIMARY_9_COLOR } from "@env";
+import { PRIMARY_COLOR, PRIMARY_8_COLOR, PRIMARY_9_COLOR } from '@env';
 
-const primary = PRIMARY_COLOR ?? "#000"
-const primary8 = PRIMARY_8_COLOR ?? "#000"
-const primary9 = PRIMARY_9_COLOR ?? "#000"
+const primary = PRIMARY_COLOR ?? '#000';
+const primary8 = PRIMARY_8_COLOR ?? '#000';
+const primary9 = PRIMARY_9_COLOR ?? '#000';
 
 const animations = createAnimations({
   bouncy: {
@@ -31,19 +31,18 @@ const animations = createAnimations({
   },
   '100ms': {
     duration: 100,
-    type: "timing"
-  }
+    type: 'timing',
+  },
 });
 
 const headingFont = createInterFont({});
 
 const bodyFont = createInterFont();
 
-
 export const Container = styled(YStack, {
   flex: 1,
   paddingHorizontal: 24,
-  paddingVertical: 12
+  paddingVertical: 12,
 });
 
 export const Main = styled(YStack, {
@@ -68,40 +67,38 @@ export const AnimatedYStack = styled(YStack, {
     isRight: { true: { x: 25, opacity: 0 } },
     defaultFade: { true: { opacity: 0 } },
   } as const,
-})
+});
 
 export const StyledButton = styled(Button, {
-
   variants: {
     disabled: {
       true: {
         backgroundColor: tokens.color.gray9Dark,
         pressStyle: {
           backgroundColor: tokens.color.gray9Dark,
-          borderWidth: 0
-        }
-      }
+          borderWidth: 0,
+        },
+      },
     },
     destructive: {
       true: {
         backgroundColor: tokens.color.red11Light,
         pressStyle: {
           backgroundColor: tokens.color.red7Light,
-          borderWidth: 0
-        }
-
-      }
-    }
+          borderWidth: 0,
+        },
+      },
+    },
   },
   hoverStyle: {
-    backgroundColor: "$color.primary8",
+    backgroundColor: '$color.primary8',
   },
   pressStyle: {
-    backgroundColor: "$color.primary8"
+    backgroundColor: '$color.primary8',
   },
   backgroundColor: primary,
-  color: "#fff",
-  size: "$2",
+  color: '#fff',
+  size: '$2',
 
   // Shaddows
   shadowColor: '#000',
@@ -111,26 +108,25 @@ export const StyledButton = styled(Button, {
   },
   shadowOpacity: 0.25,
   shadowRadius: 3.84,
-
-})
+});
 
 export const Badge = styled(XStack, {
-  display: "flex",
-  alignSelf: "flex-start",
+  display: 'flex',
+  alignSelf: 'flex-start',
   paddingHorizontal: 8,
-  backgroundColor: "$color.primary",
-  borderRadius: 4
-})
+  backgroundColor: '$color.primary',
+  borderRadius: 4,
+});
 
 export const BottomAction = styled(XStack, {
-  w: "100%",
-  h: "$4",
-  p: "$2",
+  w: '100%',
+  h: '$4',
+  p: '$2',
   btw: 0.5,
-  borderColor: "lightslategrey",
-  alignItems: "center",
-  space: "$2"
-})
+  borderColor: 'lightslategrey',
+  alignItems: 'center',
+  space: '$2',
+});
 
 const config = createTamagui({
   light: {
@@ -154,8 +150,8 @@ const config = createTamagui({
     color: {
       primary,
       primary8,
-      primary9
-    }
+      primary9,
+    },
   },
   media: createMedia({
     xs: { maxWidth: 660 },
@@ -181,7 +177,7 @@ type AppConfig = typeof config;
 // Docs: https://tamagui.dev/docs/core/configuration
 
 declare module 'tamagui' {
-  interface TamaguiCustomConfig extends AppConfig { }
+  interface TamaguiCustomConfig extends AppConfig {}
 }
 
 export default config;
