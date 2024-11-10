@@ -23,6 +23,7 @@ const Layout = () => {
       })}>
       <Stack.Screen name="index" />
       <Stack.Screen options={{ headerShown: true }} name="signin" />
+      <Stack.Screen options={{ headerShown: true }} name="register" />
     </Stack>
   );
 };

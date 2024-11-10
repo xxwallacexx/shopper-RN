@@ -23,7 +23,7 @@ const EditAddress = () => {
     },
   });
 
-  const { isPending: isSubmiting, mutate: updateSelfMutate } = useMutation({
+  const { isPending: isSubmitting, mutate: updateSelfMutate } = useMutation({
     mutationFn: ({
       token,
       username,
@@ -84,52 +84,62 @@ const EditAddress = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <Form onSubmit={onSubmit}>
-          <YStack space="$2" p="$2">
-            <Label>{t('contactNumber')}</Label>
-            <Input
-              autoCapitalize="none"
-              disabled={isSubmiting}
-              borderColor={'lightgrey'}
-              backgroundColor={'whitesmoke'}
-              defaultValue={user.address.phoneNumber}
-              onChangeText={(value) => setPhoneNumber(value)}
-            />
-            <Label>{t('district')}</Label>
-            <Input
-              autoCapitalize="none"
-              disabled={isSubmiting}
-              borderColor={'lightgrey'}
-              backgroundColor={'whitesmoke'}
-              defaultValue={user.address.district}
-              onChangeText={(value) => setDistrict(value)}
-            />
-            <Label>{t('streetName')}</Label>
-            <Input
-              autoCapitalize="none"
-              disabled={isSubmiting}
-              borderColor={'lightgrey'}
-              backgroundColor={'whitesmoke'}
-              defaultValue={user.address.street}
-              onChangeText={(value) => setStreet(value)}
-            />
-            <Label>{t('room')}</Label>
-            <Input
-              autoCapitalize="none"
-              disabled={isSubmiting}
-              borderColor={'lightgrey'}
-              backgroundColor={'whitesmoke'}
-              defaultValue={user.address.room}
-              onChangeText={(value) => setRoom(value)}
-            />
-            <Form.Trigger asChild disabled={isSubmiting}>
-              <StyledButton
-                disabled={disabled}
-                alignSelf="center"
-                m="$4"
-                w="$20"
-                style={{ opacity: isSubmiting ? 0.5 : 1 }}
-                icon={isSubmiting ? <Spinner /> : null}>
-                Submit
+          <YStack space="$4" p="$2">
+            <YStack w="100%" alignItems="flex-start" space="$2">
+              <Label>{t('contactNumber')}</Label>
+              <Input
+                w="100%"
+                size="$4"
+                autoCapitalize="none"
+                disabled={isSubmitting}
+                borderColor={'lightgrey'}
+                backgroundColor={'whitesmoke'}
+                defaultValue={user.address.phoneNumber}
+                onChangeText={(value) => setPhoneNumber(value)}
+              />
+            </YStack>
+            <YStack w="100%" alignItems="flex-start" space="$2">
+              <Label>{t('district')}</Label>
+              <Input
+                w="100%"
+                size="$4"
+                autoCapitalize="none"
+                disabled={isSubmitting}
+                borderColor={'lightgrey'}
+                backgroundColor={'whitesmoke'}
+                defaultValue={user.address.district}
+                onChangeText={(value) => setDistrict(value)}
+              />
+            </YStack>
+            <YStack w="100%" alignItems="flex-start" space="$2">
+              <Label>{t('streetName')}</Label>
+              <Input
+                w="100%"
+                size="$4"
+                autoCapitalize="none"
+                disabled={isSubmitting}
+                borderColor={'lightgrey'}
+                backgroundColor={'whitesmoke'}
+                defaultValue={user.address.street}
+                onChangeText={(value) => setStreet(value)}
+              />
+            </YStack>
+            <YStack w="100%" alignItems="flex-start" space="$2">
+              <Label>{t('room')}</Label>
+              <Input
+                w="100%"
+                size="$4"
+                autoCapitalize="none"
+                disabled={isSubmitting}
+                borderColor={'lightgrey'}
+                backgroundColor={'whitesmoke'}
+                defaultValue={user.address.room}
+                onChangeText={(value) => setRoom(value)}
+              />
+            </YStack>
+            <Form.Trigger asChild disabled={isSubmitting}>
+              <StyledButton disabled={disabled} w="100%">
+                {t('confirm')}
               </StyledButton>
             </Form.Trigger>
             <Spinner />
