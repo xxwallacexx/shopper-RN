@@ -1,13 +1,12 @@
-import axios from 'axios'
-import { Auth } from '~/types'
-import { API_URL, SHOP } from '@env'
-const baseUrl = API_URL
-const shop = SHOP
-
+import axios from 'axios';
+import { Auth } from '~/types';
+import { API_URL, SHOP } from '@env';
+const baseUrl = API_URL;
+const shop = SHOP;
 
 const login = async (email: string, password: string) => {
   const options = {
-    method: "post",
+    method: 'post',
     url: `${baseUrl}/user/login`,
     data: {
       email,
@@ -17,60 +16,86 @@ const login = async (email: string, password: string) => {
   };
   let res: Auth = await axios(options)
     .then((res) => {
-      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt }
+      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
     })
     .catch((e) => {
-      let error = new Error(e.response.data.errorCodes)
-      throw (error)
+      let error = new Error(e.response.data.errorCodes);
+      throw error;
     });
-  return res
-}
+  return res;
+};
 
 const facebookLogin = async (token: string) => {
   const options = {
     method: 'post',
     url: `${baseUrl}/user/login/facebook`,
     data: {
-      token: token,
-      shop: shop,
+      token,
+      shop,
     },
   };
-  return await axios(options);
-}
+  let res: Auth = await axios(options)
+    .then((res) => {
+      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
+    })
+    .catch((e) => {
+      let error = new Error(e.response.data.errorCodes);
+      throw error;
+    });
+  return res;
+};
 
-const appleLogin = async (email: string, username: string, appleUser: string, identityToken: string) => {
+const appleLogin = async (
+  email: string | null,
+  username: string,
+  appleUser: string,
+  identityToken: string | null
+) => {
   const options = {
-    method: "post",
+    method: 'post',
     url: `${baseUrl}/user/login/apple`,
     data: {
-      email: email,
-      username: username,
-      appleUser: appleUser,
-      shop: shop,
+      email,
+      username,
+      appleUser,
+      shop,
       identityToken,
     },
   };
-  return await axios(options);
-}
+  let res: Auth = await axios(options)
+    .then((res) => {
+      return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
+    })
+    .catch((e) => {
+      let error = new Error(e.response.data.errorCodes);
+      throw error;
+    });
+  return res;
+};
 
-const googleLogin = async (email: string, username: string, googleId: string, identityToken: string) => {
+const googleLogin = async (
+  email: string,
+  username: string,
+  googleId: string,
+  identityToken: string
+) => {
   const options = {
-    method: "post",
+    method: 'post',
     url: `${baseUrl}/user/login/google`,
     data: {
       email,
       username,
       googleId,
-      shop: shop,
+      shop,
       identityToken,
     },
   };
   return await axios(options);
-}
+};
 
 const createUser = async (username: string, email: string, password: string) => {
   const options = {
-    method: "post",
+    method: 'post',
     url: `${baseUrl}/user`,
     data: {
       username,
@@ -80,24 +105,25 @@ const createUser = async (username: string, email: string, password: string) => 
     },
   };
   return await axios(options);
-}
+};
 
 const createUserTemp = async () => {
   const options = {
-    method: "post",
+    method: 'post',
     url: `${baseUrl}/user/temp`,
     data: {
       shop,
     },
   };
-  let res: Auth = await axios(options).then((res) => { return res.data });
-  return res
-}
-
+  let res: Auth = await axios(options).then((res) => {
+    return res.data;
+  });
+  return res;
+};
 
 const resetPassword = async (token: string, password: string) => {
   const options = {
-    method: "put",
+    method: 'put',
     headers: {
       Authorization: `JWT ${token}`,
     },
@@ -107,16 +133,6 @@ const resetPassword = async (token: string, password: string) => {
     url: `${baseUrl}/user/resetPassword`,
   };
   return await axios(options);
-}
+};
 
-
-export {
-  login,
-  facebookLogin,
-  appleLogin,
-  googleLogin,
-  createUser,
-  createUserTemp,
-  resetPassword
-
-}
+export { login, facebookLogin, appleLogin, googleLogin, createUser, createUserTemp, resetPassword };
