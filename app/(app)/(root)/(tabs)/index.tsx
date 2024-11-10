@@ -1,11 +1,11 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useLayoutEffect, useState } from 'react';
-import { FlatList, RefreshControl, SectionList, TouchableOpacity } from 'react-native';
-import { YStack, XStack, ScrollView, SizableText } from 'tamagui';
-import { listCategories, listProducts, listAdsBanners } from '~/api';
+import { FlatList, SectionList, TouchableOpacity } from 'react-native';
+import { YStack, XStack, ScrollView, SizableText, Circle } from 'tamagui';
+import { listCategories, listProducts, listAdsBanners, getNotificationUnreadCount } from '~/api';
 import { BannerCarousel, ProductCard, Spinner } from '~/components';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useLocale } from '~/hooks';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth, useLocale } from '~/hooks';
 import { Container, StyledButton, Title } from '~/tamagui.config';
 import { Link, useNavigation } from 'expo-router';
 import ActionSheet from '~/components/ActionSheet';
@@ -13,23 +13,12 @@ import { Product } from '~/types';
 
 const Home = () => {
   const navigation = useNavigation();
+  const { token } = useAuth();
   const { t } = useLocale();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string>();
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => {
-        return (
-          <Link href={'/product'} asChild>
-            <TouchableOpacity style={{ marginRight: 12 }}>
-              <MaterialCommunityIcons name="magnify" size={24} color="#fff" />
-            </TouchableOpacity>
-          </Link>
-        );
-      },
-    });
-  }, [navigation]);
+  if (!token) return <></>;
 
   const { data: adsBanners = [] } = useQuery({ queryKey: ['adsBanners'], queryFn: listAdsBanners });
   const { data: categories = [] } = useQuery({
@@ -56,6 +45,39 @@ const Home = () => {
       ];
     },
   });
+
+  const { data: notificationCount } = useQuery({
+    queryKey: ['notificationCount', token],
+    queryFn: async () => {
+      return await getNotificationUnreadCount(token);
+    },
+  });
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <XStack mx="$4" space="$2">
+            <Link href={'/product'} asChild>
+              <TouchableOpacity>
+                <MaterialCommunityIcons name="magnify" size={24} color="#fff" />
+              </TouchableOpacity>
+            </Link>
+            <Link href={'/notification'} asChild>
+              <TouchableOpacity>
+                <Ionicons name="notifications-outline" size={24} color="#fff" />
+                {notificationCount ? (
+                  <Circle size={'$1'} bg="$red6" position="absolute" right={-10} top={-10}>
+                    <SizableText size={'$1'}>{notificationCount}</SizableText>
+                  </Circle>
+                ) : null}
+              </TouchableOpacity>
+            </Link>
+          </XStack>
+        );
+      },
+    });
+  }, [navigation, notificationCount]);
 
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [sheetPosition, setSheetPosition] = useState(0);
