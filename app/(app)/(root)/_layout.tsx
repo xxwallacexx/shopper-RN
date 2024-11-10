@@ -74,6 +74,12 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="notification"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

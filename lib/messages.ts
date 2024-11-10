@@ -661,6 +661,8 @@ export const messages = {
     removeProductReview: '刪除產品評論',
     emptyComment: '沒有相關回應',
     remove: '刪除',
+    newest: '最新',
+    read: '已讀',
     /**
      * Error Code
      */

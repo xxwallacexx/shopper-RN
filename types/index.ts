@@ -359,3 +359,12 @@ export type QRPayment = {
   stripeTransactionId: string;
   createdAt: Date;
 };
+
+export type Notification = {
+  notification: { body: string; title: string };
+  read: boolean;
+  _id: string;
+  user: string;
+  shop: string;
+  createdAt: Date;
+};

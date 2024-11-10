@@ -12,3 +12,4 @@ export * from './productComment';
 export * from './feed';
 export * from './feedComment';
 export * from './qrPayment';
+export * from './notification';

@@ -2,7 +2,10 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { AuthContext } from './useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createUserTemp } from '~/api';
+import { createUserTemp, updateInstallation } from '~/api';
+import Constants from 'expo-constants';
+import messaging from '@react-native-firebase/messaging';
+const scheme = Constants.expoConfig?.scheme as string;
 
 export const AuthProvider = ({
   children,
@@ -26,6 +29,13 @@ export const AuthProvider = ({
     await AsyncStorage.setItem('token', token);
     await AsyncStorage.setItem('tokenExpAt', tokenExpAt);
     setToken(token);
+    const authStatus = await messaging().hasPermission();
+    if (authStatus !== messaging.AuthorizationStatus.AUTHORIZED) {
+      await messaging().requestPermission();
+    } else {
+      const fcmToken = await messaging().getToken();
+      await updateInstallation(fcmToken, scheme, token);
+    }
   }, []);
 
   const context = useMemo(
