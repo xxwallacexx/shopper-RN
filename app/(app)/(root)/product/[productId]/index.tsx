@@ -2,7 +2,7 @@ import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
-import { FlatList, SafeAreaView } from 'react-native';
+import { FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import {
   AlertDialog,
   Label,
@@ -42,7 +42,6 @@ import moment from 'moment';
 import { OrderContent, Product, ReservationContent, ReservationOption } from '~/types';
 import Toast from 'react-native-toast-message';
 import { Stack } from 'tamagui';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { StarRatingDisplay } from 'react-native-star-rating-widget';
 import { Image } from 'tamagui';
 
@@ -580,15 +579,13 @@ const ProductDetail = () => {
       </ScrollView>
 
       <BottomAction justifyContent="flex-end">
-        <TouchableOpacity
+        <StyledButton
           onPress={() => {
             setIsOptionSheetOpen(true);
           }}>
-          <StyledButton>
-            {t('addToCart')}
-            <AntDesign name="shoppingcart" color="#fff" />
-          </StyledButton>
-        </TouchableOpacity>
+          {t('addToCart')}
+          <AntDesign name="shoppingcart" color="#fff" />
+        </StyledButton>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isReservationOptionSheetOpen}
@@ -658,51 +655,17 @@ const ProductDetail = () => {
               }
             />
             <XStack space="$2">
-              <TouchableOpacity disabled={disabled} onPress={onAddCartPress}>
-                <StyledButton disabled={disabled}>
-                  {t('addToCart')}
-                  <AntDesign name="shoppingcart" color="#fff" />
-                </StyledButton>
-              </TouchableOpacity>
-              <TouchableOpacity disabled={disabled} onPress={onCheckoutPress}>
-                <StyledButton disabled={disabled}>
-                  {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
-                  <Ionicons name="cash-outline" color="#fff" />
-                </StyledButton>
-              </TouchableOpacity>
+              <StyledButton onPress={onAddCartPress} disabled={disabled}>
+                {t('addToCart')}
+                <AntDesign name="shoppingcart" color="#fff" />
+              </StyledButton>
+              <StyledButton onPress={onCheckoutPress} disabled={disabled}>
+                {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
+                <Ionicons name="cash-outline" color="#fff" />
+              </StyledButton>
             </XStack>
           </XStack>
         </YStack>
-      </ActionSheet>
-      <ActionSheet
-        isSheetOpen={isCommentActionSheetOpen}
-        setIsSheetOpen={setIsCommentActionSheetOpen}
-        snapPoints={[60]}
-        sheetPosition={commentActionSheetPosition}
-        setSheetPosition={setCommentActionSheetPosition}>
-        <ScrollView space="$4">
-          <TouchableOpacity
-            disabled={isRemoveCommentSubmiting}
-            onPress={() => {
-              setIsCommentsSheetOpen(false);
-              setIsCommentActionSheetOpen(false);
-              router.navigate({
-                pathname: '/productComment/[commentId]/editComment',
-                params: { commentId: selectedCommentId },
-              });
-            }}>
-            <StyledButton disabled={isRemoveCommentSubmiting}>{t('editComment')}</StyledButton>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            disabled={isRemoveCommentSubmiting}
-            onPress={() => {
-              if (!selectedCommentId) return;
-              removeCommentMutate({ commentId: selectedCommentId });
-            }}>
-            <StyledButton disabled={isRemoveCommentSubmiting}> {t('removeComment')}</StyledButton>
-          </TouchableOpacity>
-        </ScrollView>
       </ActionSheet>
       <ActionSheet
         isSheetOpen={isPhotoSheetOpen}
@@ -785,6 +748,35 @@ const ProductDetail = () => {
             );
           }}
         />
+      </ActionSheet>
+      <ActionSheet
+        isSheetOpen={isCommentActionSheetOpen}
+        setIsSheetOpen={setIsCommentActionSheetOpen}
+        snapPoints={[60]}
+        sheetPosition={commentActionSheetPosition}
+        setSheetPosition={setCommentActionSheetPosition}>
+        <ScrollView space="$4">
+          <StyledButton
+            onPress={() => {
+              setIsCommentsSheetOpen(false);
+              setIsCommentActionSheetOpen(false);
+              router.navigate({
+                pathname: '/productComment/[commentId]/editComment',
+                params: { commentId: selectedCommentId },
+              });
+            }}
+            disabled={isRemoveCommentSubmiting}>
+            {t('editComment')}
+          </StyledButton>
+          <StyledButton
+            onPress={() => {
+              if (!selectedCommentId) return;
+              removeCommentMutate({ commentId: selectedCommentId });
+            }}
+            disabled={isRemoveCommentSubmiting}>
+            {t('removeComment')}
+          </StyledButton>
+        </ScrollView>
       </ActionSheet>
 
       <Dialog isOpen={isAddCartSuccessDialogOpen}>

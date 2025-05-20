@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-toast-message';
 import { TextArea } from 'tamagui';
@@ -125,13 +124,12 @@ const CreateFeedComment = () => {
             setComment(value);
           }}
         />
-        <TouchableOpacity
-          disabled={isCreateCommentSubmitting || comment.length == 0}
-          onPress={() => createCommentMutate()}>
-          <StyledButton w="100%" disabled={isCreateCommentSubmitting || comment.length == 0}>
-            {t('confirm')}
-          </StyledButton>
-        </TouchableOpacity>
+        <StyledButton
+          onPress={() => createCommentMutate()}
+          w="80%"
+          disabled={isCreateCommentSubmitting || comment.length == 0}>
+          {t('confirm')}
+        </StyledButton>
       </ScrollView>
     </KeyboardAwareScrollView>
   );

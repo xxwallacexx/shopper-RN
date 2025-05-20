@@ -7,8 +7,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Keyboard, SafeAreaView } from 'react-native';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Keyboard, Pressable, SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { Input, Label, SizableText } from 'tamagui';
 import { Stack } from 'tamagui';
@@ -133,7 +132,7 @@ const QRPaymentCheckout = () => {
     isCreateQRPaymentSubmitting || totalPrice == undefined || isNaN(Number(totalPrice));
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <TouchableWithoutFeedback style={{ height: '100%' }} onPress={() => Keyboard.dismiss()}>
+      <Pressable style={{ height: '100%' }} onPress={() => Keyboard.dismiss()}>
         <YStack flex={1} p="$4">
           <Label>{t('price')}</Label>
           <Input
@@ -145,11 +144,11 @@ const QRPaymentCheckout = () => {
         </YStack>
 
         <BottomAction justifyContent="flex-end">
-          <TouchableOpacity disabled={disabled} onPress={() => onPaymentPress()}>
-            <StyledButton disabled={disabled}>{t('pay')}</StyledButton>
-          </TouchableOpacity>
+          <StyledButton onPress={() => onPaymentPress()} disabled={disabled}>
+            {t('pay')}
+          </StyledButton>
         </BottomAction>
-      </TouchableWithoutFeedback>
+      </Pressable>
 
       <ActionSheet
         isSheetOpen={isPaymentSheetOpen}

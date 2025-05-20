@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Form, Input, Label, YStack } from 'tamagui';
 import { Formik } from 'formik';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getSelf, updateSelf } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
@@ -103,11 +102,9 @@ const EditEmail = () => {
                   </Text>
                 ) : null}
               </YStack>
-              <TouchableOpacity onPress={() => handleSubmit()} disabled={isSubmitting}>
-                <StyledButton disabled={isSubmitting} w="100%">
-                  {t('confirm')}
-                </StyledButton>
-              </TouchableOpacity>
+              <StyledButton onPress={() => handleSubmit()} disabled={isSubmitting} w="100%">
+                {t('confirm')}
+              </StyledButton>
             </YStack>
           </Form>
         );

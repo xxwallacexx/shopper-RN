@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import moment from 'moment';
-import { FlatList } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 import { Image, Separator, SizableText, Stack } from 'tamagui';
 import { XStack } from 'tamagui';
 import { YStack } from 'tamagui';
@@ -20,7 +20,6 @@ import { Feed as TFeed } from '~/types';
 import HTMLView from 'react-native-htmlview';
 import { AntDesign, EvilIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useAuth, useLocale } from '~/hooks';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { tokens } from '@tamagui/themes';
 import ActionSheet from '~/components/ActionSheet';
 import { useState } from 'react';
@@ -330,26 +329,26 @@ const FeedDetail = () => {
         sheetPosition={commentActionSheetPosition}
         setSheetPosition={setCommentActionSheetPosition}>
         <ScrollView space="$4">
-          <TouchableOpacity
-            disabled={isRemoveCommentSubmiting}
+          <StyledButton
             onPress={() => {
               setIsCommentActionSheetOpen(false);
               router.navigate({
                 pathname: '/feedComment/[commentId]/editComment',
                 params: { commentId: selectedCommentId },
               });
-            }}>
-            <StyledButton disabled={isRemoveCommentSubmiting}>{t('editComment')}</StyledButton>
-          </TouchableOpacity>
+            }}
+            disabled={isRemoveCommentSubmiting}>
+            {t('editComment')}
+          </StyledButton>
 
-          <TouchableOpacity
-            disabled={isRemoveCommentSubmiting}
+          <StyledButton
             onPress={() => {
               if (!selectedCommentId) return;
               removeCommentMutate({ commentId: selectedCommentId });
-            }}>
-            <StyledButton disabled={isRemoveCommentSubmiting}> {t('removeComment')}</StyledButton>
-          </TouchableOpacity>
+            }}
+            disabled={isRemoveCommentSubmiting}>
+            {t('removeComment')}
+          </StyledButton>
         </ScrollView>
       </ActionSheet>
 

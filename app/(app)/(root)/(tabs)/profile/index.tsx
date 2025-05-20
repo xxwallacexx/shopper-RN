@@ -3,8 +3,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import moment from 'moment';
 import { useState } from 'react';
-import { FlatList, SafeAreaView, SectionList } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, SafeAreaView, SectionList, TouchableOpacity } from 'react-native';
 import { ScrollView, Stack } from 'tamagui';
 import { Image, YStack, SizableText, AnimatePresence, XStack } from 'tamagui';
 import { getSelf, listBookmarks, listUserCoupon, listOrders } from '~/api';
@@ -364,12 +363,8 @@ const Profile = () => {
         setSheetPosition={setSheetPoistion}>
         <ScrollView>
           <YStack space={'$4'}>
-            <TouchableOpacity onPress={onQRPaymentPress}>
-              <StyledButton>{t('QRPayment')}</StyledButton>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onQRPaymentHistoryPress}>
-              <StyledButton>{t('QRPaymentHistory')}</StyledButton>
-            </TouchableOpacity>
+            <StyledButton onPress={onQRPaymentPress}>{t('QRPayment')}</StyledButton>
+            <StyledButton onPress={onQRPaymentHistoryPress}>{t('QRPaymentHistory')}</StyledButton>
           </YStack>
         </ScrollView>
       </ActionSheet>

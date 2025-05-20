@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import { Platform, SafeAreaView } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import HTMLView from 'react-native-htmlview';
 import { Button, H2, ScrollView } from 'tamagui';
 import { appleLogin, facebookLogin, getShop, googleLogin } from '~/api';
@@ -171,11 +170,9 @@ const Auth = () => {
         <Link disabled={disabled} href="/auth/signin" asChild>
           <StyledButton disabled={disabled}>{t('signin')}</StyledButton>
         </Link>
-        <TouchableOpacity disabled={disabled} onPress={onFacebookLoginPress}>
-          <StyledButton disabled={disabled} bg="$blue10">
-            {t('facebookLogin')}
-          </StyledButton>
-        </TouchableOpacity>
+        <StyledButton onPress={onFacebookLoginPress} disabled={disabled} bg="$blue10">
+          {t('facebookLogin')}
+        </StyledButton>
         {hasPlayServices ? (
           <GoogleSigninButton
             disabled={disabled}

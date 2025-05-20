@@ -1,5 +1,4 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ScrollView, YStack } from 'tamagui';
 import ActionSheet from './ActionSheet';
 import { useState } from 'react';
@@ -7,6 +6,7 @@ import { StyledButton } from '~/tamagui.config';
 import { useLocale } from '~/hooks';
 import * as ImagePicker from 'expo-image-picker';
 import Camera from './Camera';
+import { TouchableOpacity } from 'react-native';
 
 const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
   const { t } = useLocale();

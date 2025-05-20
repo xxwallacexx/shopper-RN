@@ -41,7 +41,6 @@ import {
   RadioGroupItem,
   StoreCard,
 } from '~/components';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import ActionSheet from '~/components/ActionSheet';
 import { useAuth, useCountdown, useLocale } from '~/hooks';
 import { BottomAction, StyledButton } from '~/tamagui.config';
@@ -511,9 +510,9 @@ const CartCheckout = () => {
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <TouchableOpacity disabled={isPayDisabled()} onPress={() => onPaymentPress()}>
-          <StyledButton disabled={isPayDisabled()}>{t('pay')}</StyledButton>
-        </TouchableOpacity>
+        <StyledButton onPress={() => onPaymentPress()} disabled={isPayDisabled()}>
+          {t('pay')}
+        </StyledButton>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isPaymentSheetOpen}

@@ -1,8 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import moment from 'moment';
-import { FlatList } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { SizableText, YStack } from 'tamagui';
 import { XStack } from 'tamagui';

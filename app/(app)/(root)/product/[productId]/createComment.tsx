@@ -8,7 +8,6 @@ import StarRating from 'react-native-star-rating-widget';
 import { ImageCard, ImageInput } from '~/components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { StyledButton } from '~/tamagui.config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 const CreateProductComment = () => {
@@ -122,13 +121,12 @@ const CreateProductComment = () => {
             setComment(value);
           }}
         />
-        <TouchableOpacity
-          disabled={isCreateCommentSubmitting || comment.length == 0}
-          onPress={() => createCommentMutate()}>
-          <StyledButton w="100%" disabled={isCreateCommentSubmitting || comment.length == 0}>
-            {t('confirm')}
-          </StyledButton>
-        </TouchableOpacity>
+        <StyledButton
+          onPress={() => createCommentMutate()}
+          w="80%"
+          disabled={isCreateCommentSubmitting || comment.length == 0}>
+          {t('confirm')}
+        </StyledButton>
       </ScrollView>
     </KeyboardAwareScrollView>
   );

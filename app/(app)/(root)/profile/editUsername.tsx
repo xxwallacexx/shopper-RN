@@ -9,7 +9,6 @@ import { Address } from '~/types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Text } from 'tamagui';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type Values = {
   username: string;
@@ -78,7 +77,6 @@ const EditUsername = () => {
       validateOnChange={false}
       validationSchema={Schema}
       onSubmit={(values: Values) => {
-        console.log(values);
         onSubmit(values);
       }}>
       {({ errors, values, handleChange, handleSubmit }) => {
@@ -105,11 +103,9 @@ const EditUsername = () => {
                   </Text>
                 ) : null}
               </YStack>
-              <TouchableOpacity onPress={() => handleSubmit()} disabled={isSubmitting}>
-                <StyledButton disabled={isSubmitting} w="100%">
-                  {t('confirm')}
-                </StyledButton>
-              </TouchableOpacity>
+              <StyledButton onPress={() => handleSubmit()} disabled={isSubmitting} w="100%">
+                {t('confirm')}
+              </StyledButton>
             </YStack>
           </Form>
         );

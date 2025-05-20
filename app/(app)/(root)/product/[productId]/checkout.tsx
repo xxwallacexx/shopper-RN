@@ -47,7 +47,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ActionSheet from '~/components/ActionSheet';
 import { ScrollView } from 'tamagui';
 import { Skeleton } from 'moti/skeleton';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { AlertDialog } from 'tamagui';
 import { Stack } from 'tamagui';
 
@@ -322,9 +321,7 @@ const Checkout = () => {
         );
       case 'coupon':
         return (
-          <StyledButton
-            bg={ '$primary' }
-            onPress={() => setIsUserCouponSheetOpen(true)}>
+          <StyledButton bg={'$primary'} onPress={() => setIsUserCouponSheetOpen(true)}>
             {selectedCoupon ? selectedCoupon.coupon.name : t('redeemCoupon')}
           </StyledButton>
         );
@@ -582,9 +579,9 @@ const Checkout = () => {
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <TouchableOpacity disabled={isPayDisabled()} onPress={onPaymentPress}>
-          <StyledButton disabled={isPayDisabled()}>{t('pay')}</StyledButton>
-        </TouchableOpacity>
+        <StyledButton onPress={onPaymentPress} disabled={isPayDisabled()}>
+          {t('pay')}
+        </StyledButton>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isPaymenySheetOpen}

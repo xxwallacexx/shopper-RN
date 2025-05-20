@@ -1,7 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { PRIMARY_COLOR } from '@env';
+import { TouchableOpacity } from 'react-native';
 
 const Layout = () => {
   return (

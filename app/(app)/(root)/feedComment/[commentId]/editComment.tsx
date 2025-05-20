@@ -8,7 +8,6 @@ import StarRating from 'react-native-star-rating-widget';
 import { ImageCard, ImageInput } from '~/components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { StyledButton } from '~/tamagui.config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import ActionSheet from '~/components/ActionSheet';
 
@@ -153,13 +152,12 @@ const EditComment = () => {
             setComment(value);
           }}
         />
-        <TouchableOpacity
-          disabled={isEditCommentSubmitting || comment.length == 0}
-          onPress={() => editCommentMutate()}>
-          <StyledButton w="100%" disabled={isEditCommentSubmitting || comment.length == 0}>
-            {t('confirm')}
-          </StyledButton>
-        </TouchableOpacity>
+        <StyledButton
+          onPress={() => editCommentMutate()}
+          w="80%"
+          disabled={isEditCommentSubmitting || comment.length == 0}>
+          {t('confirm')}
+        </StyledButton>
       </ScrollView>
       <ActionSheet
         isSheetOpen={isActionSheetOpen}

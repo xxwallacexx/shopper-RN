@@ -1,4 +1,4 @@
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 import { YStack, Image } from 'tamagui';
 
 const ImageCard = ({ imageUri, onPhotoPress }: { imageUri: string; onPhotoPress: () => void }) => {
