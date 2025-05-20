@@ -1,12 +1,6 @@
-import {
-  CardField,
-  createPlatformPayPaymentMethod,
-  PlatformPay,
-  PlatformPayButton,
-} from '@stripe/stripe-react-native';
+import { CardField, PlatformPay, PlatformPayButton } from '@stripe/stripe-react-native';
 import { Details } from '@stripe/stripe-react-native/lib/typescript/src/types/components/CardFieldInput';
 import { Platform } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Separator, SizableText, Spinner, XStack, YStack } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
@@ -48,14 +42,12 @@ const PaymentSheetCard = ({
         }}
         onCardChange={onCardChange}
       />
-      <TouchableOpacity disabled={cardPaymentDisabled} onPress={onCardPaymentPress}>
-        <StyledButton disabled={cardPaymentDisabled}>
-          <XStack space="$2">
-            {isLoading ? <Spinner size="small" /> : null}
-            <SizableText color={'white'}>{t('confirm')}</SizableText>
-          </XStack>
-        </StyledButton>
-      </TouchableOpacity>
+      <StyledButton onPress={onCardPaymentPress} disabled={cardPaymentDisabled}>
+        <XStack space="$2">
+          {isLoading ? <Spinner size="small" /> : null}
+          <SizableText color={'white'}>{t('confirm')}</SizableText>
+        </XStack>
+      </StyledButton>
 
       <Separator />
 

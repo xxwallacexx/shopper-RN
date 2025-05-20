@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Formik } from 'formik';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import { Input, Text } from 'tamagui';
 import { Form, Label, YStack } from 'tamagui';
@@ -160,11 +159,9 @@ const Register = () => {
                   </Text>
                 ) : null}
               </YStack>
-              <TouchableOpacity onPress={() => handleSubmit()} disabled={isSubmitting}>
-                <StyledButton disabled={isSubmitting} w="100%">
-                  {t('confirm')}
-                </StyledButton>
-              </TouchableOpacity>
+              <StyledButton onPress={() => handleSubmit()} disabled={isSubmitting} w="100%">
+                {t('confirm')}
+              </StyledButton>
             </YStack>
           </Form>
         );

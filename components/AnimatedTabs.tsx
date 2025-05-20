@@ -1,76 +1,65 @@
-import { ReactNode, useEffect, useState } from "react"
-import type { StackProps, TabLayout, TabsTabProps } from 'tamagui'
-import {
-  AnimatePresence,
-  H5,
-  Separator,
-  Tabs,
-  YStack,
-  styled,
-  ScrollView
-} from 'tamagui'
-import { Subtitle } from "~/tamagui.config"
+import { useEffect, useState } from 'react';
+import type { StackProps, TabLayout, TabsTabProps } from 'tamagui';
+import { AnimatePresence, Tabs, YStack } from 'tamagui';
+import { Subtitle } from '~/tamagui.config';
 
 const TabsRovingIndicator = ({ active, ...props }: { active?: boolean } & StackProps) => {
   return (
     <YStack
       position="absolute"
-      backgroundColor='$color.primary'
+      backgroundColor="$color.primary"
       opacity={0.7}
       animation="100ms"
       enterStyle={{
         opacity: 0,
-      }
-      }
+      }}
       exitStyle={{
         opacity: 0,
       }}
       {...(active && {
         backgroundColor: '$color.primary',
         opacity: 0.6,
-      })
-      }
+      })}
       {...props}
     />
-  )
-}
-
+  );
+};
 
 const AnimatedTabs = ({
   tabs,
   initialTab,
   onTabChanged,
 }: {
-  tabs: { label: string, value: string }[]
-  initialTab: string,
-  onTabChanged: (value: string) => void,
+  tabs: { label: string; value: string }[];
+  initialTab: string;
+  onTabChanged: (value: string) => void;
 }) => {
   const [tabState, setTabState] = useState<{
-    currentTab: string
+    currentTab: string;
     /**
      * Layout of the Tab user might intend to select (hovering / focusing)
      */
-    intentAt: TabLayout | null
+    intentAt: TabLayout | null;
     /**
      * Layout of the Tab user selected
      */
-    activeAt: TabLayout | null
+    activeAt: TabLayout | null;
     /**
      * Used to get the direction of activation for animating the active indicator
      */
-    prevActiveAt: TabLayout | null
+    prevActiveAt: TabLayout | null;
   }>({
     activeAt: null,
     currentTab: initialTab,
     intentAt: null,
     prevActiveAt: null,
-  })
+  });
 
-  const setCurrentTab = (currentTab: string) => setTabState({ ...tabState, currentTab })
-  const setIntentIndicator = (intentAt: TabLayout | null) => setTabState({ ...tabState, intentAt })
+  const setCurrentTab = (currentTab: string) => setTabState({ ...tabState, currentTab });
+  const setIntentIndicator = (intentAt: TabLayout | null) => setTabState({ ...tabState, intentAt });
   const setActiveIndicator = (activeAt: TabLayout | null) =>
-    setTabState({ ...tabState, prevActiveAt: tabState.activeAt, activeAt })
-  const { activeAt, intentAt, prevActiveAt, currentTab } = tabState
+    setTabState({ ...tabState, prevActiveAt: tabState.activeAt, activeAt });
+  const { activeAt, intentAt, prevActiveAt, currentTab } = tabState;
 
   /**
    * -1: from left
@@ -91,15 +80,15 @@ const AnimatedTabs = ({
 
   const handleOnInteraction: TabsTabProps['onInteraction'] = (type, layout) => {
     if (type === 'select') {
-      setActiveIndicator(layout)
+      setActiveIndicator(layout);
     } else {
-      setIntentIndicator(layout)
+      setIntentIndicator(layout);
     }
-  }
+  };
 
   useEffect(() => {
-    onTabChanged(tabState.currentTab)
-  }, [tabState.currentTab])
+    onTabChanged(tabState.currentTab);
+  }, [tabState.currentTab]);
 
   return (
     <Tabs
@@ -112,18 +101,12 @@ const AnimatedTabs = ({
       activationMode="manual"
       borderRadius="$4"
       position="relative"
-      width={"100%"}
-      backgroundColor={"#fff"}
-    >
+      width={'100%'}
+      backgroundColor={'#fff'}>
       <YStack>
         <AnimatePresence>
           {intentAt && (
-            <TabsRovingIndicator
-              width={intentAt.width}
-              height="$0.5"
-              x={intentAt.x}
-              bottom={0}
-            />
+            <TabsRovingIndicator width={intentAt.width} height="$0.5" x={intentAt.x} bottom={0} />
           )}
         </AnimatePresence>
         <AnimatePresence>
@@ -133,6 +116,7 @@ const AnimatedTabs = ({
               width={activeAt.width}
               height="$0.5"
               x={activeAt.x}
+              zIndex={1}
               bottom={0}
             />
           )}
@@ -142,27 +126,21 @@ const AnimatedTabs = ({
           disablePassBorderRadius
           loop={false}
           backgroundColor="transparent"
-          borderBottomWidth={0.3}
-          borderColor={"lightslategrey"}
-        >
-          {
-            tabs.map((t) => {
-              return (
-                <Tabs.Tab
-                  key={t.value}
-                  unstyled
-                  paddingVertical="$2"
-                  paddingHorizontal="$3"
-                  flex={1}
-                  value={t.value}
-                  onInteraction={handleOnInteraction}
-                >
-                  <Subtitle>{t.label}</Subtitle>
-                </Tabs.Tab>
-
-              )
-            })
-          }
+          borderBottomWidth={0.3}>
+          {tabs.map((t) => {
+            return (
+              <Tabs.Tab
+                key={t.value}
+                backgroundColor={'$colorTransparent'}
+                paddingVertical="$2"
+                paddingHorizontal="$3"
+                flex={1}
+                value={t.value}
+                onInteraction={handleOnInteraction}>
+                <Subtitle textAlign="center">{t.label}</Subtitle>
+              </Tabs.Tab>
+            );
+          })}
         </Tabs.List>
       </YStack>
 
@@ -180,7 +158,7 @@ const AnimatedTabs = ({
       </AnimatePresence>
       */}
     </Tabs>
-  )
-}
+  );
+};
 
-export default AnimatedTabs
+export default AnimatedTabs;

@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "sailorhouse",
-    "slug": "sailorhouse",
-    "version": "1.1.4",
-    "scheme": "sailorhouse",
+    "name": "sansuibeefbrisket",
+    "slug": "sansuibeefbrisket",
+    "version": "1.0.2",
+    "scheme": "sansuibeefbrisket",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -15,7 +15,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.sailorhouse",
+          "merchantIdentifier": "merchant.com.sansuibeefbrisket",
           "enableGooglePay": false
         }
       ],
@@ -23,10 +23,10 @@
       [
         "react-native-fbsdk-next",
         {
-          "appID": "532850042000150",
-          "clientToken": "5f9f5dd683069db6e5ccaa5225835f81",
-          "displayName": "水手屋環球食材有限公司",
-          "scheme": "fb532850042000150",
+          "appID": "8608539205908124",
+          "clientToken": "b713bfcc07dd97aa1a3e644c3ecdf479",
+          "displayName": "山水清湯腩",
+          "scheme": "fb8608539205908124",
           "advertiserIDCollectionEnabled": false,
           "autoLogAppEventsEnabled": false,
           "isAutoInitEnabled": true
@@ -93,10 +93,10 @@
         "NSPhotoLibraryUsageDescription": "允許存取以上傳商品評價圖片及頭像",
         "NSUserTrackingUsageDescription": "允許上傳報錯以改善應用程式質素"
       },
-      "bundleIdentifier": "com.sailorhouse.v1",
+      "bundleIdentifier": "com.sansuibeefbrisket.v1",
       "config": {
         "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.143758002094-ptpmtk19hm2t5vv3f9g5ul87hitj7o98"
+          "reservedClientId": "com.googleusercontent.apps.1096191344260-rccbu6aimk88odjiv0f647jg7ddmg0as"
         }
       },
       "googleServicesFile": "./GoogleService-Info.plist"
@@ -106,7 +106,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.sailorhouse.v1",
+      "package": "com.sansuibeefbrisket.v1",
       "googleServicesFile": "./google-services.json"
     }
   }

@@ -19,9 +19,8 @@ import ReservationCartItemCard from '~/components/ReservationCartItemCard';
 import ActionSheet from '~/components/ActionSheet';
 import { useEffect, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Skeleton } from 'moti/skeleton';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Carts = () => {
   const { t } = useLocale();
@@ -40,7 +39,6 @@ const Carts = () => {
   const { data: cartItems = [], refetch: refetchCartItems } = useQuery({
     queryKey: [`cartItems`, token],
     queryFn: async () => {
-      console.log('fetch cartitems');
       let res: CartItem[] = await listCartItems(token);
       checkCouponsAvailability(res);
       return res;
@@ -381,10 +379,10 @@ const Carts = () => {
               <>
                 {orders.length ? (
                   <YStack flex={1} space={'$2'}>
-                    {isPriceDetailFetching ? (
+                    {includeDelivery && isPriceDetailFetching ? (
                       <Skeleton height={46} colorMode="light" width={'100%'} />
                     ) : (
-                      <SizableText>{shippingFeeHints}</SizableText>
+                      <SizableText height={46}>{shippingFeeHints}</SizableText>
                     )}
                     <Text fontSize={'$7'}>{t('orders')}</Text>
                     <FlatList
@@ -476,9 +474,9 @@ const Carts = () => {
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <TouchableOpacity disabled={cartItems.length == 0} onPress={onCheckoutPress}>
-          <StyledButton disabled={cartItems.length == 0}>{t('checkout')}</StyledButton>
-        </TouchableOpacity>
+        <StyledButton onPress={onCheckoutPress} disabled={cartItems.length == 0}>
+          {t('checkout')}
+        </StyledButton>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isCouponSheetOpen}

@@ -1,10 +1,10 @@
 import { EvilIcons, Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { XStack, YStack, Image, SizableText, Text, Separator } from 'tamagui';
+import { XStack, YStack, Image, SizableText, Text, Separator, Button } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { Badge, StyledButton } from '~/tamagui.config';
 import { AvailabelCoupon, CartItemOrderContent, Coupon, Product } from '~/types';
 import { Skeleton } from 'moti/skeleton';
+import { Pressable, TouchableOpacity } from 'react-native';
 
 const OrderCartItemCard = ({
   photoUri,
@@ -53,7 +53,7 @@ const OrderCartItemCard = ({
       }}
       shadowOpacity={0.25}
       shadowRadius={3.84}>
-      <TouchableOpacity onPress={onProductPress}>
+      <Pressable onPress={onProductPress}>
         <XStack space="$2" flex={1}>
           <YStack width={'40%'} borderRadius={'$radius.3'} overflow="hidden">
             <Image
@@ -94,7 +94,7 @@ const OrderCartItemCard = ({
             </XStack>
           </YStack>
         </XStack>
-      </TouchableOpacity>
+      </Pressable>
 
       <Separator />
       <XStack px="$2" flex={1} h="$3" alignItems="center" justifyContent="space-between">

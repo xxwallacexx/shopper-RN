@@ -36,7 +36,6 @@ import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
 import ActionSheet from '~/components/ActionSheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Skeleton } from 'moti/skeleton';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as Calendar from 'expo-calendar';
 import { PermissionStatus } from 'expo-calendar';
 import moment from 'moment';
@@ -396,9 +395,9 @@ const Checkout = () => {
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <TouchableOpacity disabled={isPayDisabled()} onPress={() => setIsPaymentSheetOpen(true)}>
-          <StyledButton disabled={isPayDisabled()}>{t('pay')}</StyledButton>
-        </TouchableOpacity>
+        <StyledButton onPress={() => setIsPaymentSheetOpen(true)} disabled={isPayDisabled()}>
+          {t('pay')}
+        </StyledButton>
       </BottomAction>
       <ActionSheet
         isSheetOpen={isPaymenySheetOpen}

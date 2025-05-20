@@ -1,12 +1,12 @@
 import { AntDesign } from '@expo/vector-icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import { FlatList, SafeAreaView } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { XStack } from 'tamagui';
 import { SizableText } from 'tamagui';
 import { Spinner } from 'tamagui';
-import { YStack, H2, Separator, ScrollView } from 'tamagui';
+import { YStack } from 'tamagui';
 import { listFeeds } from '~/api';
 import { FeedCard } from '~/components';
 import { useAuth, useLocale } from '~/hooks';

@@ -1,12 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { CameraType } from 'expo-image-picker';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Circle, SizableText, YStack } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { Container, StyledButton } from '~/tamagui.config';
 import * as Linking from 'expo-linking';
 import { useRef } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 const QRCodeScanner = ({
   onBack,

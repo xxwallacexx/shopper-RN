@@ -1,7 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
-import { FlatList } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { FlatList, TouchableOpacity } from 'react-native';
 import { StarRatingDisplay } from 'react-native-star-rating-widget';
 import { Image, SizableText, Stack, TextArea, XStack, YStack } from 'tamagui';
 

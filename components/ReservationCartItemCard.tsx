@@ -1,11 +1,11 @@
 import { EvilIcons, Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { XStack, YStack, Image, SizableText, Text, Separator } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { Badge, StyledButton } from '~/tamagui.config';
 import { AvailabelCoupon, CartItemReservation, Product } from '~/types';
 import { Skeleton } from 'moti/skeleton';
 import moment from 'moment';
+import { TouchableOpacity } from 'react-native';
 
 const ReservationCartItemCard = ({
   photoUri,

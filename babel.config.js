@@ -1,12 +1,12 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(false);
   const plugins = [
     [
       'module-resolver',
       {
-        root: ["./"],
+        root: ['./'],
         alias: {
-          "~": './',
+          '~': './',
         },
       },
     ],
@@ -18,12 +18,12 @@ module.exports = function(api) {
       },
     ],
     [
-      "module:react-native-dotenv",
+      'module:react-native-dotenv',
       {
-        envName: "APP_ENV",
-        moduleName: "@env",
-        path: ".env",
-      }
+        envName: 'APP_ENV',
+        moduleName: '@env',
+        path: '.env',
+      },
     ],
   ];
 
