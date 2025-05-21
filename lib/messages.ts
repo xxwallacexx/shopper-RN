@@ -1,5 +1,3 @@
-import { useCameraPermissions } from 'expo-image-picker';
-
 export const messages = {
   en: {
     username: 'Username',
@@ -355,7 +353,7 @@ export const messages = {
   'zh-Hant': {
     username: '會員名稱',
     email: '電郵地址',
-    address: '送貨地址',
+    address: '地址',
     phone: '電話號碼',
     changePassword: '更改密碼',
     signout: '登出',
