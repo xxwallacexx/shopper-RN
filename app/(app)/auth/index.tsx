@@ -3,7 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import { Platform, SafeAreaView } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import { Button, H2, ScrollView } from 'tamagui';
-import { appleLogin, facebookLogin, getShop, googleLogin } from '~/api';
+import { appleLogin, createUserTemp, facebookLogin, getShop, googleLogin } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { Container, StyledButton } from '~/tamagui.config';
 import * as AppleAuthentication from 'expo-apple-authentication';
@@ -109,6 +109,25 @@ const Auth = () => {
     },
   });
 
+  const { isPending: isGuestLoginSubmitting, mutate: guestLoginMutate } = useMutation({
+    mutationFn: () => {
+      return createUserTemp();
+    },
+    onSuccess: async (res) => {
+      await createUserTemp();
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      router.replace('/(app)/(root)/(tabs)/profile');
+    },
+    onError: (e) => {
+      console.log(e);
+      const error = e as Error;
+      Toast.show({
+        type: 'error',
+        text1: t(error.message),
+      });
+    },
+  });
+
   if (!shop || hasPlayServices == undefined) return <></>;
 
   const onAppleLoginPress = async () => {
@@ -158,7 +177,11 @@ const Auth = () => {
     }
   };
 
-  const disabled = isAppleLoginSubmitting || isFacebookLoginSubmitting || isGoogleLoginSubmitting;
+  const disabled =
+    isAppleLoginSubmitting ||
+    isFacebookLoginSubmitting ||
+    isGoogleLoginSubmitting ||
+    isGuestLoginSubmitting;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -197,7 +220,13 @@ const Auth = () => {
               {t('createAcc')}
             </Button>
           </Link>
-          <Button disabled={disabled} variant="outlined" color={'$primary'}>
+          <Button
+            onPress={() => {
+              return guestLoginMutate();
+            }}
+            disabled={disabled}
+            variant="outlined"
+            color={'$primary'}>
             {t('createVisitorAcc')}
           </Button>
         </YStack>

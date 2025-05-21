@@ -151,4 +151,24 @@ const resetPassword = async (token: string, password: string) => {
   return await axios(options);
 };
 
-export { login, facebookLogin, appleLogin, googleLogin, createUser, createUserTemp, resetPassword };
+const removeUser = async (token: string) => {
+  const options = {
+    method: 'delete',
+    headers: {
+      Authorization: `JWT ${token}`,
+    },
+    url: `${baseUrl}/user/removeUser`,
+  };
+  return await axios(options);
+};
+
+export {
+  login,
+  facebookLogin,
+  appleLogin,
+  googleLogin,
+  createUser,
+  createUserTemp,
+  resetPassword,
+  removeUser,
+};

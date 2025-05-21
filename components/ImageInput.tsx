@@ -29,6 +29,7 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
       aspect: [1, 1],
       quality: 0.1,
     });
+    console.log(result);
 
     if (result.canceled) return;
     const [asset] = result.assets;

@@ -1,34 +1,32 @@
-import { AntDesign } from "@expo/vector-icons"
-import { Stack } from "expo-router"
-import { TouchableOpacity } from "react-native"
+import { AntDesign } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import { PRIMARY_COLOR } from '@env';
 
 const Layout = () => {
   return (
     <Stack
       screenOptions={({ navigation }) => ({
-        title: "",
+        title: '',
         headerShown: true,
         headerLeft: () => {
           return (
-            <TouchableOpacity onPress={() => { return navigation.goBack() }}>
-              <AntDesign name="arrowleft" size={24} color={"#fff"} />
+            <TouchableOpacity
+              onPress={() => {
+                return navigation.goBack();
+              }}>
+              <AntDesign name="arrowleft" size={24} color={'#fff'} />
             </TouchableOpacity>
-          )
+          );
         },
-        headerStyle: { backgroundColor: PRIMARY_COLOR ?? "#fff" }
+        headerStyle: { backgroundColor: PRIMARY_COLOR ?? '#fff' },
       })}>
-      <Stack.Screen
-        name="editUsername"
-      />
-      <Stack.Screen
-        name="editEmail"
-      />
-      <Stack.Screen
-        name="editAddress"
-      />
+      <Stack.Screen name="editUsername" />
+      <Stack.Screen name="editEmail" />
+      <Stack.Screen name="editAddress" />
+      <Stack.Screen name="editPassword" />
     </Stack>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
