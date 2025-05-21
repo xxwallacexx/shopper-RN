@@ -21,6 +21,8 @@ const Profile = () => {
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [sheetPosition, setSheetPoistion] = useState(0);
+  const [isGuestUserAlertSheetOpen, setIsGuestUserAlertSheetOpen] = useState(false);
+  const [guestUserAlertSheetPosition, setGuestUserAlertSheetPoistion] = useState(0);
 
   if (!token) return <></>;
   const tabs = [
@@ -287,7 +289,12 @@ const Profile = () => {
         return (
           <YStack space="$2" p="$2" alignItems="center">
             {user?.isTemp ? (
-              <StyledButton backgroundColor={'red'} width={'80%'}>
+              <StyledButton
+                onPress={() => {
+                  setIsGuestUserAlertSheetOpen(true);
+                }}
+                backgroundColor={'red'}
+                width={'80%'}>
                 <SizableText color="#fff">{t('tempAcc')}</SizableText>
               </StyledButton>
             ) : null}
@@ -354,7 +361,7 @@ const Profile = () => {
         renderSectionHeader={renderSectionHeader}
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(_, index) => index.toString()}
       />
       <ActionSheet
         isSheetOpen={isSheetOpen}
@@ -366,6 +373,15 @@ const Profile = () => {
             <StyledButton onPress={onQRPaymentPress}>{t('QRPayment')}</StyledButton>
             <StyledButton onPress={onQRPaymentHistoryPress}>{t('QRPaymentHistory')}</StyledButton>
           </YStack>
+        </ScrollView>
+      </ActionSheet>
+      <ActionSheet
+        isSheetOpen={isGuestUserAlertSheetOpen}
+        setIsSheetOpen={setIsGuestUserAlertSheetOpen}
+        sheetPosition={guestUserAlertSheetPosition}
+        setSheetPosition={setGuestUserAlertSheetPoistion}>
+        <ScrollView>
+          <SizableText>{t('tempAccAlert')}</SizableText>
         </ScrollView>
       </ActionSheet>
     </SafeAreaView>
