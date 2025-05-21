@@ -4,8 +4,9 @@ import { RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from 'rea
 import { Image } from 'tamagui';
 import { XStack } from 'tamagui';
 import { H2, SizableText, YStack } from 'tamagui';
-import { getSelf, removeUser } from '~/api';
+import { getSelf, getShop, removeUser } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
+import { DeliveryMethodEnum } from '~/types';
 
 const Info = () => {
   const { t } = useLocale();
@@ -18,6 +19,14 @@ const Info = () => {
       return await getSelf(token!);
     },
   });
+  const { data: shop } = useQuery({
+    queryKey: ['shop'],
+    queryFn: async () => {
+      return await getShop();
+    },
+  });
+
+  const includeDelivery = shop?.deliveryMethods.includes(DeliveryMethodEnum['SFEXPRESS']);
 
   let address = '';
   if (user?.address) {
@@ -28,12 +37,15 @@ const Info = () => {
     address = addressToken.join(', ');
   }
 
-  const editList = [
+  let editList = [
     { label: t('username'), value: user?.username, screen: 'editUsername' },
     { label: t('email'), value: user?.email, screen: 'editEmail' },
-    { label: t('address'), value: address, screen: 'editAddress' },
     { label: t('changePassword'), value: null, screen: 'editPassword' },
   ];
+
+  if (includeDelivery) {
+    editList.splice(2, 0, { label: t('address'), value: address, screen: 'editAddress' });
+  }
 
   const onRefresh = () => {
     userRefetch();
