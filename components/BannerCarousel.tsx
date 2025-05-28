@@ -76,7 +76,7 @@ const BannerCarousel = ({ banners }: { banners: { type: 'IMAGE' | 'VIDEO'; uri: 
   const animationStyle = useCallback((value: number) => {
     'worklet';
 
-    const zIndex = interpolate(value, [-1, 0, 1], [-1000, 0, 1000]);
+    const zIndex = Math.round(interpolate(value, [-1, 0, 1], [-1000, 0, 1000]));
     const translateX = interpolate(value, [-1, 0, 1], [0, 0, width]);
 
     return {
