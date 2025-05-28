@@ -1,6 +1,6 @@
 {
-  "name": "temp1",
-  "version": "1.0.0",
+  "name": "shopper-RN",
+  "version": "1.0.2",
   "main": "expo-router/entry",
   "scripts": {
     "android": "expo run:android",
