@@ -6,4 +6,6 @@ declare module '@env' {
   export const PRIMARY_9_COLOR: string;
   export const STRIPE_PUBLISHABLE_KEY: string;
   export const STRIPE_MERCHANT_IDENTIFIER: string;
+  export const FB_CLIENT_TOKEN: string;
+  export const FB_APP_ID: string;
 }
