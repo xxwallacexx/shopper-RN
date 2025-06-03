@@ -25,8 +25,7 @@ const Providers = ({
     <StripeProvider
       publishableKey={STRIPE_PUBLISHABLE_KEY}
       merchantIdentifier={STRIPE_MERCHANT_IDENTIFIER}
-      urlScheme={scheme} // required for 3D Secure and bank redirects
-    >
+      urlScheme={scheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider initialToken={initialToken}>
           <LocaleProvider initialLocale={initialLocale}>

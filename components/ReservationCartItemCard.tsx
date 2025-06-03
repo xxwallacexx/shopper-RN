@@ -1,4 +1,4 @@
-import { EvilIcons, Ionicons } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons';
 import { XStack, YStack, Image, SizableText, Text, Separator } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { Badge, StyledButton } from '~/tamagui.config';
@@ -38,64 +38,63 @@ const ReservationCartItemCard = ({
   const option = reservationContent.reservation?.options.find((o) => {
     return o._id == reservationContent.option;
   });
-  console.log(coupon);
   let price = totalPrice;
   if (coupon) {
     price = price - coupon.coupon.discount;
   }
   return (
     <YStack
-      flex={1}
-      backgroundColor={'white'}
+      f={1}
+      bc={'white'}
       p={'$1'}
-      space="$2"
-      borderRadius={'$radius.3'}
-      shadowColor={'black'}
-      shadowOffset={{
+      gap="$2"
+      br={'$radius.3'}
+      shac={'black'}
+      shof={{
         height: 2,
         width: 0,
       }}
-      shadowOpacity={0.25}
-      shadowRadius={3.84}>
+      shop={0.25}
+      shar={3.84}>
       <TouchableOpacity onPress={onProductPress}>
-        <XStack space="$2" flex={1}>
-          <YStack width={'40%'} borderRadius={'$radius.3'} overflow="hidden">
+        <XStack gap="$2" f={1}>
+          <YStack w={'40%'} br={'$radius.3'} ov="hidden">
             <Image
-              backgroundColor={'white'}
-              resizeMode="contain"
+              bc={'white'}
+              objectFit="contain"
               aspectRatio={1}
               source={{ uri: photoUri }}
-              width={'100%'}
+              w={'100%'}
             />
-            <Badge position="absolute" top={8} right={8}>
-              <SizableText size={'$1'} color="#fff">
+            <Badge pos="absolute" t={8} r={8}>
+              <SizableText size={'$1'} col="#fff">
                 HK$ {singleItemPrice.toFixed(2)}
               </SizableText>
             </Badge>
           </YStack>
-          <YStack flex={1} py={'$2'} space="$2" justifyContent="space-between">
+          <YStack f={1} py={'$2'} gap="$2" jc="space-between">
             <YStack>
               <SizableText numberOfLines={1} ellipsizeMode="tail">
                 {product.name} {product.introduction}
               </SizableText>
-              <Text fontWeight={'300'} fontSize={'$2'}>
+              <Text fow={'300'} fos={'$2'}>
                 {t('option')}: {option?.name}
               </Text>
-              <Text fontWeight={'300'} fontSize={'$2'}>
+              <Text fow={'300'} fos={'$2'}>
                 {t('quantity')}: {reservationContent.quantity}
               </Text>
-              <Text fontWeight={'300'} fontSize={'$2'}>
-                {t('time')}:{' '}
+              <Text fow={'300'} fos={'$2'}>
+                {t('time')}:
                 {moment(reservationContent.reservation?.time).format('YYYY-MM-DD HH:mm')}
               </Text>
             </YStack>
-            <XStack space="$2" alignItems="center">
+            <XStack gap="$2" ai="center">
               {isCartItemUpdating ? (
                 <Skeleton height={12} colorMode="light" width={80} />
               ) : (
-                <SizableText color={'$primary'}>HK$ {price.toFixed(2)}</SizableText>
+                <SizableText col={'$primary'}>HK$ {price.toFixed(2)}</SizableText>
               )}
-              <Text fontWeight={'300'} fontSize={'$2'}>
+              <Text fow={'300'} fos={'$2'}>
                 {t('stock')}: {stock}
               </Text>
             </XStack>
@@ -104,7 +103,7 @@ const ReservationCartItemCard = ({
       </TouchableOpacity>
 
       <Separator />
-      <XStack px="$2" flex={1} h="$3" alignItems="center" justifyContent="space-between">
+      <XStack px="$2" f={1} h="$3" ai="center" jc="space-between">
         <StyledButton w="40%" onPress={onAvailableCouponPress}>
           {coupon ? coupon.coupon.name : t('redeemCoupon')}
         </StyledButton>

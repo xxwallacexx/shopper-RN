@@ -26,7 +26,7 @@ const PaymentSheetCard = ({
   };
 
   return (
-    <YStack space="$4">
+    <YStack gap="$4">
       <CardField
         postalCodeEnabled={false}
         placeholders={{
@@ -43,9 +43,9 @@ const PaymentSheetCard = ({
         onCardChange={onCardChange}
       />
       <StyledButton onPress={onCardPaymentPress} disabled={cardPaymentDisabled}>
-        <XStack space="$2">
+        <XStack gap="$2">
           {isLoading ? <Spinner size="small" /> : null}
-          <SizableText color={'white'}>{t('confirm')}</SizableText>
+          <SizableText col={'white'}>{t('confirm')}</SizableText>
         </XStack>
       </StyledButton>
 

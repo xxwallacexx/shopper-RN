@@ -42,7 +42,6 @@ const EditAddress = () => {
       navigation.goBack();
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -84,29 +83,29 @@ const EditAddress = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <Form onSubmit={onSubmit}>
-          <YStack space="$4" p="$2">
-            <YStack w="100%" alignItems="flex-start" space="$2">
+          <YStack gap="$4" p="$2">
+            <YStack w="100%" ai="flex-start" gap="$2">
               <Label>{t('contactNumber')}</Label>
               <Input
                 w="100%"
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                borderColor={'lightgrey'}
-                backgroundColor={'whitesmoke'}
+                boc={'lightgrey'}
+                bc={'whitesmoke'}
                 defaultValue={user.address.phoneNumber}
                 onChangeText={(value) => setPhoneNumber(value)}
               />
             </YStack>
-            <YStack w="100%" alignItems="flex-start" space="$2">
+            <YStack w="100%" ai="flex-start" space="$2">
               <Label>{t('district')}</Label>
               <Input
                 w="100%"
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                borderColor={'lightgrey'}
-                backgroundColor={'whitesmoke'}
+                boc={'lightgrey'}
+                bc={'whitesmoke'}
                 defaultValue={user.address.district}
                 onChangeText={(value) => setDistrict(value)}
               />
@@ -118,21 +117,21 @@ const EditAddress = () => {
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                borderColor={'lightgrey'}
-                backgroundColor={'whitesmoke'}
+                boc={'lightgrey'}
+                bc={'whitesmoke'}
                 defaultValue={user.address.street}
                 onChangeText={(value) => setStreet(value)}
               />
             </YStack>
-            <YStack w="100%" alignItems="flex-start" space="$2">
+            <YStack w="100%" ai="flex-start" space="$2">
               <Label>{t('room')}</Label>
               <Input
                 w="100%"
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                borderColor={'lightgrey'}
-                backgroundColor={'whitesmoke'}
+                boc={'lightgrey'}
+                bc={'whitesmoke'}
                 defaultValue={user.address.room}
                 onChangeText={(value) => setRoom(value)}
               />

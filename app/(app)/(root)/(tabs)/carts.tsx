@@ -159,7 +159,6 @@ const Carts = () => {
         case 'ORDER':
           const priceAdjustment = cartItem.orderContent?.stock?.priceAdjustment ?? 0;
           price = (cartItem.product.price + priceAdjustment) * cartItem.orderContent.quantity!;
-          console.log(price);
           break;
         case 'RESERVATION':
           const reservationOption = cartItem.reservationContent.reservation.options.find((f) => {
@@ -255,9 +254,6 @@ const Carts = () => {
       stock = product.stock;
       singleItemPrice = product.price;
     }
-
-    //to-do
-    //coupon discount
 
     const selectedCoupon = selectedCoupons.find((c) => {
       return c.cartItemId == item._id;
@@ -368,23 +364,23 @@ const Carts = () => {
             : t('freeShippingHint'));
 
         return (
-          <YStack space="$4" overflow="hidden">
+          <YStack gap="$4" ov="hidden">
             <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />
             {!cartItems.length ? (
-              <Container pt="$8" alignItems="center">
+              <Container pt="$8" ai="center">
                 <MaterialCommunityIcons name="cart-plus" size={120} color={'#666'} />
                 <Title>{t('emptyCart')}</Title>
               </Container>
             ) : (
               <>
                 {orders.length ? (
-                  <YStack flex={1} space={'$2'}>
+                  <YStack f={1} space={'$2'}>
                     {includeDelivery && isPriceDetailFetching ? (
                       <Skeleton height={46} colorMode="light" width={'100%'} />
                     ) : (
-                      <SizableText height={46}>{shippingFeeHints}</SizableText>
+                      <SizableText h={46}>{shippingFeeHints}</SizableText>
                     )}
-                    <Text fontSize={'$7'}>{t('orders')}</Text>
+                    <Text fos={'$7'}>{t('orders')}</Text>
                     <FlatList
                       scrollEnabled={false}
                       key={'orderList'}
@@ -395,8 +391,8 @@ const Carts = () => {
                   </YStack>
                 ) : null}
                 {reservations.length ? (
-                  <YStack flex={1}>
-                    <Text fontSize={'$7'}>{t('reservationOrders')}</Text>
+                  <YStack f={1}>
+                    <Text fos={'$7'}>{t('reservationOrders')}</Text>
                     <FlatList
                       scrollEnabled={false}
                       key={'reservationList'}
@@ -455,7 +451,7 @@ const Carts = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack flex={1}>
+      <YStack f={1}>
         <SectionList
           renderItem={renderItem}
           sections={[
@@ -466,7 +462,7 @@ const Carts = () => {
           keyExtractor={(item, index) => item + index.toString()}
         />
       </YStack>
-      <BottomAction justifyContent="space-between">
+      <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching ? (
             <Skeleton width={'30%'} height={12} colorMode="light" />
@@ -515,7 +511,7 @@ const Carts = () => {
           ListFooterComponent={() => {
             if (isAvailabelCouponsFetching) {
               return (
-                <XStack alignItems="center" justifyContent="center" space="$2">
+                <XStack ai="center" jc="center" gap="$2">
                   <Spinner color="$slategrey" />
                   <SizableText>{t('couponLoading')}</SizableText>
                 </XStack>
@@ -527,7 +523,7 @@ const Carts = () => {
               return null;
             }
             return (
-              <Container alignItems="center">
+              <Container ai="center">
                 <MaterialCommunityIcons
                   name="ticket-confirmation-outline"
                   size={120}

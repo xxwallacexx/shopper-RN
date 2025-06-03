@@ -18,7 +18,6 @@ const scheme = Constants.expoConfig?.scheme as string;
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: '(tabs)',
 };
 
@@ -70,7 +69,6 @@ const RootLayout = () => {
         await messaging().requestPermission();
       } else {
         const fcmToken = await messaging().getToken();
-        console.log(fcmToken);
         await updateInstallation(fcmToken, scheme, storedToken);
       }
     })();

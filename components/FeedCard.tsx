@@ -23,19 +23,19 @@ const FeedCard = ({
   const { t } = useLocale();
   return (
     <YStack
-      flex={1}
-      backgroundColor={'white'}
-      space="$2"
-      borderRadius={'$radius.3'}
-      shadowColor={'black'}
-      shadowOffset={{
+      f={1}
+      bc={'white'}
+      gap="$2"
+      br={'$radius.3'}
+      shac={'black'}
+      shof={{
         height: 2,
         width: 0,
       }}
-      shadowOpacity={0.25}
-      shadowRadius={3.84}>
-      <XStack p="$4" w="100%" justifyContent="space-between">
-        <SizableText color="$primary">{shopName}</SizableText>
+      shop={0.25}
+      shar={3.84}>
+      <XStack p="$4" w="100%" jc="space-between">
+        <SizableText col="$primary">{shopName}</SizableText>
         <SizableText>{moment(createdAt).format('YYYY-MM-DD')}</SizableText>
       </XStack>
       <BannerCarousel
@@ -43,9 +43,9 @@ const FeedCard = ({
           return { type: p.type, uri: p.path };
         })}
       />
-      <YStack p="$2" space="$2">
+      <YStack p="$2" gap="$2">
         <Title>{title}</Title>
-        <XStack space="$2">
+        <XStack gap="$2">
           <SizableText size={'$2'}>
             {likeCount} {t('likeCount')}
           </SizableText>

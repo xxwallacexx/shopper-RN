@@ -18,17 +18,17 @@ const OrderProductCard = ({
   const photoUri = product.photos && product.photos.length ? product.photos[0].path : undefined;
 
   return (
-    <XStack flex={1} backgroundColor={'white'} p={'$1'} space="$2">
-      <YStack width={'40%'} borderRadius={'$radius.3'} overflow="hidden">
+    <XStack f={1} bc={'white'} p={'$1'} gap="$2">
+      <YStack w={'40%'} br={'$radius.3'} ov="hidden">
         <Image
-          backgroundColor={'white'}
-          resizeMode="contain"
+          bc={'white'}
+          objectFit="contain"
           aspectRatio={1}
           source={{ uri: photoUri }}
-          width={'100%'}
+          w={'100%'}
         />
       </YStack>
-      <YStack py={'$2'} space="$2" justifyContent="space-between">
+      <YStack py={'$2'} gap="$2" jc="space-between">
         <YStack>
           <SizableText numberOfLines={1} ellipsizeMode="tail">
             {product.name}
@@ -41,9 +41,9 @@ const OrderProductCard = ({
             );
           })}
         </YStack>
-        <XStack space="$2">
+        <XStack gap="$2">
           <SizableText>{t('orderQuantity', { quantity: quantity })}</SizableText>
-          <SizableText color={'$primary'}>{`HK$ ${price}`}</SizableText>
+          <SizableText col={'$primary'}>{`HK$ ${price}`}</SizableText>
         </XStack>
       </YStack>
     </XStack>

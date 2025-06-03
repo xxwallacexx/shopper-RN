@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Form, Input, Label, YStack } from 'tamagui';
+import { Form, Input, Label, YStack, Text } from 'tamagui';
 import { Formik } from 'formik';
 import { getSelf, updateSelf } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 import { useNavigation } from 'expo-router';
 import { Address } from '~/types';
 import * as Yup from 'yup';
-import { Text } from 'tamagui';
 
 type Values = {
   email: string;
@@ -46,7 +45,6 @@ const EditEmail = () => {
       navigation.goBack();
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -80,16 +78,16 @@ const EditEmail = () => {
       }}>
       {({ errors, values, handleChange, handleSubmit }) => {
         return (
-          <Form flex={1} alignItems="center" onSubmit={handleSubmit}>
-            <YStack w="100%" p="$2" space="$4">
-              <YStack w="100%" alignItems="flex-start" space="$2">
+          <Form f={1} ai="center" onSubmit={handleSubmit}>
+            <YStack w="100%" p="$2" gap="$4">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('email')}</Label>
                 <Input
                   autoCapitalize={'none'}
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.email}
                   placeholder={t('email')}
@@ -97,7 +95,7 @@ const EditEmail = () => {
                   onChangeText={handleChange('email')}
                 />
                 {errors.email ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos={'$1'}>
                     {errors.email}
                   </Text>
                 ) : null}

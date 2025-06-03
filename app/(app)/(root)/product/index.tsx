@@ -4,7 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
-import { Input, SizableText, Stack, Text, XStack, YStack } from 'tamagui';
+import { Input, SizableText, Stack, XStack, YStack } from 'tamagui';
 import { listProducts } from '~/api';
 import { ProductCard, Spinner } from '~/components';
 import { useLocale } from '~/hooks';
@@ -54,11 +54,9 @@ const Products = () => {
     if (!searchHistories) {
       searchHistories = [];
     }
-    // limit 10 items
     if (searchHistories.length >= 10) {
       searchHistories.splice(9, searchHistories.length - 9);
     }
-    // filter out duplicated
     searchHistories = searchHistories.filter((f) => {
       return f._id !== item._id;
     });
@@ -86,8 +84,8 @@ const Products = () => {
   };
 
   return (
-    <YStack flex={1} bg="white">
-      <Stack w="100%" p="$2" position="relative">
+    <YStack f={1} bg="white">
+      <Stack w="100%" p="$2" pos="relative">
         <Input
           autoCorrect={false}
           autoFocus={true}
@@ -97,7 +95,7 @@ const Products = () => {
           onChangeText={setSearch}
         />
         {search == '' ? null : (
-          <Stack position="absolute" r="$4" t="$4">
+          <Stack pos="absolute" r="$4" t="$4">
             <TouchableOpacity onPress={() => setSearch('')}>
               <AntDesign size={24} name="closecircleo" />
             </TouchableOpacity>
@@ -121,9 +119,9 @@ const Products = () => {
             return null;
           }
           return (
-            <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+            <XStack f={1} gap="$2" ai="center" jc="center">
               <Spinner color="$color.primary" />
-              <SizableText color="slategrey">{t('loading')}</SizableText>
+              <SizableText col="slategrey">{t('loading')}</SizableText>
             </XStack>
           );
         }}
@@ -132,7 +130,7 @@ const Products = () => {
             return null;
           }
           return (
-            <Container alignItems="center">
+            <Container ai="center">
               <AntDesign name="folderopen" size={120} color={'#666'} />
               <Title>{t('emptyContent')}</Title>
             </Container>

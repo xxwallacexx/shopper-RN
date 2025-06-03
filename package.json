@@ -20,6 +20,7 @@
     "@react-navigation/drawer": "^7.3.12",
     "@stripe/stripe-react-native": "0.45.0",
     "@tamagui/animate-presence": "1.126.13",
+    "@tamagui/config": "^1.126.13",
     "@tamagui/font-inter": "1.126.13",
     "@tamagui/react-native-media-driver": "1.126.13",
     "@tamagui/shorthands": "1.126.13",

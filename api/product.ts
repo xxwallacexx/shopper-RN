@@ -274,7 +274,6 @@ const createProductComment = async (token: string, id: string, formData: FormDat
     url: `${baseUrl}/product/${id}/comment`,
     data: formData,
   };
-  console.log(options);
   const res = await axios(options)
     .then((res) => {
       return res.data;

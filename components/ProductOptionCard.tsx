@@ -23,7 +23,7 @@ const ProductOptionCard = ({
         value={selectedChoice}
         name={option.fieldName}
         onValueChange={(value) => onChoiceChange(option._id, value)}>
-        <YStack width={300} alignItems="center" space="$2">
+        <YStack w={300} ai="center" gap="$2">
           {useMemo(() => {
             return option.choices.map((c) => {
               return (

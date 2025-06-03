@@ -4,7 +4,7 @@ import {
   isPlatformPaySupported,
   PlatformPay,
 } from '@stripe/stripe-react-native';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Skeleton } from 'moti/skeleton';
 import { useState } from 'react';
@@ -40,8 +40,8 @@ import {
   PaymentSheetCard,
   RadioGroupItem,
   StoreCard,
+  ActionSheet,
 } from '~/components';
-import ActionSheet from '~/components/ActionSheet';
 import { useAuth, useCountdown, useLocale } from '~/hooks';
 import { BottomAction, StyledButton } from '~/tamagui.config';
 import { Address, Contact, DeliveryMethodEnum, PaymentMethodEnum } from '~/types';
@@ -234,22 +234,22 @@ const CartCheckout = () => {
   const renderSectionHeader = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
       case 'deliveryMethod':
-        return <H2 backgroundColor={'#fff'}>{t('deliveryMethod')}</H2>;
+        return <H2 bc={'#fff'}>{t('deliveryMethod')}</H2>;
       case 'contact':
-        return <H2 backgroundColor={'#fff'}>{t('contactInfo')}</H2>;
+        return <H2 bc={'#fff'}>{t('contactInfo')}</H2>;
       case 'coupon':
-        return <H2 backgroundColor={'#fff'}>{t('coupon')}</H2>;
+        return <H2 bc={'#fff'}>{t('coupon')}</H2>;
       case 'address':
         switch (selectedDeliveryMethod) {
           case DeliveryMethodEnum.SFEXPRESS:
-            return <H2 backgroundColor={'#fff'}>{t('address')}</H2>;
+            return <H2 bc={'#fff'}>{t('address')}</H2>;
           case DeliveryMethodEnum.SELF_PICK_UP:
-            return <H2 backgroundColor={'#fff'}>{t('store')}</H2>;
+            return <H2 bc={'#fff'}>{t('store')}</H2>;
           default:
             return <></>;
         }
       case 'paymentMethod':
-        return <H2 backgroundColor={'#fff'}>{t('paymentMethod')}</H2>;
+        return <H2 bc={'#fff'}>{t('paymentMethod')}</H2>;
       default:
         return <></>;
     }
@@ -297,7 +297,7 @@ const CartCheckout = () => {
             onValueChange={(value) =>
               setSelectedDeliveryMethod(value as keyof typeof DeliveryMethodEnum)
             }>
-            <YStack width={300} alignItems="center" space="$2">
+            <YStack w={300} ai="center" gap="$2">
               {shop.deliveryMethods.map((c) => {
                 return (
                   <RadioGroupItem
@@ -323,7 +323,7 @@ const CartCheckout = () => {
                 value={selectedStore}
                 name={'store'}
                 onValueChange={(value) => setSelectedStore(value)}>
-                <YStack width={300} alignItems="center" space="$2">
+                <YStack w={300} ai="center" gap="$2">
                   {shop.stores.map((s) => {
                     return (
                       <RadioGroupItem
@@ -346,8 +346,8 @@ const CartCheckout = () => {
         const subtotalWithDiscount = subtotal - couponsDiscount;
         const deliveryFee = freeShippingPrice > subtotalWithDiscount ? nonfreeShippingFee : 0;
         return (
-          <YStack p="$2" space="$1">
-            <XStack justifyContent="space-between">
+          <YStack p="$2" gap="$1">
+            <XStack jc="space-between">
               <SizableText>{t('subtotal')}</SizableText>
               {isPriceDetailFetching ? (
                 <Skeleton colorMode="light" width={80} height={16} />
@@ -358,7 +358,7 @@ const CartCheckout = () => {
               )}
             </XStack>
             {couponsDiscount ? (
-              <XStack justifyContent="space-between">
+              <XStack jc="space-between">
                 <SizableText>{t('redeemCoupon')}</SizableText>
                 {isPriceDetailFetching ? (
                   <Skeleton colorMode="light" width={80} height={16} />
@@ -370,7 +370,7 @@ const CartCheckout = () => {
               </XStack>
             ) : null}
             {selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS ? (
-              <XStack justifyContent="space-between">
+              <XStack jc="space-between">
                 <SizableText>{t('deliveryFee')}</SizableText>
                 {isPriceDetailFetching ? (
                   <Skeleton colorMode="light" width={80} height={16} />
@@ -381,7 +381,7 @@ const CartCheckout = () => {
                 )}
               </XStack>
             ) : null}
-            <XStack justifyContent="space-between">
+            <XStack jc="space-between">
               <SizableText>{t('totalPrice')}</SizableText>
               {isTotalPriceFetching ? (
                 <Skeleton colorMode="light" width={80} height={16} />
@@ -482,7 +482,7 @@ const CartCheckout = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack flex={1}>
+      <YStack f={1}>
         <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
           <SectionList
             style={{
@@ -502,7 +502,7 @@ const CartCheckout = () => {
           />
         </KeyboardAwareScrollView>
       </YStack>
-      <BottomAction justifyContent="space-between">
+      <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching || totalPrice == undefined ? (
             <Skeleton width={'30%'} height={12} colorMode="light" />
@@ -520,7 +520,7 @@ const CartCheckout = () => {
         sheetPosition={paymentSheetPosition}
         snapPoints={[80]}
         setSheetPosition={setPaymentSheetPosition}>
-        <ScrollView space="$4">
+        <ScrollView gap="$4">
           <PaymentSheetCard
             isLoading={isCreateCartItemOrderSubmitting}
             cardPaymentDisabled={!isCardCompleted || isCreateCartItemOrderSubmitting}
@@ -532,13 +532,13 @@ const CartCheckout = () => {
         </ScrollView>
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
-        <YStack space="$4">
-          <SizableText fontSize={'$6'}>{t('paymentSuccess')}</SizableText>
+        <YStack gap="$4">
+          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fontWeight={'700'}>{t('myOrders')}</Text>
+              <Text fow={'700'}>{t('myOrders')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

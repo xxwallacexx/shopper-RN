@@ -23,8 +23,8 @@ const Content = ({ type, uri }: { type: 'IMAGE' | 'VIDEO'; uri: string }) => {
           width={'100%'}
           height={'100%'}
           aspectRatio={1.778}
-          resizeMode="contain"
-          backgroundColor={'lightgrey'}
+          objectFit="contain"
+          bc={'lightgrey'}
         />
       );
     default:
@@ -86,7 +86,7 @@ const BannerCarousel = ({ banners }: { banners: { type: 'IMAGE' | 'VIDEO'; uri: 
   }, []);
 
   return (
-    <YStack width={'100%'} aspectRatio={1.77} position="relative">
+    <YStack w={'100%'} aspectRatio={1.77} pos="relative">
       <Carousel
         style={{ width: '100%' }}
         width={width}
@@ -101,20 +101,13 @@ const BannerCarousel = ({ banners }: { banners: { type: 'IMAGE' | 'VIDEO'; uri: 
         }}
         onSnapToItem={(index) => setSlideIndex(index)}
       />
-      <XStack
-        position="absolute"
-        bottom={10}
-        left={'20%'}
-        width={'60%'}
-        justifyContent="center"
-        padding="$2"
-        space="$4">
+      <XStack pos="absolute" b={10} l={'20%'} w={'60%'} jc="center" p="$2" gap="$4">
         {banners.map((_, index) => {
           return (
             <Circle
               key={`activeSlide_${index}`}
               size={10}
-              backgroundColor={index == slideIndex ? '$color.primary' : 'ghostwhite'}
+              bc={index == slideIndex ? '$color.primary' : 'ghostwhite'}
               elevation={4}
             />
           );

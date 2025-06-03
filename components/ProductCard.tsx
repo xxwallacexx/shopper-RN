@@ -19,24 +19,24 @@ const ProductCard = ({
 
   return (
     <YStack
-      backgroundColor={'white'}
-      flex={1}
+      bc={'white'}
+      f={1}
       p="$4"
-      borderRadius={'$radius.3'}
-      shadowColor={'black'}
-      shadowOffset={{
+      br={'$radius.3'}
+      shac={'black'}
+      shof={{
         height: 2,
         width: 0,
       }}
-      shadowOpacity={0.25}
-      shadowRadius={3.84}>
-      <Image aspectRatio={1} source={{ uri: imageUri }} resizeMode="contain" borderRadius={4} />
-      <Badge position="absolute" top={22} right={22}>
-        <SizableText fontSize={8} color="#fff">
+      shop={0.25}
+      shar={3.84}>
+      <Image aspectRatio={1} source={{ uri: imageUri }} objectFit="contain" borderRadius={4} />
+      <Badge pos="absolute" t={22} r={22}>
+        <SizableText fos={8} col="#fff">
           $ {price.toFixed(2)} {t('up')}
         </SizableText>
       </Badge>
-      <SizableText size={'$1'} color="lightslategray">
+      <SizableText size={'$1'} col="lightslategray">
         {categoryName}
       </SizableText>
       <Text numberOfLines={1} ellipsizeMode="tail">

@@ -35,10 +35,10 @@ const ActionSheet = ({
       <Sheet.Overlay
         style={{ opacity: 0.5, backgroundColor: 'lightslategrey' }}
         animation="100ms"
-        enterStyle={{ opacity: 0 }}
-        exitStyle={{ opacity: 0 }}
+        enterStyle={{ o: 0 }}
+        exitStyle={{ o: 0 }}
       />
-      <Sheet.Frame padding={snapPoints.includes(100) ? '$0' : '$4'} backgroundColor={bg}>
+      <Sheet.Frame p={snapPoints.includes(100) ? '$0' : '$4'} style={{ backgroundColor: bg }}>
         {children}
       </Sheet.Frame>
     </Sheet>

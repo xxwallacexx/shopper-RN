@@ -3,8 +3,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import moment from 'moment';
 import { FlatList, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { SizableText, YStack } from 'tamagui';
-import { XStack } from 'tamagui';
+import { SizableText, YStack, XStack } from 'tamagui';
 import { listNotifications, updateNotificationStatus } from '~/api';
 import { Spinner } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -45,7 +44,6 @@ const Notification = () => {
       queryClient.resetQueries({ queryKey: ['notifications'] });
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -62,30 +60,30 @@ const Notification = () => {
         disabled={item.read || isSubmitting}
         onPress={() => updateStatusMutate({ id: item._id })}>
         <YStack
-          flex={1}
-          backgroundColor={'white'}
+          f={1}
+          bc={'white'}
           p={'$4'}
-          space="$1"
-          borderRadius={'$radius.3'}
-          shadowColor={'black'}
-          shadowOffset={{
+          gap="$1"
+          br={'$radius.3'}
+          shac={'black'}
+          shof={{
             height: 2,
             width: 0,
           }}
-          shadowOpacity={0.25}
-          shadowRadius={3.84}>
-          <XStack justifyContent="space-between">
+          shop={0.25}
+          shar={3.84}>
+          <XStack jc="space-between">
             <SizableText>
               {t('time')}: {moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
             </SizableText>
-            <Badge backgroundColor={item.read ? 'slategrey' : '$primary'}>
-              <SizableText color="white">{item.read ? t('read') : t('newest')}</SizableText>
+            <Badge bc={item.read ? 'slategrey' : '$primary'}>
+              <SizableText col="white">{item.read ? t('read') : t('newest')}</SizableText>
             </Badge>
           </XStack>
           <SizableText>
             {t('notification')}: {item.notification.title}
           </SizableText>
-          <SizableText color="slategrey">{item.notification.body}</SizableText>
+          <SizableText col="slategrey">{item.notification.body}</SizableText>
         </YStack>
       </TouchableOpacity>
     );
@@ -103,9 +101,9 @@ const Notification = () => {
           return null;
         }
         return (
-          <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+          <XStack f={1} gap="$2" ai="center" jc="center">
             <Spinner color="$color.primary" />
-            <SizableText color="slategrey">{t('loading')}</SizableText>
+            <SizableText col="slategrey">{t('loading')}</SizableText>
           </XStack>
         );
       }}
@@ -114,7 +112,7 @@ const Notification = () => {
           return null;
         }
         return (
-          <Container alignItems="center">
+          <Container ai="center">
             <AntDesign name="folderopen" size={120} color="$666" />
             <Title>{t('emptyContent')}</Title>
           </Container>

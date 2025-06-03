@@ -60,7 +60,6 @@ const listReservationAvailableCoupons = async (
       return res.data;
     })
     .catch((e) => {
-      console.log(e.response.data);
       throw new Error(e.response.data.errorCodes);
     });
   return res;

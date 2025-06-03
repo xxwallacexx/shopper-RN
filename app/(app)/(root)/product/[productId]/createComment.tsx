@@ -76,24 +76,19 @@ const CreateProductComment = () => {
 
   return (
     <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
-      <ScrollView flex={1} space="$2" contentContainerStyle={{ alignItems: 'center' }}>
-        <YStack w="100%" alignItems="center" space="$2">
-          <Image
-            resizeMode="contain"
-            aspectRatio={1}
-            source={{ uri: user?.avatar }}
-            width={'20%'}
-          />
+      <ScrollView f={1} gap="$2" contentContainerStyle={{ ai: 'center' }}>
+        <YStack w="100%" ai="center" gap="$2">
+          <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} width={'20%'} />
           <SizableText>{user?.username}</SizableText>
         </YStack>
-        <Separator width={'90%'} />
+        <Separator w={'90%'} />
         <StarRating enableHalfStar={false} rating={rating} onChange={setRating} />
-        <Separator width={'90%'} />
+        <Separator w={'90%'} />
         <ScrollView
           w="100%"
           contentContainerStyle={{
-            margin: 16,
-            alignItems: 'flex-start',
+            m: 16,
+            ai: 'flex-start',
             gap: 16,
           }}
           horizontal>
@@ -110,7 +105,7 @@ const CreateProductComment = () => {
           })}
           {photos.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
         </ScrollView>
-        <Separator width={'90%'} />
+        <Separator w={'90%'} />
         <TextArea
           autoCorrect={false}
           autoCapitalize="none"

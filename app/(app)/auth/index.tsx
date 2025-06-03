@@ -52,7 +52,6 @@ const Auth = () => {
       router.replace('/(app)/(root)/(tabs)/profile');
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -71,7 +70,6 @@ const Auth = () => {
       router.replace('/(app)/(root)/(tabs)/profile');
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -100,7 +98,6 @@ const Auth = () => {
       router.replace('/(app)/(root)/(tabs)/profile');
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -119,7 +116,6 @@ const Auth = () => {
       router.replace('/(app)/(root)/(tabs)/profile');
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -138,29 +134,23 @@ const Auth = () => {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      console.log(credential);
       // signed in
       const { email, fullName, user, identityToken } = credential;
       const username = `${fullName?.givenName ?? ''} ${fullName?.familyName ?? ''}`;
       appleLoginMutate({ email, username, appleUser: user, identityToken });
-    } catch (e) {
-      console.log('cancel');
-    }
+    } catch (e) {}
   };
 
   const onFacebookLoginPress = async () => {
     try {
       const response = await LoginManager.logInWithPermissions(['public_profile', 'email']);
       if (response.isCancelled) {
-        console.log('cancelled');
       } else {
         const response: FBAccessToken | null = await AccessToken.getCurrentAccessToken();
         if (!response) return;
         facebookLoginMutate({ token: response.accessToken });
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   const onGoogleSigninPress = async () => {
@@ -172,9 +162,7 @@ const Auth = () => {
       const { idToken: identityToken, user } = await GoogleSignin.signIn();
       const { email, name, id: googleId } = user;
       googleLoginMutate({ email, username: name ?? '', googleId, identityToken });
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   const disabled =
@@ -185,9 +173,9 @@ const Auth = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Container space="$5">
+      <Container gap="$5">
         <H2>{t('TnC')}</H2>
-        <ScrollView maxHeight={'50%'}>
+        <ScrollView mah={'50%'}>
           <HTMLView value={shop.terms} />
         </ScrollView>
         <Link disabled={disabled} href="/auth/signin" asChild>

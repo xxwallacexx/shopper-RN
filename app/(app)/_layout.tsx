@@ -6,20 +6,15 @@ export const unstable_settings = {
 
 const Layout = () => {
   return (
-    <Stack screenOptions={({ navigation }) => ({
-      headerShown: false
-    })}>
+    <Stack
+      screenOptions={({}) => ({
+        headerShown: false,
+      })}>
       <Stack.Screen name="(root)" />
-      <Stack.Screen
-        name="auth"
-        options={{ presentation: 'modal' }}
-      />
-      <Stack.Screen
-        name="modal"
-        options={{ presentation: 'modal' }}
-      />
+      <Stack.Screen name="auth" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
     </Stack>
   );
-}
+};
 
-export default Layout
+export default Layout;

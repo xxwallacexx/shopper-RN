@@ -1,16 +1,10 @@
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { Link } from 'expo-router';
 import moment from 'moment';
 import { useState } from 'react';
-import {
-  SectionList,
-  RefreshControl,
-  FlatList,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
+import { RefreshControl, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Image, ScrollView, SizableText, XStack, YStack } from 'tamagui';
 import { Spinner } from '~/components';
 import { getCredit, getShop, listCoupons } from '~/api';
@@ -45,7 +39,6 @@ const Coupons = () => {
     isFetching: isCouponsFetching,
     isFetchingNextPage: isFetchingMoreCoupons,
     fetchNextPage: fetchMoreCoupons,
-    hasNextPage: couponsHasNextPage,
     refetch: refetchCoupons,
   } = useInfiniteQuery({
     queryKey: ['coupons', selectedSortOption],
@@ -78,31 +71,26 @@ const Coupons = () => {
       <Link href={`/coupon/${item._id}`} asChild>
         <TouchableOpacity style={{ width: '48%' }}>
           <YStack
-            backgroundColor={'white'}
-            flex={1}
+            bc={'white'}
+            f={1}
             p="$4"
-            borderRadius={'$radius.3'}
-            shadowColor={'black'}
-            shadowOffset={{
+            br={'$radius.3'}
+            shac={'black'}
+            shof={{
               height: 2,
               width: 0,
             }}
-            shadowOpacity={0.25}
-            shadowRadius={3.84}>
-            <Image
-              resizeMode="contain"
-              aspectRatio={1}
-              source={{ uri: item.photo }}
-              width={'100%'}
-            />
-            <Badge position="absolute" top={22} right={22}>
-              <SizableText fontSize={8} color="#fff">
+            shop={0.25}
+            shar={3.84}>
+            <Image objectFit="contain" aspectRatio={1} source={{ uri: item.photo }} w={'100%'} />
+            <Badge pos="absolute" t={22} r={22}>
+              <SizableText fos={8} col="#fff">
                 {t('couponCredit', { credit: item.credit })}
               </SizableText>
             </Badge>
-            <XStack space={4} alignItems="center">
+            <XStack gap={4} ai="center">
               <AntDesign name="clockcircleo" color={tokens.color.gray10Dark.val} />
-              <SizableText color="lightslategrey">
+              <SizableText col="lightslategrey">
                 {moment(item.endDate).format('YYYY-MM-DD HH:mm')}
               </SizableText>
             </XStack>
@@ -127,14 +115,14 @@ const Coupons = () => {
           return (
             <YStack>
               <YStack>
-                <Image aspectRatio={16 / 9} source={{ uri: shop.couponCover }} width={'100%'} />
-                <Badge position="absolute" bottom={22} left={22}>
-                  <SizableText size={8} color="#fff">
+                <Image aspectRatio={16 / 9} source={{ uri: shop.couponCover }} w={'100%'} />
+                <Badge pos="absolute" b={22} l={22}>
+                  <SizableText size={8} col="#fff">
                     {t('credit')}: {credit}
                   </SizableText>
                 </Badge>
               </YStack>
-              <YStack p={'$4'} flex={1} alignItems="flex-end" justifyContent="flex-end">
+              <YStack p={'$4'} f={1} ai="flex-end" jc="flex-end">
                 <StyledButton onPress={() => setIsSortingSheetOpen(true)}>
                   {
                     sortOptions.find((s) => {
@@ -156,9 +144,9 @@ const Coupons = () => {
             return null;
           }
           return (
-            <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+            <XStack f={1} gap="$2" ai="center" jc="center">
               <Spinner color="$color.primary" />
-              <SizableText color="slategrey">{t('loading')}</SizableText>
+              <SizableText col="slategrey">{t('loading')}</SizableText>
             </XStack>
           );
         }}
@@ -167,7 +155,7 @@ const Coupons = () => {
             return null;
           }
           return (
-            <Container alignItems="center">
+            <Container ai="center">
               <AntDesign name="folderopen" size={120} color="$666" />
               <Title>{t('emptyContent')}</Title>
             </Container>
@@ -180,7 +168,7 @@ const Coupons = () => {
         sheetPosition={sortingSheetPosition}
         setSheetPosition={setSortingSheetPoistion}>
         <ScrollView>
-          <YStack space={'$4'}>
+          <YStack gap={'$4'}>
             {sortOptions.map((option, index) => {
               const isSelected = option.value == selectedSortOption;
               return (
@@ -190,8 +178,8 @@ const Coupons = () => {
                     setSelectedSortOption(option.value);
                   }}
                   key={option.value + index.toString()}
-                  width={'100%'}
-                  backgroundColor={isSelected ? '$color.primary' : 'lightslategrey'}>
+                  w={'100%'}
+                  bc={isSelected ? '$color.primary' : 'lightslategrey'}>
                   {option.label}
                 </StyledButton>
               );

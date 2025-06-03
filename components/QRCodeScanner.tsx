@@ -28,8 +28,8 @@ const QRCodeScanner = ({
   if (!permission.granted) {
     if (!permission.canAskAgain)
       return (
-        <Container space="$2" flex={1} alignItems="center" justifyContent="center">
-          <YStack position="absolute" l="$4" t="$10">
+        <Container gap="$2" f={1} ai="center" jc="center">
+          <YStack pos="absolute" l="$4" t="$10">
             <TouchableOpacity
               onPress={() => {
                 onBack();
@@ -38,13 +38,13 @@ const QRCodeScanner = ({
             </TouchableOpacity>
           </YStack>
 
-          <SizableText textAlign="center">{t('cameraSettingMessage')}</SizableText>
+          <SizableText ta="center">{t('cameraSettingMessage')}</SizableText>
           <StyledButton onPress={onCameraSettingPress}>{t('cameraSetting')}</StyledButton>
         </Container>
       );
     return (
-      <Container space="$2" flex={1} alignItems="center" justifyContent="center">
-        <YStack position="absolute" l="$4" t="$10">
+      <Container gap="$2" f={1} ai="center" jc="center">
+        <YStack pos="absolute" l="$4" t="$10">
           <TouchableOpacity
             onPress={() => {
               onBack();
@@ -53,7 +53,7 @@ const QRCodeScanner = ({
           </TouchableOpacity>
         </YStack>
 
-        <SizableText textAlign="center">{t('cameraPermissionMessage')}</SizableText>
+        <SizableText ta="center">{t('cameraPermissionMessage')}</SizableText>
         <StyledButton onPress={requestPermission}>{t('cameraPermission')}</StyledButton>
       </Container>
     );
@@ -68,8 +68,8 @@ const QRCodeScanner = ({
       ref={camera}
       style={{ flex: 1 }}
       facing={CameraType.back}>
-      <YStack flex={1} justifyContent="center" alignItems="center">
-        <Circle bg="black" p="$2" position="absolute" l="$4" t="$10">
+      <YStack f={1} jc="center" ai="center">
+        <Circle bg="black" p="$2" pos="absolute" l="$4" t="$10">
           <TouchableOpacity
             onPress={() => {
               onBack();

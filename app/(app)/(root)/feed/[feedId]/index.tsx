@@ -1,10 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import moment from 'moment';
 import { FlatList, TouchableOpacity } from 'react-native';
-import { Image, Separator, SizableText, Stack } from 'tamagui';
-import { XStack } from 'tamagui';
-import { YStack } from 'tamagui';
+import { Image, Separator, SizableText, Stack, XStack, YStack, ScrollView } from 'tamagui';
 import {
   createFeedLike,
   getFeed,
@@ -14,148 +11,12 @@ import {
   removeFeedLike,
   removeFeedComment,
 } from '~/api';
-import { BannerCarousel, Spinner } from '~/components';
+import { CommentCard, Feed, Spinner, ActionSheet } from '~/components';
 import { Container, StyledButton, Title } from '~/tamagui.config';
-import { Feed as TFeed } from '~/types';
-import HTMLView from 'react-native-htmlview';
-import { AntDesign, EvilIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useAuth, useLocale } from '~/hooks';
-import { tokens } from '@tamagui/themes';
-import ActionSheet from '~/components/ActionSheet';
 import { useState } from 'react';
-import { ScrollView } from 'tamagui';
 import Toast from 'react-native-toast-message';
-
-const Feed = ({
-  liked,
-  shopName,
-  createdAt,
-  photos,
-  title,
-  detail,
-  onLikePress,
-  onCommentPress,
-}: {
-  liked: boolean;
-  shopName: string;
-  createdAt: Date;
-  photos: TFeed['photos'];
-  title: string;
-  detail: string;
-  onLikePress: () => void;
-  onCommentPress: () => void;
-}) => {
-  const { t } = useLocale();
-  return (
-    <YStack flex={1}>
-      <XStack p="$4" w="100%" justifyContent="space-between">
-        <SizableText color="$primary">{shopName}</SizableText>
-        <SizableText>{moment(createdAt).format('YYYY-MM-DD')}</SizableText>
-      </XStack>
-      <BannerCarousel
-        banners={photos.map((p) => {
-          return { type: p.type, uri: p.path };
-        })}
-      />
-      <YStack p="$2" space="$2">
-        <Title>{title}</Title>
-        <HTMLView value={detail} />
-      </YStack>
-      <Separator w="100%" />
-      <XStack p="$2" justifyContent="space-around">
-        <TouchableOpacity onPress={onLikePress}>
-          <XStack space="$2" alignItems="center">
-            <AntDesign color={liked ? tokens.color.yellow7Light.val : '#000'} name="like1" />
-            <SizableText>{t('like')}</SizableText>
-          </XStack>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onCommentPress}>
-          <XStack space="$2" alignItems="center">
-            <EvilIcons name="comment" />
-            <SizableText>{t('comment')}</SizableText>
-          </XStack>
-        </TouchableOpacity>
-      </XStack>
-    </YStack>
-  );
-};
-
-const CommentCard = ({
-  isSelf,
-  username,
-  avatar,
-  photos,
-  comment,
-  onPhotoPress,
-  onActionPress,
-  createdAt,
-}: {
-  isSelf: boolean;
-  username: string;
-  avatar: string;
-  photos: string[];
-  comment: string;
-  onPhotoPress: (uri: string) => void;
-  onActionPress: () => void;
-  createdAt: Date;
-}) => {
-  return (
-    <XStack p="$2" space="$1">
-      <Stack w="$5" aspectRatio={1}>
-        <Image flex={1} source={{ uri: avatar }} resizeMode="contain" />
-      </Stack>
-      <YStack p="$2" flex={1} borderRadius={'$radius.3'} bg="whitesmoke">
-        <XStack justifyContent="space-between">
-          <SizableText fontSize={'$7'} fontWeight={'bold'}>
-            {username}
-          </SizableText>
-          {isSelf ? (
-            <TouchableOpacity onPress={onActionPress}>
-              <MaterialIcons name="more-horiz" size={18} />
-            </TouchableOpacity>
-          ) : null}
-        </XStack>
-        <FlatList
-          data={photos}
-          horizontal={true}
-          contentContainerStyle={{ gap: 16 }}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity onPress={() => onPhotoPress(item)}>
-                <YStack
-                  backgroundColor={'white'}
-                  w="$14"
-                  h="$14"
-                  borderRadius={'$radius.3'}
-                  shadowColor={'black'}
-                  shadowOffset={{
-                    height: 2,
-                    width: 0,
-                  }}
-                  shadowOpacity={0.25}
-                  shadowRadius={3.84}
-                  justifyContent="center"
-                  alignItems="center">
-                  <YStack flex={1} borderRadius={'$radius.3'} overflow="hidden">
-                    <Image
-                      aspectRatio={1}
-                      source={{ uri: item }}
-                      width={'100%'}
-                      resizeMode="contain"
-                    />
-                  </YStack>
-                </YStack>
-              </TouchableOpacity>
-            );
-          }}
-        />
-
-        <SizableText>{comment}</SizableText>
-        <SizableText fontSize={'$2'}>{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</SizableText>
-      </YStack>
-    </XStack>
-  );
-};
 
 const FeedDetail = () => {
   const { t } = useLocale();
@@ -236,7 +97,6 @@ const FeedDetail = () => {
       queryClient.invalidateQueries({ queryKey: ['feeds'] });
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -301,7 +161,7 @@ const FeedDetail = () => {
             return null;
           }
           return (
-            <Container flex={1} justifyContent="center" alignItems="center">
+            <Container f={1} jc="center" ai="center">
               <AntDesign name="folderopen" size={120} color={'#666'} />
               <Title>{t('emptyComment')}</Title>
             </Container>
@@ -315,9 +175,9 @@ const FeedDetail = () => {
             return null;
           }
           return (
-            <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+            <XStack f={1} space="$2" ai="center" jc="center">
               <Spinner color="$color.primary" />
-              <SizableText color="slategrey">{t('loading')}</SizableText>
+              <SizableText col="slategrey">{t('loading')}</SizableText>
             </XStack>
           );
         }}
@@ -328,27 +188,28 @@ const FeedDetail = () => {
         snapPoints={[60]}
         sheetPosition={commentActionSheetPosition}
         setSheetPosition={setCommentActionSheetPosition}>
-        <ScrollView space="$4">
-          <StyledButton
-            onPress={() => {
-              setIsCommentActionSheetOpen(false);
-              router.navigate({
-                pathname: '/feedComment/[commentId]/editComment',
-                params: { commentId: selectedCommentId },
-              });
-            }}
-            disabled={isRemoveCommentSubmiting}>
-            {t('editComment')}
-          </StyledButton>
-
-          <StyledButton
-            onPress={() => {
-              if (!selectedCommentId) return;
-              removeCommentMutate({ commentId: selectedCommentId });
-            }}
-            disabled={isRemoveCommentSubmiting}>
-            {t('removeComment')}
-          </StyledButton>
+        <ScrollView>
+          <YStack gap="$4">
+            <StyledButton
+              onPress={() => {
+                setIsCommentActionSheetOpen(false);
+                router.navigate({
+                  pathname: '/feedComment/[commentId]/editComment',
+                  params: { commentId: selectedCommentId },
+                });
+              }}
+              disabled={isRemoveCommentSubmiting}>
+              {t('editComment')}
+            </StyledButton>
+            <StyledButton
+              onPress={() => {
+                if (!selectedCommentId) return;
+                removeCommentMutate({ commentId: selectedCommentId });
+              }}
+              disabled={isRemoveCommentSubmiting}>
+              {t('removeComment')}
+            </StyledButton>
+          </YStack>
         </ScrollView>
       </ActionSheet>
 
@@ -358,8 +219,8 @@ const FeedDetail = () => {
         snapPoints={[100]}
         sheetPosition={photoSheetPosition}
         setSheetPosition={setPhotoSheetPosition}>
-        <YStack bg="black" flex={1} justifyContent="center" alignItems="center">
-          <YStack position="absolute" l="$4" t="$10">
+        <YStack bg="black" f={1} jc="center" ai="center">
+          <YStack pos="absolute" l="$4" t="$10">
             <TouchableOpacity
               onPress={() => {
                 setIsPhotoSheetOpen(false);
@@ -368,7 +229,7 @@ const FeedDetail = () => {
             </TouchableOpacity>
           </YStack>
           <Stack aspectRatio={1} w={'100%'}>
-            <Image flex={1} resizeMode="contain" source={{ uri: selectedPhoto }} />
+            <Image f={1} objectFit="contain" source={{ uri: selectedPhoto }} />
           </Stack>
         </YStack>
       </ActionSheet>
