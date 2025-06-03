@@ -46,7 +46,6 @@ const CouponDetail = () => {
       queryClient.resetQueries({ queryKey: ['userCoupons'] });
     },
     onError: (e) => {
-      console.log(e);
       Toast.show({
         type: 'error',
         text1: t(e.toString()),
@@ -71,27 +70,27 @@ const CouponDetail = () => {
       case 'cover':
         return (
           <Image
-            backgroundColor={'white'}
-            resizeMode="contain"
+            bc={'white'}
+            objectFit="contain"
             aspectRatio={16 / 9}
             source={{ uri: photo }}
-            width={'100%'}
+            w={'100%'}
           />
         );
       case 'shop':
         return (
-          <Container space="$2">
-            <YStack space="$2">
-              <XStack space="$2" alignItems="center">
+          <Container gap="$2">
+            <YStack gap="$2">
+              <XStack gap="$2" ai="center">
                 <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-                <Text color={'lightslategray'}>{shop.name}</Text>
+                <Text col={'lightslategray'}>{shop.name}</Text>
               </XStack>
-              <XStack space="$2" alignItems="center">
+              <XStack gap="$2" ai="center">
                 <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-                <Text color="lightslategray">{shop.address}</Text>
+                <Text col="lightslategray">{shop.address}</Text>
               </XStack>
             </YStack>
-            <XStack space={4} alignItems="center">
+            <XStack gap={4} ai="center">
               <AntDesign name="clockcircleo" />
               <SizableText>{moment(endDate).format('YYYY-MM-DD HH:mm')}</SizableText>
             </XStack>
@@ -100,9 +99,9 @@ const CouponDetail = () => {
         );
       case 'description':
         return (
-          <Container space="$2">
-            <Separator borderColor={'lightslategray'} />
-            <YStack space="$4">
+          <Container gap="$2">
+            <Separator boc={'lightslategray'} />
+            <YStack gap="$4">
               <Title>{t('couponIntro')}</Title>
               <HTMLView value={detail} />
             </YStack>
@@ -110,8 +109,8 @@ const CouponDetail = () => {
         );
       case 'detail':
         return (
-          <Container space="$2">
-            <YStack space="$4">
+          <Container gap="$2">
+            <YStack gap="$4">
               <Title>{t('userCouponDetail')}</Title>
               <Text>{t('minPriceRequired', { minPriceRequired })}</Text>
               <Text>{t('maxPurchase', { maxPurchase })}</Text>
@@ -121,9 +120,9 @@ const CouponDetail = () => {
         );
       case 'tnc':
         return (
-          <Container space="$2">
-            <Separator borderColor={'lightslategray'} />
-            <YStack space="$4">
+          <Container gap="$2">
+            <Separator boc={'lightslategray'} />
+            <YStack gap="$4">
               <Title>{t('TnC')}</Title>
               <HTMLView value={terms} />
             </YStack>
@@ -142,7 +141,7 @@ const CouponDetail = () => {
   const buttonDisabled = credit < coupon.credit || isCreateUserCouponSubmiting;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack flex={1}>
+      <YStack f={1}>
         <SectionList
           refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
           renderItem={renderSectionItem}
@@ -156,7 +155,7 @@ const CouponDetail = () => {
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => item + index}
         />
-        <BottomAction justifyContent="space-between">
+        <BottomAction jc="space-between">
           <SizableText>{t('creditRequired', { credit: coupon.credit })}</SizableText>
           <StyledButton disabled={buttonDisabled} onPress={onGetCouponPress}>
             {t('getCoupon')}
@@ -165,13 +164,13 @@ const CouponDetail = () => {
         </BottomAction>
       </YStack>
       <Dialog isOpen={isSuccessDialogOpen}>
-        <YStack space="$4">
-          <SizableText fontSize={'$6'}>{t('addCouponSuccess')}</SizableText>
+        <YStack gap="$4">
+          <SizableText fos={'$6'}>{t('addCouponSuccess')}</SizableText>
           <Stack>
             <Text>{t('addCouponSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fontWeight={'700'}>{t('myWallet')}</Text>
+              <Text fow={'700'}>{t('myWallet')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

@@ -123,7 +123,6 @@ const cartItemGetPriceDetail = async (
     },
   };
 
-  console.log(options);
   let res: PriceDetail = await axios(options).then((res) => {
     return res.data;
   });

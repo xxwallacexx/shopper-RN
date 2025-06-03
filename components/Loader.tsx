@@ -5,9 +5,9 @@ const Loader = ({ text }: { text?: string }) => {
   const { t } = useLocale();
 
   return (
-    <YStack alignItems="center">
+    <YStack ai="center">
       <Stack w={'$12'}></Stack>
-      <XStack justifyContent="center" w="100%" space={'$2'}>
+      <XStack jc="center" w="100%" gap={'$2'}>
         <Spinner />
         <SizableText>{text ? text : t('loading')}</SizableText>
       </XStack>

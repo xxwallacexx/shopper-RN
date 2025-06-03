@@ -27,7 +27,6 @@ const Signin = () => {
       router.replace('/(app)/(root)/(tabs)/profile');
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -49,27 +48,27 @@ const Signin = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView bg="white" p="$4">
         <Form onSubmit={onSubmit}>
-          <YStack space="$2" p="$2">
+          <YStack gap="$2" p="$2">
             <Label>{t('email')}</Label>
             <Input
               autoCapitalize="none"
               disabled={isSubmitting}
-              borderColor={'lightgrey'}
-              backgroundColor={'whitesmoke'}
+              boc={'lightgrey'}
+              bc={'whitesmoke'}
               onChangeText={(value) => setEmail(value)}
             />
             <Label>{t('password')}</Label>
             <Input
               autoCapitalize="none"
               disabled={isSubmitting}
-              borderColor={'lightgrey'}
-              backgroundColor={'whitesmoke'}
+              boc={'lightgrey'}
+              bc={'whitesmoke'}
               onChangeText={(value) => setPassword(value)}
             />
             <Form.Trigger asChild disabled={isSubmitting}>
               <StyledButton
                 disabled={disabled}
-                alignSelf="center"
+                als="center"
                 m="$4"
                 w="$20"
                 style={{ opacity: isSubmitting ? 0.5 : 1 }}

@@ -1,12 +1,8 @@
 import { AntDesign } from '@expo/vector-icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
-import { FlatList, SafeAreaView } from 'react-native';
-import { XStack } from 'tamagui';
-import { SizableText } from 'tamagui';
-import { Spinner } from 'tamagui';
-import { YStack } from 'tamagui';
+import { FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
+import { XStack, SizableText, Spinner, YStack } from 'tamagui';
 import { listFeeds } from '~/api';
 import { FeedCard } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -39,7 +35,7 @@ const Feeds = () => {
   const feedsData = feeds?.pages ? feeds.pages.flat() : [];
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack flex={1}>
+      <YStack f={1}>
         <FlatList
           data={feedsData}
           ListHeaderComponent={() => {
@@ -69,7 +65,7 @@ const Feeds = () => {
               return null;
             }
             return (
-              <Container flex={1} justifyContent="center" alignItems="center">
+              <Container f={1} jc="center" ai="center">
                 <AntDesign name="folderopen" size={120} color={'#666'} />
                 <Title>{t('emptyContent')}</Title>
               </Container>
@@ -80,9 +76,9 @@ const Feeds = () => {
               return null;
             }
             return (
-              <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+              <XStack f={1} gap="$2" ai="center" jc="center">
                 <Spinner color="$color.primary" />
-                <SizableText color="slategrey">{t('loading')}</SizableText>
+                <SizableText col="slategrey">{t('loading')}</SizableText>
               </XStack>
             );
           }}

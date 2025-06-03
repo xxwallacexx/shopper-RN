@@ -39,7 +39,6 @@ const Register = () => {
       router.replace('/(app)/(root)/(tabs)/profile');
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',

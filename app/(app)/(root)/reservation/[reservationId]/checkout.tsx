@@ -31,9 +31,9 @@ import {
   ContactForm,
   PaymentSheetCard,
   Dialog,
+  ActionSheet,
 } from '~/components';
 import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
-import ActionSheet from '~/components/ActionSheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Skeleton } from 'moti/skeleton';
 import * as Calendar from 'expo-calendar';
@@ -64,7 +64,6 @@ const Checkout = () => {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
 
   const [selectedCoupon, setSelectedCoupon] = useState<UserCoupon>();
-  const [selectedStore, setSelectedStore] = useState<string>();
   const [timer, setTimer] = useState(new Date());
   const [seconds] = useCountdown(timer);
 
@@ -161,14 +160,14 @@ const Checkout = () => {
     },
   });
 
-  const { data: product, isFetching: isProductFetching } = useQuery({
+  const { data: product } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
       return await getProduct(productId);
     },
   });
 
-  const { data: reservation, isFetching: isReservationFetching } = useQuery({
+  const { data: reservation } = useQuery({
     queryKey: ['reservation', reservationId],
     queryFn: async () => {
       return await getReservation(token, reservationId);
@@ -234,7 +233,6 @@ const Checkout = () => {
         setIsSuccessDialogOpen(true);
       },
       onError: (e) => {
-        console.log(e);
         Toast.show({
           position: 'top',
           type: 'error',
@@ -344,22 +342,21 @@ const Checkout = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <ScrollView flex={1} padding={'$3'} space="$2">
+      <ScrollView f={1} p={'$3'} gap="$2">
         <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />
-        <H2 backgroundColor={'#fff'}>{t('orderDetail')}</H2>
+        <H2 bc={'#fff'}>{t('orderDetail')}</H2>
         <CheckoutReservationCard
           product={product}
           reservationContent={reservationContent}
           reservation={reservation}
           price={totalPrice}
-          coupon={selectedCoupon}
         />
         <StyledButton
           bg={selectedCoupon ? '$primary' : 'slategrey'}
           onPress={() => setIsUserCouponSheetOpen(true)}>
           {selectedCoupon ? selectedCoupon.coupon.name : t('redeemCoupon')}
         </StyledButton>
-        <H2 backgroundColor={'#fff'}>{t('contactInfo')}</H2>
+        <H2 bc={'#fff'}>{t('contactInfo')}</H2>
         <ContactForm
           name={name}
           onNameChange={setName}
@@ -374,8 +371,8 @@ const Checkout = () => {
           onGetVerifyCodePress={onGetVerifyCodePress}
           onVerifyCodeChange={setVerifyCode}
         />
-        <YStack p="$2" space="$1">
-          <XStack justifyContent="space-between">
+        <YStack p="$2" gap="$1">
+          <XStack jc="space-between">
             <SizableText>{t('totalPrice')}</SizableText>
             {isTotalPriceFetching ? (
               <Skeleton colorMode="light" width={80} height={16} />
@@ -387,7 +384,7 @@ const Checkout = () => {
           </XStack>
         </YStack>
       </ScrollView>
-      <BottomAction justifyContent="space-between">
+      <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching ? (
             <Skeleton width={'30%'} height={12} colorMode="light" />
@@ -405,7 +402,7 @@ const Checkout = () => {
         sheetPosition={paymentSheetPosition}
         snapPoints={[80]}
         setSheetPosition={setPaymentSheetPosition}>
-        <ScrollView space="$4">
+        <ScrollView gap="$4">
           <PaymentSheetCard
             isLoading={isCreateReservationOrderSubmitting}
             cardPaymentDisabled={!isCardCompleted || isCreateReservationOrderSubmitting}
@@ -437,7 +434,7 @@ const Checkout = () => {
           ListFooterComponent={() => {
             if (isAvailabelCouponsFetching) {
               return (
-                <XStack alignItems="center" justifyContent="center" space="$2">
+                <XStack ai="center" jc="center" gap="$2">
                   <Spinner color="$slategrey" />
                   <SizableText>{t('couponLoading')}</SizableText>
                 </XStack>
@@ -449,7 +446,7 @@ const Checkout = () => {
               return null;
             }
             return (
-              <Container alignItems="center">
+              <Container ai="center">
                 <MaterialCommunityIcons
                   name="ticket-confirmation-outline"
                   size={120}
@@ -462,13 +459,13 @@ const Checkout = () => {
         />
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
-        <YStack space="$4">
-          <SizableText fontSize={'$6'}>{t('paymentSuccess')}</SizableText>
+        <YStack gap="$4">
+          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fontWeight={'700'}>{t('myOrders')}</Text>
+              <Text fow={'700'}>{t('myOrders')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

@@ -20,27 +20,22 @@ const CheckoutItemCard = ({
   const photoUri = product.photos && product.photos.length ? product.photos[0].path : undefined;
 
   return (
-    <XStack
-      p={'$1'}
-      space="$2"
-      borderColor={'lightslategrey'}
-      borderRadius={'$radius.3'}
-      borderWidth={0.3}>
-      <YStack width={'40%'} borderRadius={'$radius.3'} overflow="hidden">
+    <XStack p={'$1'} gap="$2" boc={'lightslategrey'} br={'$radius.3'} bw={0.3}>
+      <YStack w={'40%'} br={'$radius.3'} ov="hidden">
         <Image
-          backgroundColor={'white'}
-          resizeMode="contain"
+          bc={'white'}
+          objectFit="contain"
           aspectRatio={1}
           source={{ uri: photoUri }}
           width={'100%'}
         />
-        <Badge position="absolute" top={8} right={8}>
-          <SizableText size={'$1'} color="#fff">
+        <Badge pos="absolute" t={8} r={8}>
+          <SizableText size={'$1'} col="#fff">
             HK$ {(product.price + priceAdjustment).toFixed(2)}
           </SizableText>
         </Badge>
       </YStack>
-      <YStack py={'$2'} space="$2" justifyContent="space-between">
+      <YStack py={'$2'} gap="$2" jc="space-between">
         <YStack>
           <SizableText numberOfLines={1} ellipsizeMode="tail">
             {product.name}
@@ -55,7 +50,7 @@ const CheckoutItemCard = ({
         </YStack>
         <XStack space="$2">
           <SizableText>{t('orderQuantity', { quantity: quantity })}</SizableText>
-          <SizableText color={'$primary'}>{`HK$ ${singleItemSubtotal.toFixed(2)}`}</SizableText>
+          <SizableText col={'$primary'}>{`HK$ ${singleItemSubtotal.toFixed(2)}`}</SizableText>
         </XStack>
       </YStack>
     </XStack>

@@ -1,6 +1,5 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { PRIMARY_COLOR } from '@env';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -27,7 +26,6 @@ const Layout = () => {
         options={{
           headerTitle: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
@@ -36,7 +34,6 @@ const Layout = () => {
           headerShown: false,
           headerTitle: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="rss-feed" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
@@ -45,7 +42,6 @@ const Layout = () => {
           headerShown: false,
           headerTitle: '',
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
@@ -53,7 +49,6 @@ const Layout = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="confirmation-number" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
       <Tabs.Screen
@@ -62,7 +57,6 @@ const Layout = () => {
           tabBarLabel: 'profile',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
-          tabBarButton: (props) => <TouchableOpacity {...props} />,
         }}
       />
     </Tabs>

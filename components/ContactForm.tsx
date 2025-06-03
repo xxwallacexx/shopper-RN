@@ -1,10 +1,6 @@
 import { AntDesign } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
-import { Input } from 'tamagui';
-import { Text } from 'tamagui';
-import { XStack } from 'tamagui';
-import { Label } from 'tamagui';
-import { YStack } from 'tamagui';
+import { Text, Input, XStack, Label, YStack } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
 
@@ -37,7 +33,7 @@ const ContactForm = ({
 }) => {
   const { t } = useLocale();
   return (
-    <YStack space="$2" p="$2">
+    <YStack gap="$2" p="$2">
       <Label>{t('name')}</Label>
       <Input
         value={name}
@@ -46,20 +42,20 @@ const ContactForm = ({
         disabled={disabled}
         onChangeText={onNameChange}
       />
-      <XStack space="$2" alignItems="center">
+      <XStack gap="$2" ai="center">
         <Label>{t('contactNumber')}</Label>
         {isVerified ? (
-          <XStack space="$1" alignItems="center">
+          <XStack gap="$1" ai="center">
             <AntDesign color={tokens.color.green9Light.val} name="checkcircleo" />
-            <Text color="$green9" fontSize={'$2'}>
+            <Text col="$green9" fos={'$2'}>
               {t('verified')}
             </Text>
           </XStack>
         ) : null}
       </XStack>
-      <XStack w="100%" alignItems="flex-start" space="$1">
+      <XStack w="100%" ai="flex-start" gap="$1">
         <Input
-          flex={1}
+          f={1}
           value={phoneNumber}
           keyboardType="number-pad"
           autoCapitalize="none"
@@ -81,9 +77,9 @@ const ContactForm = ({
       {isVerified ? null : (
         <>
           <Label>{t('verifyCode')}</Label>
-          <XStack w="100%" alignItems="flex-start" space="$1">
+          <XStack w="100%" ai="flex-start" gap="$1">
             <Input
-              flex={1}
+              f={1}
               value={verifyCode}
               autoCapitalize="none"
               autoCorrect={false}

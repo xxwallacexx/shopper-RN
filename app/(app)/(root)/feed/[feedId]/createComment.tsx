@@ -4,11 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-toast-message';
-import { TextArea } from 'tamagui';
-import { SizableText, YStack } from 'tamagui';
-import { Image } from 'tamagui';
-import { Separator } from 'tamagui';
-import { ScrollView } from 'tamagui';
+import { SizableText, YStack, Image, Separator, ScrollView, TextArea } from 'tamagui';
 import { createFeedComment, getSelf } from '~/api';
 import { ImageCard, ImageInput } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -80,23 +76,17 @@ const CreateFeedComment = () => {
     <KeyboardAwareScrollView
       extraHeight={140}
       style={{ backgroundColor: 'white', flex: 1, width: '100%' }}>
-      <ScrollView flex={1} space="$2" contentContainerStyle={{ alignItems: 'center' }}>
-        <YStack w="100%" alignItems="center" space="$2">
-          <Image
-            resizeMode="contain"
-            aspectRatio={1}
-            source={{ uri: user?.avatar }}
-            width={'20%'}
-          />
+      <ScrollView f={1} contentContainerStyle={{ ai: 'center' }}>
+        <YStack w="100%" ai="center" gap="$2">
+          <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} w={'20%'} />
           <SizableText>{user?.username}</SizableText>
         </YStack>
-        <Separator width={'90%'} />
-        <Separator width={'90%'} />
+        <Separator w={'90%'} />
         <ScrollView
           w="100%"
           contentContainerStyle={{
-            margin: 16,
-            alignItems: 'flex-start',
+            m: 16,
+            ai: 'flex-start',
             gap: 16,
           }}
           horizontal>
@@ -105,15 +95,15 @@ const CreateFeedComment = () => {
               <ImageCard
                 key={index.toString() + p}
                 imageUri={p}
-                onRemove={() => {
-                  onImageRemove(index);
+                onPhotoPress={() => {
+                  console.log(p);
                 }}
               />
             );
           })}
           {photos.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
         </ScrollView>
-        <Separator width={'90%'} />
+        <Separator w={'90%'} />
         <TextArea
           autoCorrect={false}
           autoCapitalize="none"
@@ -127,6 +117,7 @@ const CreateFeedComment = () => {
         <StyledButton
           onPress={() => createCommentMutate()}
           w="80%"
+          my="$2"
           disabled={isCreateCommentSubmitting || comment.length == 0}>
           {t('confirm')}
         </StyledButton>

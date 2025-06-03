@@ -24,11 +24,18 @@ import ProductCommentCard from './ProductCommentCard';
 import FeedCard from './FeedCard';
 import Video from './Video';
 import QRCodeScanner from './QRCodeScanner';
+import CommentCard from './CommentCard';
+import Feed from './Feed';
+import QuantitySelector from './QuantitySelector';
+import Loader from './Loader';
+import ActionSheet from './ActionSheet';
 
 export {
+  CommentCard,
   ContactForm,
   ProductCard,
   ImageGallery,
+  Feed,
   BannerCarousel,
   AnimatedTabs,
   Spinner,
@@ -52,4 +59,7 @@ export {
   FeedCard,
   Video,
   QRCodeScanner,
+  QuantitySelector,
+  Loader,
+  ActionSheet,
 };

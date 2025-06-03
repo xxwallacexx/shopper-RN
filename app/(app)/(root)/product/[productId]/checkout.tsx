@@ -1,8 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, SectionList } from 'react-native';
-import { H2, RadioGroup, YStack, XStack, Text, SizableText } from 'tamagui';
+import {
+  H2,
+  RadioGroup,
+  YStack,
+  XStack,
+  Text,
+  SizableText,
+  ScrollView,
+  AlertDialog,
+  Stack,
+} from 'tamagui';
 import {
   checkIsVerified,
   createProductOrder,
@@ -24,6 +34,7 @@ import {
   RadioGroupItem,
   Spinner,
   StoreCard,
+  ActionSheet,
 } from '~/components';
 import { useAuth, useCountdown, useLocale } from '~/hooks';
 import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
@@ -44,11 +55,7 @@ import {
 import Toast from 'react-native-toast-message';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import ActionSheet from '~/components/ActionSheet';
-import { ScrollView } from 'tamagui';
 import { Skeleton } from 'moti/skeleton';
-import { AlertDialog } from 'tamagui';
-import { Stack } from 'tamagui';
 
 const Checkout = () => {
   const { productId, orderContentStr } = useLocalSearchParams<{
@@ -58,7 +65,6 @@ const Checkout = () => {
 
   const queryClient = useQueryClient();
   const orderContent = JSON.parse(orderContentStr);
-  const navigation = useNavigation();
   const router = useRouter();
   const { t } = useLocale();
   const { token } = useAuth();
@@ -274,19 +280,19 @@ const Checkout = () => {
   const renderSectionHeader = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
       case 'cartItems':
-        return <H2 backgroundColor={'#fff'}>{t('orderDetail')}</H2>;
+        return <H2 bc={'#fff'}>{t('orderDetail')}</H2>;
       case 'deliveryMethod':
-        return <H2 backgroundColor={'#fff'}>{t('deliveryMethod')}</H2>;
+        return <H2 bc={'#fff'}>{t('deliveryMethod')}</H2>;
       case 'contact':
-        return <H2 backgroundColor={'#fff'}>{t('contactInfo')}</H2>;
+        return <H2 bc={'#fff'}>{t('contactInfo')}</H2>;
       case 'coupon':
-        return <H2 backgroundColor={'#fff'}>{t('coupon')}</H2>;
+        return <H2 bc={'#fff'}>{t('coupon')}</H2>;
       case 'address':
         switch (selectedDeliveryMethod) {
           case DeliveryMethodEnum.SFEXPRESS:
-            return <H2 backgroundColor={'#fff'}>{t('address')}</H2>;
+            return <H2 bc={'#fff'}>{t('address')}</H2>;
           case DeliveryMethodEnum.SELF_PICK_UP:
-            return <H2 backgroundColor={'#fff'}>{t('store')}</H2>;
+            return <H2 bc={'#fff'}>{t('store')}</H2>;
           default:
             return <></>;
         }
@@ -351,7 +357,7 @@ const Checkout = () => {
             onValueChange={(value) =>
               setSelectedDeliveryMethod(value as keyof typeof DeliveryMethodEnum)
             }>
-            <YStack width={300} alignItems="center" space="$2">
+            <YStack w={300} ai="center" gap="$2">
               {shop.deliveryMethods.map((c) => {
                 return (
                   <RadioGroupItem
@@ -377,7 +383,7 @@ const Checkout = () => {
                 value={selectedStore}
                 name={'store'}
                 onValueChange={(value) => setSelectedStore(value)}>
-                <YStack width={300} alignItems="center" space="$2">
+                <YStack w={300} ai="center" gap="$2">
                   {shop.stores.map((s) => {
                     return (
                       <RadioGroupItem
@@ -400,8 +406,8 @@ const Checkout = () => {
         const subtotalWithDiscount = parseFloat(subtotal) - couponDiscount;
         const deliveryFee = freeShippingPrice > subtotalWithDiscount ? nonfreeShippingFee : 0;
         return (
-          <YStack p="$2" space="$1">
-            <XStack justifyContent="space-between">
+          <YStack p="$2" gap="$1">
+            <XStack jc="space-between">
               <SizableText>{t('subtotal')}</SizableText>
               {isPriceDetailFetching ? (
                 <Skeleton colorMode="light" width={80} height={16} />
@@ -412,7 +418,7 @@ const Checkout = () => {
               )}
             </XStack>
             {isPriceDetailFetching ? (
-              <XStack justifyContent="space-between">
+              <XStack jc="space-between">
                 <SizableText>{t('redeemCoupon')}</SizableText>
                 {isPriceDetailFetching ? (
                   <Skeleton colorMode="light" width={80} height={16} />
@@ -424,7 +430,7 @@ const Checkout = () => {
               </XStack>
             ) : null}
             {selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS ? (
-              <XStack justifyContent="space-between">
+              <XStack jc="space-between">
                 <SizableText>{t('deliveryFee')}</SizableText>
                 {isPriceDetailFetching ? (
                   <Skeleton colorMode="light" width={80} height={16} />
@@ -435,7 +441,7 @@ const Checkout = () => {
                 )}
               </XStack>
             ) : null}
-            <XStack justifyContent="space-between">
+            <XStack jc="space-between">
               <SizableText>{t('totalPrice')}</SizableText>
               {isTotalPriceFetching ? (
                 <Skeleton colorMode="light" width={80} height={16} />
@@ -549,7 +555,7 @@ const Checkout = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack flex={1}>
+      <YStack f={1}>
         <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
           <SectionList
             style={{
@@ -571,7 +577,7 @@ const Checkout = () => {
           />
         </KeyboardAwareScrollView>
       </YStack>
-      <BottomAction justifyContent="space-between">
+      <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching ? (
             <Skeleton width={'30%'} height={12} colorMode="light" />
@@ -589,7 +595,7 @@ const Checkout = () => {
         sheetPosition={paymentSheetPosition}
         snapPoints={[80]}
         setSheetPosition={setPaymentSheetPosition}>
-        <ScrollView space="$4">
+        <ScrollView gap="$4">
           <PaymentSheetCard
             isLoading={isCreateProductOrderSubmitting}
             cardPaymentDisabled={!isCardCompleted || isCreateProductOrderSubmitting}
@@ -620,7 +626,7 @@ const Checkout = () => {
           ListFooterComponent={() => {
             if (isAvailabelCouponsFetching) {
               return (
-                <XStack alignItems="center" justifyContent="center" space="$2">
+                <XStack ai="center" jc="center" gap="$2">
                   <Spinner color="$slategrey" />
                   <SizableText>{t('couponLoading')}</SizableText>
                 </XStack>
@@ -632,7 +638,7 @@ const Checkout = () => {
               return null;
             }
             return (
-              <Container alignItems="center">
+              <Container ai="center">
                 <MaterialCommunityIcons
                   name="ticket-confirmation-outline"
                   size={120}
@@ -645,13 +651,13 @@ const Checkout = () => {
         />
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
-        <YStack space="$4">
-          <SizableText fontSize={'$6'}>{t('paymentSuccess')}</SizableText>
+        <YStack gap="$4">
+          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fontWeight={'700'}>{t('myOrders')}</Text>
+              <Text fow={'700'}>{t('myOrders')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

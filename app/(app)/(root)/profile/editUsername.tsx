@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Form, Input, Label, YStack } from 'tamagui';
+import { Form, Input, Label, Text, YStack } from 'tamagui';
 import { getSelf, updateSelf } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
@@ -8,7 +8,6 @@ import { useNavigation } from 'expo-router';
 import { Address } from '~/types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Text } from 'tamagui';
 
 type Values = {
   username: string;
@@ -46,7 +45,6 @@ const EditUsername = () => {
       navigation.goBack();
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -81,16 +79,16 @@ const EditUsername = () => {
       }}>
       {({ errors, values, handleChange, handleSubmit }) => {
         return (
-          <Form flex={1} alignItems="center" onSubmit={handleSubmit}>
-            <YStack w="100%" p="$2" space="$4">
-              <YStack w="100%" alignItems="flex-start" space="$2">
+          <Form f={1} ai="center" onSubmit={handleSubmit}>
+            <YStack w="100%" p="$2" gap="$4">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('username')}</Label>
                 <Input
                   autoCapitalize={'none'}
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.username}
                   placeholder={t('username')}
@@ -98,7 +96,7 @@ const EditUsername = () => {
                   onChangeText={handleChange('username')}
                 />
                 {errors.username ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos={'$1'}>
                     {errors.username}
                   </Text>
                 ) : null}

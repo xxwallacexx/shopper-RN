@@ -1,13 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Form, Input, Label, YStack } from 'tamagui';
+import { Form, Input, Label, Text, YStack } from 'tamagui';
 import { Formik } from 'formik';
-import { getSelf, resetPassword, updateSelf } from '~/api';
+import { getSelf, resetPassword } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from 'expo-router';
 import * as Yup from 'yup';
-import { Text } from 'tamagui';
 
 type Values = {
   password: string;
@@ -36,7 +35,6 @@ const EditPassword = () => {
       navigation.goBack();
     },
     onError: (e) => {
-      console.log(e);
       const error = e as Error;
       Toast.show({
         type: 'error',
@@ -65,6 +63,7 @@ const EditPassword = () => {
     <Formik
       initialValues={{
         password: '',
+        confirmPassword: '',
       }}
       validateOnMount={false}
       validateOnChange={false}
@@ -74,9 +73,9 @@ const EditPassword = () => {
       }}>
       {({ errors, values, handleChange, handleSubmit }) => {
         return (
-          <Form flex={1} alignItems="center" onSubmit={handleSubmit}>
+          <Form f={1} ai="center" onSubmit={handleSubmit}>
             <YStack w="100%" p="$2" space="$4">
-              <YStack w="100%" alignItems="flex-start" space="$2">
+              <YStack w="100%" ai="flex-start" space="$2">
                 <Label>{t('password')}</Label>
                 <Input
                   secureTextEntry={true}
@@ -84,7 +83,7 @@ const EditPassword = () => {
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.password}
                   placeholder={t('password')}
@@ -92,12 +91,12 @@ const EditPassword = () => {
                   onChangeText={handleChange('password')}
                 />
                 {errors.password ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos={'$1'}>
                     {errors.password}
                   </Text>
                 ) : null}
               </YStack>
-              <YStack w="100%" alignItems="flex-start" space="$2">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('confirmPassword')}</Label>
                 <Input
                   secureTextEntry={true}
@@ -105,7 +104,7 @@ const EditPassword = () => {
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.confirmPassword}
                   placeholder={t('confirmPassword')}
@@ -113,7 +112,7 @@ const EditPassword = () => {
                   onChangeText={handleChange('confirmPassword')}
                 />
                 {errors.confirmPassword ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos={'$1'}>
                     {errors.confirmPassword}
                   </Text>
                 ) : null}

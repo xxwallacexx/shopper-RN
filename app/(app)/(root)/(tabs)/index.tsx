@@ -3,12 +3,11 @@ import { useLayoutEffect, useState } from 'react';
 import { FlatList, SectionList, TouchableOpacity } from 'react-native';
 import { YStack, XStack, ScrollView, SizableText, Circle } from 'tamagui';
 import { listCategories, listProducts, listAdsBanners, getNotificationUnreadCount } from '~/api';
-import { BannerCarousel, ProductCard, Spinner } from '~/components';
+import { BannerCarousel, ProductCard, Spinner, ActionSheet } from '~/components';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth, useLocale } from '~/hooks';
 import { Container, StyledButton, Title } from '~/tamagui.config';
 import { Link, useNavigation } from 'expo-router';
-import ActionSheet from '~/components/ActionSheet';
 import { Product } from '~/types';
 
 const Home = () => {
@@ -57,7 +56,7 @@ const Home = () => {
     navigation.setOptions({
       headerRight: () => {
         return (
-          <XStack mx="$4" space="$2">
+          <XStack mx="$4" gap="$2">
             <Link href={'/product'} asChild>
               <TouchableOpacity>
                 <MaterialCommunityIcons name="magnify" size={24} color="#fff" />
@@ -67,7 +66,7 @@ const Home = () => {
               <TouchableOpacity>
                 <Ionicons name="notifications-outline" size={24} color="#fff" />
                 {notificationCount ? (
-                  <Circle size={'$1'} bg="$red6" position="absolute" right={-10} top={-10}>
+                  <Circle size={'$1'} bg="$red6" pos="absolute" r={-10} t={-10}>
                     <SizableText size={'$1'}>{notificationCount}</SizableText>
                   </Circle>
                 ) : null}
@@ -192,12 +191,12 @@ const Home = () => {
         );
       case 'menu':
         return (
-          <YStack space="$space.4" p="$2">
-            <XStack justifyContent="space-between">
-              <Title maxWidth={'60%'} numberOfLines={1} ellipsizeMode="tail">
+          <YStack gap="$4" p="$2">
+            <XStack jc="space-between">
+              <Title maw={'60%'} numberOfLines={1} ellipsizeMode="tail">
                 {categoryLabel}
               </Title>
-              <StyledButton onPress={() => setIsCategorySheetOpen(true)} maxWidth={'$10'}>
+              <StyledButton onPress={() => setIsCategorySheetOpen(true)} maw={'$10'}>
                 {categoryName}
               </StyledButton>
             </XStack>
@@ -206,9 +205,7 @@ const Home = () => {
                 return (
                   <StyledButton
                     key={sc._id}
-                    backgroundColor={
-                      selectedSubCategoryId == sc._id ? '$color.primary' : 'lightslategrey'
-                    }
+                    bc={selectedSubCategoryId == sc._id ? '$color.primary' : 'lightslategrey'}
                     onPress={() => onSubCategoryPress(sc._id)}>
                     {sc.name}
                   </StyledButton>
@@ -235,9 +232,9 @@ const Home = () => {
                 return null;
               }
               return (
-                <XStack flex={1} space="$2" alignItems="center" justifyContent="center">
+                <XStack f={1} gap="$2" ai="center" jc="center">
                   <Spinner color="$color.primary" />
-                  <SizableText color="slategrey">{t('loading')}</SizableText>
+                  <SizableText col="slategrey">{t('loading')}</SizableText>
                 </XStack>
               );
             }}
@@ -246,7 +243,7 @@ const Home = () => {
                 return null;
               }
               return (
-                <Container alignItems="center">
+                <Container ai="center">
                   <MaterialCommunityIcons name="cart-plus" size={120} color={'#666'} />
                   <Title>{t('emptyItems')}</Title>
                 </Container>
@@ -271,7 +268,7 @@ const Home = () => {
   };
 
   return (
-    <YStack flex={1} alignItems="center">
+    <YStack f={1} ai="center">
       <SectionList
         renderItem={renderItem}
         onEndReached={onEndReached}
@@ -289,7 +286,7 @@ const Home = () => {
         sheetPosition={sheetPosition}
         setSheetPosition={setSheetPosition}>
         <ScrollView>
-          <YStack space={'$4'}>
+          <YStack gap={'$4'}>
             {categories
               .filter((c) => {
                 return !c.parent;
@@ -300,8 +297,8 @@ const Home = () => {
                   <StyledButton
                     onPress={() => onCategoryPress(category.value)}
                     key={category.value + index.toString()}
-                    width={'100%'}
-                    backgroundColor={isSelected ? '$color.primary' : 'lightslategrey'}>
+                    w={'100%'}
+                    bc={isSelected ? '$color.primary' : 'lightslategrey'}>
                     {category.buttonText}
                   </StyledButton>
                 );

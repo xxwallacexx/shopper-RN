@@ -44,7 +44,7 @@ const OptionSheetContent = ({
   switch (productType) {
     case 'ORDER':
       return (
-        <YStack space="$4">
+        <YStack gap="$4">
           {options.map((option) => {
             return (
               <ProductOptionCard
@@ -63,7 +63,7 @@ const OptionSheetContent = ({
       );
     case 'RESERVATION':
       return (
-        <YStack space="$4">
+        <YStack gap="$4">
           <Label>{t('pleaseSelectDate')}</Label>
           <ReservationCalendar
             isLoading={isReservationsFetching}
@@ -87,8 +87,8 @@ const OptionSheetContent = ({
               <StyledButton
                 mx="$1"
                 h="$3"
-                backgroundColor={'#fff'}
-                pressStyle={{ backgroundColor: 'ghostwhite' }}
+                bc={'#fff'}
+                pressStyle={{ bc: 'ghostwhite' }}
                 color="#000"
                 onPress={onAvailableReservationOptionPress}>
                 {selectedReservationOption

@@ -9,15 +9,18 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Keyboard, Pressable, SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { Input, Label, SizableText } from 'tamagui';
-import { Stack } from 'tamagui';
-import { AlertDialog } from 'tamagui';
-import { XStack } from 'tamagui';
-import { Text } from 'tamagui';
-import { ScrollView } from 'tamagui';
-import { YStack } from 'tamagui';
-import { Dialog, PaymentSheetCard } from '~/components';
-import ActionSheet from '~/components/ActionSheet';
+import {
+  Input,
+  Label,
+  SizableText,
+  Stack,
+  AlertDialog,
+  XStack,
+  Text,
+  ScrollView,
+  YStack,
+} from 'tamagui';
+import { Dialog, PaymentSheetCard, ActionSheet } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
 import { BottomAction, StyledButton } from '~/tamagui.config';
 import { PaymentMethodEnum } from '~/types';
@@ -133,7 +136,7 @@ const QRPaymentCheckout = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <Pressable style={{ height: '100%' }} onPress={() => Keyboard.dismiss()}>
-        <YStack flex={1} p="$4">
+        <YStack f={1} p="$4">
           <Label>{t('price')}</Label>
           <Input
             value={totalPrice}
@@ -143,7 +146,7 @@ const QRPaymentCheckout = () => {
           />
         </YStack>
 
-        <BottomAction justifyContent="flex-end">
+        <BottomAction jc="flex-end">
           <StyledButton onPress={() => onPaymentPress()} disabled={disabled}>
             {t('pay')}
           </StyledButton>
@@ -168,13 +171,13 @@ const QRPaymentCheckout = () => {
         </ScrollView>
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
-        <YStack space="$4">
-          <SizableText fontSize={'$6'}>{t('paymentSuccess')}</SizableText>
+        <YStack gap="$4">
+          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fontWeight={'700'}>{t('QRPaymentHistory')}</Text>
+              <Text fow={'700'}>{t('QRPaymentHistory')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

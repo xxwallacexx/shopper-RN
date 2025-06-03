@@ -5,11 +5,9 @@ import moment from 'moment';
 import { useState } from 'react';
 import { FlatList, SafeAreaView, SectionList, TouchableOpacity } from 'react-native';
 import { ScrollView, Stack } from 'tamagui';
-import { Image, YStack, SizableText, AnimatePresence, XStack } from 'tamagui';
+import { Image, YStack, SizableText, AnimatePresence } from 'tamagui';
 import { getSelf, listBookmarks, listUserCoupon, listOrders } from '~/api';
-import { AnimatedTabs, CouponCard, ProductCard, Spinner } from '~/components';
-import ActionSheet from '~/components/ActionSheet';
-import Loader from '~/components/Loader';
+import { AnimatedTabs, CouponCard, ProductCard, ActionSheet, Loader } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
 import { AnimatedYStack, Container, StyledButton, Title } from '~/tamagui.config';
 import { Bookmark, Order, UserCoupon } from '~/types';
@@ -120,7 +118,7 @@ const Profile = () => {
     const uri = photos[0].path;
     return (
       <Link href={`/product/${_id}`} asChild>
-        <Stack w="48%" pressStyle={{ opacity: 0.5 }}>
+        <Stack w="48%" pressStyle={{ o: 0.5 }}>
           <ProductCard
             imageUri={uri}
             price={price}
@@ -138,7 +136,7 @@ const Profile = () => {
     const { _id, name, credit, photo, endDate } = coupon;
     return (
       <Link href={`/coupon/${_id}`} asChild>
-        <Stack w="48%" pressStyle={{ opacity: 0.5 }}>
+        <Stack w="48%" pressStyle={{ o: 0.5 }}>
           <CouponCard imageUri={photo} name={name} endDate={endDate} credit={credit} />
         </Stack>
       </Link>
@@ -155,19 +153,19 @@ const Profile = () => {
       <Link href={`/order/${_id}`} asChild>
         <TouchableOpacity>
           <YStack
-            flex={1}
-            backgroundColor={'white'}
+            f={1}
+            bc={'white'}
             p={'$2'}
             m={'$2'}
-            space="$1"
-            borderRadius={'$radius.3'}
-            shadowColor={'black'}
-            shadowOffset={{
+            gap="$1"
+            br={'$radius.3'}
+            shac={'black'}
+            shof={{
               height: 2,
               width: 0,
             }}
-            shadowOpacity={0.25}
-            shadowRadius={3.84}>
+            shop={0.25}
+            shar={3.84}>
             <SizableText>
               {t('orderCreatedAt', { date: moment(createdAt).format('YYYY-MM-DD') })}
             </SizableText>
@@ -211,7 +209,7 @@ const Profile = () => {
                 return null;
               }
               return (
-                <Container alignItems="center">
+                <Container ai="center">
                   <AntDesign name="folderopen" size={120} color={'#666'} />
                   <Title>{t('emptyBookmark')}</Title>
                 </Container>
@@ -243,7 +241,7 @@ const Profile = () => {
                 return null;
               }
               return (
-                <Container alignItems="center">
+                <Container ai="center">
                   <AntDesign name="folderopen" size={120} color={'#666'} />
                   <Title>{t('emptyCoupon')}</Title>
                 </Container>
@@ -269,7 +267,7 @@ const Profile = () => {
                 return null;
               }
               return (
-                <Container alignItems="center">
+                <Container ai="center">
                   <AntDesign name="folderopen" size={120} color={'#666'} />
                   <Title>{t('emptyOrderHistory')}</Title>
                 </Container>
@@ -287,23 +285,23 @@ const Profile = () => {
     switch (section.key) {
       case 'main':
         return (
-          <YStack space="$2" p="$2" alignItems="center">
+          <YStack gap="$2" p="$2" ai="center">
             {user?.isTemp ? (
               <StyledButton
                 onPress={() => {
                   setIsGuestUserAlertSheetOpen(true);
                 }}
-                backgroundColor={'red'}
-                width={'80%'}>
-                <SizableText color="#fff">{t('tempAcc')}</SizableText>
+                bc={'red'}
+                w={'80%'}>
+                <SizableText col="#fff">{t('tempAcc')}</SizableText>
               </StyledButton>
             ) : null}
             <TouchableOpacity
               style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}
               onPress={() => setIsSheetOpen(true)}>
-              <YStack w="100%" alignItems="center" space="$2">
+              <YStack w="100%" ai="center" gap="$2">
                 <Image
-                  resizeMode="contain"
+                  objectFit="contain"
                   aspectRatio={1}
                   source={{ uri: user?.avatar }}
                   width={'20%'}
@@ -315,8 +313,10 @@ const Profile = () => {
         );
       case 'tabView':
         return (
-          <AnimatePresence exitBeforeEnter enterVariant={'defaultFade'} exitVariant={'defaultFade'}>
-            <AnimatedYStack key={selectedTab} animation="100ms" x={0} opacity={1} flex={1}>
+          <AnimatePresence
+            exitBeforeEnter
+            custom={{ enterVariant: 'defaultFade', exitVariant: 'defaultFase' }}>
+            <AnimatedYStack key={selectedTab} animation="100ms" x={0} o={1} f={1}>
               {renderTabContent()}
             </AnimatedYStack>
           </AnimatePresence>
@@ -369,7 +369,7 @@ const Profile = () => {
         sheetPosition={sheetPosition}
         setSheetPosition={setSheetPoistion}>
         <ScrollView>
-          <YStack space={'$4'}>
+          <YStack gap={'$4'}>
             <StyledButton onPress={onQRPaymentPress}>{t('QRPayment')}</StyledButton>
             <StyledButton onPress={onQRPaymentHistoryPress}>{t('QRPaymentHistory')}</StyledButton>
           </YStack>

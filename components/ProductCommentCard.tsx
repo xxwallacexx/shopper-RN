@@ -26,21 +26,16 @@ const ProductCommentCard = ({
   onActionPress: () => void;
 }) => {
   return (
-    <YStack p="$1" space="$2" bg="white" borderRadius={'$radius.3'}>
-      <XStack justifyContent="space-between">
-        <XStack space="$2">
-          <YStack space="$2" justifyContent="center" alignItems="center">
+    <YStack p="$1" gap="$2" bg="white" br={'$radius.3'}>
+      <XStack jc="space-between">
+        <XStack gap="$2">
+          <YStack gap="$2" jc="center" ai="center">
             <Stack w="$6" h="$6">
-              <Image
-                aspectRatio={1}
-                source={{ uri: userAvatar }}
-                width={'100%'}
-                resizeMode="contain"
-              />
+              <Image aspectRatio={1} source={{ uri: userAvatar }} w={'100%'} objectFit="contain" />
             </Stack>
             <SizableText>{username}</SizableText>
           </YStack>
-          <YStack space="$2">
+          <YStack gap="$2">
             <SizableText size={'$2'}>{moment(createdAt).format('YYYY-MM-DD')}</SizableText>
             <StarRatingDisplay starSize={24} rating={rating} />
           </YStack>
@@ -59,25 +54,25 @@ const ProductCommentCard = ({
           return (
             <TouchableOpacity onPress={() => onPhotoPress(item)}>
               <YStack
-                backgroundColor={'white'}
+                bc={'white'}
                 w="$14"
                 h="$14"
-                borderRadius={'$radius.3'}
-                shadowColor={'black'}
-                shadowOffset={{
+                br={'$radius.3'}
+                shac={'black'}
+                shof={{
                   height: 2,
                   width: 0,
                 }}
-                shadowOpacity={0.25}
-                shadowRadius={3.84}
-                justifyContent="center"
-                alignItems="center">
-                <YStack flex={1} borderRadius={'$radius.3'} overflow="hidden">
+                shop={0.25}
+                shar={3.84}
+                jc="center"
+                ai="center">
+                <YStack f={1} br={'$radius.3'} ov="hidden">
                   <Image
                     aspectRatio={1}
                     source={{ uri: item }}
                     width={'100%'}
-                    resizeMode="contain"
+                    objectFit="contain"
                   />
                 </YStack>
               </YStack>
@@ -85,7 +80,7 @@ const ProductCommentCard = ({
           );
         }}
       />
-      <YStack flex={1} space="$2">
+      <YStack f={1} gap="$2">
         <TextArea disabled value={comment} />
       </YStack>
     </YStack>

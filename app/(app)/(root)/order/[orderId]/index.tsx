@@ -1,14 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import moment from 'moment';
 import { useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
-import { Separator, SizableText, XStack } from 'tamagui';
-import { ScrollView, YStack } from 'tamagui';
+import { Separator, SizableText, XStack, ScrollView, YStack } from 'tamagui';
 import { getOrder } from '~/api';
-import { CheckoutItemCard, OrderProductCard, OrderReservationCard } from '~/components';
-import ActionSheet from '~/components/ActionSheet';
-import Loader from '~/components/Loader';
+import { OrderProductCard, OrderReservationCard, ActionSheet, Loader } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
 import { Contact, DeliveryMethodEnum } from '~/types';
@@ -41,7 +38,6 @@ const DeliveryMethod = ({
 
 const OrderDetail = () => {
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
-  const navigation = useNavigation();
   const router = useRouter();
   const { t } = useLocale();
   const { token } = useAuth();
@@ -89,25 +85,24 @@ const OrderDetail = () => {
   const onOrderPress = (productId: string) => {
     setSelectedProductId(productId);
     setIsActionSheetOpen(true);
-    //router.navigate({ pathname: '/product/[productId]/createComment', params: { productId } });
   };
 
   return (
     <ScrollView>
       <YStack
-        flex={1}
-        backgroundColor={'white'}
+        f={1}
+        bc={'white'}
         p={'$2'}
         m={'$2'}
-        space="$1"
-        borderRadius={'$radius.3'}
-        shadowColor={'black'}
-        shadowOffset={{
+        gap="$1"
+        br={'$radius.3'}
+        shac={'black'}
+        shof={{
           height: 2,
           width: 0,
         }}
-        shadowOpacity={0.25}
-        shadowRadius={3.84}>
+        shop={0.25}
+        shar={3.84}>
         <SizableText>
           {t('orderCreatedAt', { date: moment(order?.createdAt).format('YYYY-MM-DD') })}
         </SizableText>
@@ -207,27 +202,29 @@ const OrderDetail = () => {
         sheetPosition={actionSheetPosition}
         snapPoints={[40]}
         setSheetPosition={setActionSheetPosition}>
-        <ScrollView space="$4">
-          <StyledButton
-            onPress={() => {
-              setIsActionSheetOpen(false);
-              router.navigate({
-                pathname: '/product/[productId]',
-                params: { productId: selectedProductId },
-              });
-            }}>
-            {t('productDetail')}
-          </StyledButton>
-          <StyledButton
-            onPress={() => {
-              setIsActionSheetOpen(false);
-              router.navigate({
-                pathname: '/product/[productId]/createComment',
-                params: { productId: selectedProductId },
-              });
-            }}>
-            {t('createProductReview')}
-          </StyledButton>
+        <ScrollView>
+          <YStack gap="$4">
+            <StyledButton
+              onPress={() => {
+                setIsActionSheetOpen(false);
+                router.navigate({
+                  pathname: '/product/[productId]',
+                  params: { productId: selectedProductId },
+                });
+              }}>
+              {t('productDetail')}
+            </StyledButton>
+            <StyledButton
+              onPress={() => {
+                setIsActionSheetOpen(false);
+                router.navigate({
+                  pathname: '/product/[productId]/createComment',
+                  params: { productId: selectedProductId },
+                });
+              }}>
+              {t('createProductReview')}
+            </StyledButton>
+          </YStack>
         </ScrollView>
       </ActionSheet>
     </ScrollView>

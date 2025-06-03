@@ -29,7 +29,6 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
       aspect: [1, 1],
       quality: 0.1,
     });
-    console.log(result);
 
     if (result.canceled) return;
     const [asset] = result.assets;
@@ -51,19 +50,19 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
     <YStack>
       <TouchableOpacity onPress={() => setIsActionSheetOpen(true)}>
         <YStack
-          backgroundColor={'white'}
+          bc={'white'}
           w="$14"
           h="$14"
-          borderRadius={'$radius.3'}
-          shadowColor={'black'}
-          shadowOffset={{
+          br={'$radius.3'}
+          shac={'black'}
+          shof={{
             height: 2,
             width: 0,
           }}
-          shadowOpacity={0.25}
-          shadowRadius={3.84}
-          justifyContent="center"
-          alignItems="center">
+          shop={0.25}
+          shar={3.84}
+          jc="center"
+          ai="center">
           <MaterialCommunityIcons name="plus" size={40} />
         </YStack>
       </TouchableOpacity>
@@ -73,9 +72,11 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
         sheetPosition={actionSheetPosition}
         snapPoints={[40]}
         setSheetPosition={setActionSheetPosition}>
-        <ScrollView space="$4">
-          <StyledButton onPress={onImagePickerPress}>{t('chooseFromAlbum')}</StyledButton>
-          <StyledButton onPress={onCameraPress}>{t('uploadFromCamera')}</StyledButton>
+        <ScrollView>
+          <YStack gap={'$2'}>
+            <StyledButton onPress={onImagePickerPress}>{t('chooseFromAlbum')}</StyledButton>
+            <StyledButton onPress={onCameraPress}>{t('uploadFromCamera')}</StyledButton>
+          </YStack>
         </ScrollView>
       </ActionSheet>
       <ActionSheet
