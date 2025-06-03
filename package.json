@@ -8,6 +8,8 @@
     "ios": "npx react-native run-ios",
     "start": "npx react-native start --reset-cache",
     "test": "jest",
+    "test:flows": "jest __tests__/product-flow.test.tsx __tests__/shopping-flow.test.tsx api/__tests__/api-integration.test.ts --testPathIgnorePatterns=\"app/\"",
+    "test:components": "jest --testPathIgnorePatterns=\"app/\"",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },

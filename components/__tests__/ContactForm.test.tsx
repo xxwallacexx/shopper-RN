@@ -7,6 +7,15 @@ jest.mock('~/hooks', () => ({
   useLocale: jest.fn(),
 }));
 
+jest.mock('@tamagui/themes', () => ({
+  tokens: {
+    color: {
+      green9Light: { val: '#00FF00' },
+      green9: '#00FF00',
+    },
+  },
+}));
+
 jest.mock('tamagui', () => ({
   Input: jest.fn(props => props),
   Text: jest.fn(({ children }) => children),
