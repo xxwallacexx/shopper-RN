@@ -7,7 +7,7 @@ import { FlatList, TouchableOpacity } from 'react-native';
 import { Input, SizableText, Stack, XStack, YStack } from 'tamagui';
 import { listProducts } from '~/api';
 import { ProductCard, Spinner } from '~/components';
-import { useLocale } from '~/hooks';
+import { useDebounce, useLocale } from '~/hooks';
 import { Container, Title } from '~/tamagui.config';
 import { Product } from '~/types';
 
@@ -15,13 +15,14 @@ const Products = () => {
   const router = useRouter();
   const { t } = useLocale();
   const [search, setSearch] = useState('');
+  const debounceSearch = useDebounce(search, 300);
   const {
     data: products,
     isFetching: isProductFetching,
     isFetchingNextPage: isFetchingMoreProducts,
     fetchNextPage: fetchMoreProducts,
   } = useInfiniteQuery({
-    queryKey: ['products', search],
+    queryKey: ['products', debounceSearch],
     initialPageParam: 0,
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       if (search == '') {
@@ -33,7 +34,7 @@ const Products = () => {
         undefined,
         undefined,
         undefined,
-        search,
+        debounceSearch,
         undefined,
         undefined
       );
