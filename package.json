@@ -3,11 +3,10 @@
   "version": "1.0.2",
   "main": "expo-router/entry",
   "scripts": {
-    "android": "expo run:android",
+    "android": "npx react-native run-android",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "ios": "expo run:ios",
+    "ios": "npx react-native run-ios",
     "start": "npx react-native start --reset-cache",
-    "web": "expo start --web",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
