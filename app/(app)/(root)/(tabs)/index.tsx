@@ -147,15 +147,16 @@ const Home = () => {
 
   const productsData = products?.pages ? products.pages.flat() : [];
 
-  const renderRecommendedProducts = ({ item }: { item: Product }) => {
+  const renderRecommendedProducts = ({ item, index }: { item: Product; index: number }) => {
     const { _id, price, category, name, introduction } = item;
 
     const uri = item.photos[0].path;
 
     return (
       <Link href={`/product/${_id}`} asChild>
-        <TouchableOpacity style={{ width: '48%' }}>
+        <TouchableOpacity testID={`product-item-${index}`} style={{ width: '48%' }}>
           <ProductCard
+            testID={`product-card-${index}`}
             imageUri={uri}
             price={price}
             categoryName={category.name}
@@ -217,6 +218,7 @@ const Home = () => {
       case 'recommendedProducts':
         return (
           <FlatList
+            testID="product-list"
             data={productsData}
             renderItem={renderRecommendedProducts}
             numColumns={2}

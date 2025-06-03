@@ -233,7 +233,7 @@ const Carts = () => {
     setIsCouponSheetOpen(true);
   };
 
-  const renderOrder = ({ item }: { item: CartItem }) => {
+  const renderOrder = ({ item, index }: { item: CartItem; index: number }) => {
     const { orderContent, product } = item;
     let totalPrice = 0;
     let singleItemPrice = 0;
@@ -266,6 +266,7 @@ const Carts = () => {
     return (
       <Stack m={'$2'}>
         <OrderCartItemCard
+          testID={`cart-item-${index}`}
           photoUri={photos[0]}
           totalPrice={totalPrice}
           stock={stock}
@@ -451,8 +452,9 @@ const Carts = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <YStack f={1}>
+      <YStack f={1} testID="cart-screen">
         <SectionList
+          testID="cart-section-list"
           renderItem={renderItem}
           sections={[
             { key: 'primary', data: [''] },
@@ -467,10 +469,10 @@ const Carts = () => {
           {isTotalPriceFetching ? (
             <Skeleton width={'30%'} height={12} colorMode="light" />
           ) : (
-            <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
+            <SizableText testID="cart-total-price"> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <StyledButton onPress={onCheckoutPress} disabled={cartItems.length == 0}>
+        <StyledButton testID="checkout-button" onPress={onCheckoutPress} disabled={cartItems.length == 0}>
           {t('checkout')}
         </StyledButton>
       </BottomAction>
