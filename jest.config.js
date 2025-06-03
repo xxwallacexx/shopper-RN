@@ -8,5 +8,5 @@ module.exports = {
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/$1',
   },
-  testPathIgnorePatterns: ['/node_modules/', '/app/'],
+  testPathIgnorePatterns: ['/node_modules/', '/app/', '<rootDir>/e2e/'],
 };

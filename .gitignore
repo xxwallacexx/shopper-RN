@@ -26,3 +26,5 @@ android
 .env
 google-services.json
 GoogleService-Info.plist
+coverage
+artifacts

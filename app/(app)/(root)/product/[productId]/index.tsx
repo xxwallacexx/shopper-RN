@@ -471,287 +471,296 @@ const ProductDetail = () => {
   const disabled = isDisabled();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <ScrollView contentContainerStyle={{ fg: 1, ai: 'center' }}>
-        <BannerCarousel
-          banners={product.photos.map((p) => {
-            return { type: 'IMAGE', uri: p.path };
-          })}
-        />
-        <Container w="100%" gap="$2">
-          <XStack jc="space-between">
-            <Subtitle size="$4">{product.category.name}</Subtitle>
-            <StyledButton onPress={onSharePress}>
-              {t('shareProduct')}
-              <AntDesign name="link" color="#fff" />
-            </StyledButton>
-          </XStack>
-          <SizableText>{product.name}</SizableText>
-          <SizableText numberOfLines={1} ellipsizeMode="tail">
-            {product.introduction}
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <YStack f={1} testID="product-detail-screen">
+        <XStack p="$2" ai="center">
+          <TouchableOpacity testID="back-button" onPress={() => router.back()}>
+            <Ionicons size={24} name="arrow-back" />
+          </TouchableOpacity>
+          <SizableText fow={'700'} ml="$2" f={1}>
+            {product.name}
           </SizableText>
-          <Badge>
-            <SizableText fos={8} col="#fff">
-              $ {product.price.toFixed(2)} {t('up')}
+          <TouchableOpacity onPress={onSharePress}>
+            <Ionicons size={24} name="share-outline" />
+          </TouchableOpacity>
+        </XStack>
+        <ScrollView contentContainerStyle={{ fg: 1, ai: 'center' }}>
+          <BannerCarousel
+            banners={product.photos.map((p) => {
+              return { type: 'IMAGE', uri: p.path };
+            })}
+          />
+          <Container w="100%" gap="$2">
+            <XStack jc="space-between">
+              <Subtitle size="$4">{product.category.name}</Subtitle>
+            </XStack>
+            <SizableText>{product.name}</SizableText>
+            <SizableText numberOfLines={1} ellipsizeMode="tail">
+              {product.introduction}
             </SizableText>
-          </Badge>
-          <XStack gap="$2" ai="center">
-            <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-            <Text fos={'$2'} col={'lightslategray'}>
-              {shop.name}
-            </Text>
-          </XStack>
-          <XStack gap="$2" ai="center">
-            <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-            <Text fos={'$2'} col="lightslategray">
-              {shop.address}
-            </Text>
-          </XStack>
-        </Container>
-        {productCommentsData.length && product.productRating.count ? (
+            <Badge>
+              <SizableText fos={8} col="#fff">
+                $ {product.price.toFixed(2)} {t('up')}
+              </SizableText>
+            </Badge>
+            <XStack gap="$2" ai="center">
+              <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
+              <Text fos={'$2'} col={'lightslategray'}>
+                {shop.name}
+              </Text>
+            </XStack>
+            <XStack gap="$2" ai="center">
+              <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
+              <Text fos={'$2'} col="lightslategray">
+                {shop.address}
+              </Text>
+            </XStack>
+          </Container>
+          {productCommentsData.length && product.productRating.count ? (
+            <Container w="100%" gap="$2">
+              <Separator boc={'lightslategray'} />
+              <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
+                <XStack jc="space-between">
+                  <StarRatingDisplay rating={Math.ceil(product.productRating.rating)} starSize={28} />
+                  <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
+                </XStack>
+              </TouchableOpacity>
+            </Container>
+          ) : null}
           <Container w="100%" gap="$2">
             <Separator boc={'lightslategray'} />
-            <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
-              <XStack jc="space-between">
-                <StarRatingDisplay rating={Math.ceil(product.productRating.rating)} starSize={28} />
-                <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
-              </XStack>
-            </TouchableOpacity>
+            <YStack gap="$4">
+              <Title>{t('productDetail')}</Title>
+              <HTMLView value={product.description} />
+              <Title>{t('TnC')}</Title>
+              <HTMLView value={product.logisticDescription} />
+            </YStack>
           </Container>
-        ) : null}
-        <Container w="100%" gap="$2">
-          <Separator boc={'lightslategray'} />
-          <YStack gap="$4">
-            <Title>{t('productDetail')}</Title>
-            <HTMLView value={product.description} />
-            <Title>{t('TnC')}</Title>
-            <HTMLView value={product.logisticDescription} />
-          </YStack>
-        </Container>
-      </ScrollView>
-
-      <BottomAction jc="flex-end">
-        <StyledButton
-          onPress={() => {
-            setIsOptionSheetOpen(true);
-          }}>
-          {t('addToCart')}
-          <AntDesign name="shoppingcart" color="#fff" />
-        </StyledButton>
-      </BottomAction>
-      <ActionSheet
-        isSheetOpen={isReservationOptionSheetOpen}
-        setIsSheetOpen={setIsReservationOptionSheetOpen}
-        sheetPosition={reservationOptionsSheetPosition}
-        snapPoints={[40]}
-        setSheetPosition={setReservationOptionsSheetPosition}>
-        <ScrollView gap="$4">
-          {availableReservationOptions.map((o) => {
-            const selected = o._id == selectedReservationOption;
-            return (
-              <StyledButton
-                bc={selected ? '$primary' : 'slategray'}
-                key={o._id}
-                onPress={() => onReservationOptionChange(o._id)}>
-                <SizableText col="white">{o.name}</SizableText>
-              </StyledButton>
-            );
-          })}
         </ScrollView>
-      </ActionSheet>
-      <ActionSheet
-        isSheetOpen={isOptionSheetOpen}
-        setIsSheetOpen={setIsOptionSheetOpen}
-        sheetPosition={sheetPosition}
-        snapPoints={[80]}
-        setSheetPosition={setSheetPosition}>
-        <YStack f={1} gap="$2" jc="space-between">
-          <ScrollView>
-            <OptionSheetContent
-              productType={product.productType}
-              options={options}
-              selectedChoices={selectedChoices}
-              onChoiceChange={onChoiceChange}
-              isReservationsFetching={isReservationsFetching}
-              reservations={reservations}
-              selectedDate={selectedDate}
-              onDayChange={onDayChange}
-              availableTimes={availableTimes}
-              selectedTime={selectedTime}
-              onTimeChange={onTimeChange}
-              availableReservationOptions={availableReservationOptions}
-              onAvailableReservationOptionPress={() => setIsReservationOptionSheetOpen(true)}
-              selectedReservationOption={selectedReservationOption}
-            />
-            <QuantitySelector
-              productType={product.productType}
-              quantity={quantity}
-              stock={stock}
-              minQuantity={minQuantity}
-              selectedReservationOption={selectedReservationOption}
-              onQuantityChange={onQuantityChange}
-            />
+
+        <BottomAction jc="flex-end">
+          <StyledButton
+            onPress={() => {
+              setIsOptionSheetOpen(true);
+            }}>
+            {t('addToCart')}
+            <AntDesign name="shoppingcart" color="#fff" />
+          </StyledButton>
+        </BottomAction>
+        <ActionSheet
+          isSheetOpen={isReservationOptionSheetOpen}
+          setIsSheetOpen={setIsReservationOptionSheetOpen}
+          sheetPosition={reservationOptionsSheetPosition}
+          snapPoints={[40]}
+          setSheetPosition={setReservationOptionsSheetPosition}>
+          <ScrollView gap="$4">
+            {availableReservationOptions.map((o) => {
+              const selected = o._id == selectedReservationOption;
+              return (
+                <StyledButton
+                  bc={selected ? '$primary' : 'slategray'}
+                  key={o._id}
+                  onPress={() => onReservationOptionChange(o._id)}>
+                  <SizableText col="white">{o.name}</SizableText>
+                </StyledButton>
+              );
+            })}
           </ScrollView>
-          <Separator boc={'lightslategrey'} />
-          <XStack mih={'$6'} jc="space-between">
-            <Price
-              isLoading={
-                product.productType == 'ORDER'
-                  ? isPriceDetailFetching
-                  : isReservationTotalPriceFetching
-              }
-              price={
-                product.productType == 'ORDER'
-                  ? parseFloat(priceDetail?.subtotal ?? '0')
-                  : (reservationTotalPrice ?? 0)
-              }
-            />
-            <XStack gap="$2">
-              <StyledButton onPress={onAddCartPress} disabled={disabled}>
-                {t('addToCart')}
-                <AntDesign name="shoppingcart" color="#fff" />
-              </StyledButton>
-              <StyledButton onPress={onCheckoutPress} disabled={disabled}>
-                {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
-                <Ionicons name="cash-outline" color="#fff" />
-              </StyledButton>
-            </XStack>
-          </XStack>
-        </YStack>
-      </ActionSheet>
-      <ActionSheet
-        isSheetOpen={isPhotoSheetOpen}
-        setIsSheetOpen={setIsPhotoSheetOpen}
-        snapPoints={[100]}
-        sheetPosition={photoSheetPosition}
-        setSheetPosition={setPhotoSheetPosition}>
-        <YStack bg="black" f={1} jc="center" ai="center">
-          <YStack pos="absolute" l="$4" t="$10">
-            <TouchableOpacity
-              onPress={() => {
-                setIsPhotoSheetOpen(false);
-              }}>
-              <Ionicons size={20} name="arrow-back" color="white" />
-            </TouchableOpacity>
-          </YStack>
-          <Stack aspectRatio={1} w={'100%'}>
-            <Image f={1} objectFit="contain" source={{ uri: selectedPhoto }} />
-          </Stack>
-        </YStack>
-      </ActionSheet>
-      <ActionSheet
-        bg={'white'}
-        isSheetOpen={isCommentsSheetOpen}
-        setIsSheetOpen={setIsCommentsSheetOpen}
-        snapPoints={[60]}
-        sheetPosition={commentsSheetPosition}
-        setSheetPosition={setCommentsSheetPosition}>
-        <FlatList
-          data={productCommentsData}
-          scrollIndicatorInsets={{ right: 0 }}
-          renderItem={({ item }) => {
-            return (
-              <ProductCommentCard
-                username={item.user.username}
-                userAvatar={item.user.avatar}
-                isSelf={Boolean(item.user._id == user._id)}
-                rating={item.rating}
-                photos={item.photos.map((p) => {
-                  return p.path;
-                })}
-                comment={item.comment}
-                createdAt={item.createdAt}
-                onPhotoPress={(photo) => {
-                  setSelectedPhoto(photo);
-                  setIsPhotoSheetOpen(true);
-                }}
-                onActionPress={() => {
-                  setSelectedCommentId(item._id);
-                  setIsCommentActionSheetOpen(true);
-                }}
+        </ActionSheet>
+        <ActionSheet
+          isSheetOpen={isOptionSheetOpen}
+          setIsSheetOpen={setIsOptionSheetOpen}
+          sheetPosition={sheetPosition}
+          snapPoints={[80]}
+          setSheetPosition={setSheetPosition}>
+          <YStack f={1} gap="$2" jc="space-between">
+            <ScrollView>
+              <OptionSheetContent
+                productType={product.productType}
+                options={options}
+                selectedChoices={selectedChoices}
+                onChoiceChange={onChoiceChange}
+                isReservationsFetching={isReservationsFetching}
+                reservations={reservations}
+                selectedDate={selectedDate}
+                onDayChange={onDayChange}
+                availableTimes={availableTimes}
+                selectedTime={selectedTime}
+                onTimeChange={onTimeChange}
+                availableReservationOptions={availableReservationOptions}
+                onAvailableReservationOptionPress={() => setIsReservationOptionSheetOpen(true)}
+                selectedReservationOption={selectedReservationOption}
               />
-            );
-          }}
-          contentContainerStyle={{ backgroundColor: '#fff' }}
-          ItemSeparatorComponent={() => {
-            return <Separator my={'$4'} />;
-          }}
-          onEndReached={() => fetchMoreProductComments()}
-          ListEmptyComponent={() => {
-            if (isProductCommentsFetching || isFetchingMoreProductComments) {
-              return null;
-            }
-            return (
-              <Container ai="center">
-                <AntDesign name="folderopen" size={120} color={'#666'} />
-                <Title>{t('emptyContent')}</Title>
-              </Container>
-            );
-          }}
-          ListFooterComponent={() => {
-            if (!isProductCommentsFetching && !isFetchingMoreProductComments) {
-              return null;
-            }
-            return (
-              <XStack f={1} gap="$2" ai="center" jc="center">
-                <Spinner color="$color.primary" />
-                <SizableText col="slategrey">{t('loading')}</SizableText>
+              <QuantitySelector
+                productType={product.productType}
+                quantity={quantity}
+                stock={stock}
+                minQuantity={minQuantity}
+                selectedReservationOption={selectedReservationOption}
+                onQuantityChange={onQuantityChange}
+              />
+            </ScrollView>
+            <Separator boc={'lightslategrey'} />
+            <XStack mih={'$6'} jc="space-between">
+              <Price
+                isLoading={
+                  product.productType == 'ORDER'
+                    ? isPriceDetailFetching
+                    : isReservationTotalPriceFetching
+                }
+                price={
+                  product.productType == 'ORDER'
+                    ? parseFloat(priceDetail?.subtotal ?? '0')
+                    : (reservationTotalPrice ?? 0)
+                }
+              />
+              <XStack gap="$2">
+                <StyledButton testID="add-to-cart-button" onPress={onAddCartPress} disabled={disabled}>
+                  {t('addToCart')}
+                  <AntDesign name="shoppingcart" color="#fff" />
+                </StyledButton>
+                <StyledButton onPress={onCheckoutPress} disabled={disabled}>
+                  {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
+                  <Ionicons name="cash-outline" color="#fff" />
+                </StyledButton>
               </XStack>
-            );
-          }}
-        />
-      </ActionSheet>
-      <ActionSheet
-        isSheetOpen={isCommentActionSheetOpen}
-        setIsSheetOpen={setIsCommentActionSheetOpen}
-        snapPoints={[60]}
-        sheetPosition={commentActionSheetPosition}
-        setSheetPosition={setCommentActionSheetPosition}>
-        <ScrollView>
-          <YStack gap="$4">
-            <StyledButton
-              onPress={() => {
-                setIsCommentsSheetOpen(false);
-                setIsCommentActionSheetOpen(false);
-                router.navigate({
-                  pathname: '/productComment/[commentId]/editComment',
-                  params: { commentId: selectedCommentId },
-                });
-              }}
-              disabled={isRemoveCommentSubmiting}>
-              {t('editComment')}
-            </StyledButton>
-            <StyledButton
-              onPress={() => {
-                if (!selectedCommentId) return;
-                removeCommentMutate({ commentId: selectedCommentId });
-              }}
-              disabled={isRemoveCommentSubmiting}>
-              {t('removeComment')}
-            </StyledButton>
-          </YStack>
-        </ScrollView>
-      </ActionSheet>
-
-      <Dialog isOpen={isAddCartSuccessDialogOpen}>
-        <YStack gap="$4">
-          <SizableText fos={'$6'}>{t('addSuccess')}</SizableText>
-          <Stack>
-            <Text>{t('addSuccessContent')}</Text>
-            <XStack>
-              <Text>{t('pleaseGoTo')}</Text>
-              <Text fow={'700'}>{t('shoppingCart')}</Text>
-              <Text>{t('toCheck')}</Text>
             </XStack>
-          </Stack>
+          </YStack>
+        </ActionSheet>
+        <ActionSheet
+          isSheetOpen={isPhotoSheetOpen}
+          setIsSheetOpen={setIsPhotoSheetOpen}
+          snapPoints={[100]}
+          sheetPosition={photoSheetPosition}
+          setSheetPosition={setPhotoSheetPosition}>
+          <YStack bg="black" f={1} jc="center" ai="center">
+            <YStack pos="absolute" l="$4" t="$10">
+              <TouchableOpacity
+                onPress={() => {
+                  setIsPhotoSheetOpen(false);
+                }}>
+                <Ionicons size={20} name="arrow-back" color="white" />
+              </TouchableOpacity>
+            </YStack>
+            <Stack aspectRatio={1} w={'100%'}>
+              <Image f={1} objectFit="contain" source={{ uri: selectedPhoto }} />
+            </Stack>
+          </YStack>
+        </ActionSheet>
+        <ActionSheet
+          bg={'white'}
+          isSheetOpen={isCommentsSheetOpen}
+          setIsSheetOpen={setIsCommentsSheetOpen}
+          snapPoints={[60]}
+          sheetPosition={commentsSheetPosition}
+          setSheetPosition={setCommentsSheetPosition}>
+          <FlatList
+            data={productCommentsData}
+            scrollIndicatorInsets={{ right: 0 }}
+            renderItem={({ item }) => {
+              return (
+                <ProductCommentCard
+                  username={item.user.username}
+                  userAvatar={item.user.avatar}
+                  isSelf={Boolean(item.user._id == user._id)}
+                  rating={item.rating}
+                  photos={item.photos.map((p) => {
+                    return p.path;
+                  })}
+                  comment={item.comment}
+                  createdAt={item.createdAt}
+                  onPhotoPress={(photo) => {
+                    setSelectedPhoto(photo);
+                    setIsPhotoSheetOpen(true);
+                  }}
+                  onActionPress={() => {
+                    setSelectedCommentId(item._id);
+                    setIsCommentActionSheetOpen(true);
+                  }}
+                />
+              );
+            }}
+            contentContainerStyle={{ backgroundColor: '#fff' }}
+            ItemSeparatorComponent={() => {
+              return <Separator my={'$4'} />;
+            }}
+            onEndReached={() => fetchMoreProductComments()}
+            ListEmptyComponent={() => {
+              if (isProductCommentsFetching || isFetchingMoreProductComments) {
+                return null;
+              }
+              return (
+                <Container ai="center">
+                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <Title>{t('emptyContent')}</Title>
+                </Container>
+              );
+            }}
+            ListFooterComponent={() => {
+              if (!isProductCommentsFetching && !isFetchingMoreProductComments) {
+                return null;
+              }
+              return (
+                <XStack f={1} gap="$2" ai="center" jc="center">
+                  <Spinner color="$color.primary" />
+                  <SizableText col="slategrey">{t('loading')}</SizableText>
+                </XStack>
+              );
+            }}
+          />
+        </ActionSheet>
+        <ActionSheet
+          isSheetOpen={isCommentActionSheetOpen}
+          setIsSheetOpen={setIsCommentActionSheetOpen}
+          snapPoints={[60]}
+          sheetPosition={commentActionSheetPosition}
+          setSheetPosition={setCommentActionSheetPosition}>
+          <ScrollView>
+            <YStack gap="$4">
+              <StyledButton
+                onPress={() => {
+                  setIsCommentsSheetOpen(false);
+                  setIsCommentActionSheetOpen(false);
+                  router.navigate({
+                    pathname: '/productComment/[commentId]/editComment',
+                    params: { commentId: selectedCommentId },
+                  });
+                }}
+                disabled={isRemoveCommentSubmiting}>
+                {t('editComment')}
+              </StyledButton>
+              <StyledButton
+                onPress={() => {
+                  if (!selectedCommentId) return;
+                  removeCommentMutate({ commentId: selectedCommentId });
+                }}
+                disabled={isRemoveCommentSubmiting}>
+                {t('removeComment')}
+              </StyledButton>
+            </YStack>
+          </ScrollView>
+        </ActionSheet>
 
-          <AlertDialog.Action asChild>
-            <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
-              {t('confirm')}
-            </StyledButton>
-          </AlertDialog.Action>
-        </YStack>
-      </Dialog>
+        <Dialog isOpen={isAddCartSuccessDialogOpen}>
+          <YStack gap="$4">
+            <SizableText fos={'$6'}>{t('addSuccess')}</SizableText>
+            <Stack>
+              <Text>{t('addSuccessContent')}</Text>
+              <XStack>
+                <Text>{t('pleaseGoTo')}</Text>
+                <Text fow={'700'}>{t('shoppingCart')}</Text>
+                <Text>{t('toCheck')}</Text>
+              </XStack>
+            </Stack>
+
+            <AlertDialog.Action asChild>
+              <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
+                {t('confirm')}
+              </StyledButton>
+            </AlertDialog.Action>
+          </YStack>
+        </Dialog>
+      </YStack>
     </SafeAreaView>
   );
 };

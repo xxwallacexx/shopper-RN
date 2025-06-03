@@ -5,6 +5,7 @@ import { Badge, StyledButton } from '~/tamagui.config';
 import { AvailabelCoupon, CartItemOrderContent, Product } from '~/types';
 import { Skeleton } from 'moti/skeleton';
 import { Pressable, TouchableOpacity } from 'react-native';
+import TestID from '~/utils/testID';
 
 const OrderCartItemCard = ({
   photoUri,
@@ -21,6 +22,7 @@ const OrderCartItemCard = ({
   onAvailableCouponPress,
   isCartItemUpdating,
   isCartItemRemoving,
+  testID,
 }: {
   photoUri: string;
   totalPrice: number;
@@ -36,11 +38,13 @@ const OrderCartItemCard = ({
   onAvailableCouponPress: () => void;
   isCartItemUpdating: boolean;
   isCartItemRemoving: boolean;
+  testID?: string;
 }) => {
   const { t } = useLocale();
   const quantity = orderContent.quantity ?? 0;
   return (
     <YStack
+      testID={testID}
       f={1}
       bc={'white'}
       p={'$1'}
@@ -53,10 +57,11 @@ const OrderCartItemCard = ({
       }}
       shop={0.25}
       shar={3.84}>
-      <Pressable onPress={onProductPress}>
+      <Pressable testID={`${testID}-product-press`} onPress={onProductPress}>
         <XStack gap="$2" f={1}>
           <YStack w={'40%'} br={'$radius.3'} ov="hidden">
             <Image
+              testID={`${testID}-image`}
               bc={'white'}
               objectFit="contain"
               aspectRatio={1}
@@ -64,14 +69,14 @@ const OrderCartItemCard = ({
               w={'100%'}
             />
             <Badge pos="absolute" t={8} r={8}>
-              <SizableText size={'$1'} col="#fff">
+              <SizableText testID={`${testID}-price`} size={'$1'} col="#fff">
                 HK$ {singleItemPrice.toFixed(2)}
               </SizableText>
             </Badge>
           </YStack>
           <YStack f={1} py={'$2'} gap="$2" jc="space-between">
             <YStack>
-              <SizableText numberOfLines={1} ellipsizeMode="tail">
+              <SizableText testID={`${testID}-name`} numberOfLines={1} ellipsizeMode="tail">
                 {product.name} {product.introduction}
               </SizableText>
               {orderContent.choices.map((c) => {
@@ -86,7 +91,7 @@ const OrderCartItemCard = ({
               {isCartItemUpdating ? (
                 <Skeleton height={12} colorMode="light" width={80} />
               ) : (
-                <SizableText col={'$primary'}>HK$ {totalPrice.toFixed(2)}</SizableText>
+                <SizableText testID={`${testID}-total-price`} col={'$primary'}>HK$ {totalPrice.toFixed(2)}</SizableText>
               )}
               <Text fow={'300'} fos={'$2'}>
                 {t('stock')}: {stock}
@@ -99,27 +104,42 @@ const OrderCartItemCard = ({
       <Separator />
       <XStack px="$2" f={1} h="$3" ai="center" jc="space-between">
         <XStack gap="$2" ai="center">
-          <TouchableOpacity disabled={quantity < 2} onPress={onDeductPress}>
+          <TouchableOpacity 
+            testID={`decrease-quantity-button-${testID?.split('-').pop()}`} 
+            disabled={quantity < 2} 
+            onPress={onDeductPress}
+          >
             <Ionicons size={24} name="remove-circle-outline" />
           </TouchableOpacity>
           {isCartItemUpdating ? (
             <Skeleton height={8} colorMode="light" width={18} />
           ) : (
-            <SizableText ta="center" w={18}>
+            <SizableText 
+              testID={`item-quantity-${testID?.split('-').pop()}`} 
+              ta="center" 
+              w={18}
+            >
               {quantity}
             </SizableText>
           )}
-          <TouchableOpacity disabled={quantity >= stock} onPress={onAddPress}>
+          <TouchableOpacity 
+            testID={`increase-quantity-button-${testID?.split('-').pop()}`} 
+            disabled={quantity >= stock} 
+            onPress={onAddPress}
+          >
             <Ionicons size={24} name="add-circle-outline" />
           </TouchableOpacity>
         </XStack>
-        <StyledButton w="40%" onPress={onAvailableCouponPress}>
+        <StyledButton testID={`${testID}-coupon`} w="40%" onPress={onAvailableCouponPress}>
           {coupon ? coupon.coupon.name : t('redeemCoupon')}
         </StyledButton>
         {isCartItemRemoving ? (
           <Skeleton height={18} colorMode="light" width={22} />
         ) : (
-          <TouchableOpacity onPress={onRemovePress}>
+          <TouchableOpacity 
+            testID={`remove-item-button-${testID?.split('-').pop()}`} 
+            onPress={onRemovePress}
+          >
             <EvilIcons size={24} name="trash" />
           </TouchableOpacity>
         )}
