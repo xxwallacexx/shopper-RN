@@ -2,8 +2,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { FlatList } from 'react-native';
-import { SizableText, YStack } from 'tamagui';
-import { XStack } from 'tamagui';
+import { SizableText, YStack, XStack } from 'tamagui';
+
 import { listQRPayment } from '~/api';
 import { Spinner } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -39,11 +39,11 @@ const QRPaymentHistory = () => {
     return (
       <YStack
         f={1}
-        bc={'white'}
-        p={'$4'}
+        bc="white"
+        p="$4"
         gap="$1"
-        br={'$radius.3'}
-        shac={'black'}
+        br="$radius.3"
+        shac="black"
         shof={{
           height: 2,
           width: 0,

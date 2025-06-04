@@ -1,11 +1,19 @@
-import { defaultConfig } from '@tamagui/config/v4';
+import { PRIMARY_COLOR, PRIMARY_8_COLOR, PRIMARY_9_COLOR } from '@env';
 import { createAnimations } from '@tamagui/animations-react-native';
+import { defaultConfig } from '@tamagui/config/v4';
 import { createInterFont } from '@tamagui/font-inter';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
-import { GetThemeValueForKey, XStack } from 'tamagui';
-import { createTamagui, styled, SizableText, H1, YStack, Button } from 'tamagui';
-import { PRIMARY_COLOR, PRIMARY_8_COLOR, PRIMARY_9_COLOR } from '@env';
+import {
+  GetThemeValueForKey,
+  XStack,
+  createTamagui,
+  styled,
+  SizableText,
+  H1,
+  YStack,
+  Button,
+} from 'tamagui';
 
 const primary = PRIMARY_COLOR ?? '#000';
 const primary8 = PRIMARY_8_COLOR ?? '#000';

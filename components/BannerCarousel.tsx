@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react';
 import { Dimensions } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
-import { Image, YStack, XStack, Circle, Stack } from 'tamagui';
 import Animated, {
   SharedValue,
   interpolate,
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import Carousel from 'react-native-reanimated-carousel';
+import { Image, YStack, XStack, Circle, Stack } from 'tamagui';
+
 import Video from './Video';
 
 const { width } = Dimensions.get('window');
@@ -20,11 +21,11 @@ const Content = ({ type, uri }: { type: 'IMAGE' | 'VIDEO'; uri: string }) => {
       return (
         <Image
           source={{ uri }}
-          width={'100%'}
-          height={'100%'}
+          width="100%"
+          height="100%"
           aspectRatio={1.778}
           objectFit="contain"
-          bc={'lightgrey'}
+          bc="lightgrey"
         />
       );
     default:
@@ -86,13 +87,13 @@ const BannerCarousel = ({ banners }: { banners: { type: 'IMAGE' | 'VIDEO'; uri: 
   }, []);
 
   return (
-    <YStack w={'100%'} aspectRatio={1.77} pos="relative">
+    <YStack w="100%" aspectRatio={1.77} pos="relative">
       <Carousel
         style={{ width: '100%' }}
         width={width}
         data={banners}
-        autoPlay={banners.length > 1 ? true : false}
-        loop={true}
+        autoPlay={banners.length > 1}
+        loop
         autoPlayInterval={4000}
         scrollAnimationDuration={400}
         customAnimation={animationStyle}
@@ -101,7 +102,7 @@ const BannerCarousel = ({ banners }: { banners: { type: 'IMAGE' | 'VIDEO'; uri: 
         }}
         onSnapToItem={(index) => setSlideIndex(index)}
       />
-      <XStack pos="absolute" b={10} l={'20%'} w={'60%'} jc="center" p="$2" gap="$4">
+      <XStack pos="absolute" b={10} l="20%" w="60%" jc="center" p="$2" gap="$4">
         {banners.map((_, index) => {
           return (
             <Circle

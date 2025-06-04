@@ -1,7 +1,8 @@
 import axios from 'axios';
-import * as productAPI from '../product';
+
 import * as cartItemAPI from '../cartItem';
 import * as orderAPI from '../order';
+import * as productAPI from '../product';
 
 // Mock axios
 jest.mock('axios');

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ImageCard from '../ImageCard';
 
 // Mock dependencies
@@ -21,8 +22,8 @@ describe('ImageCard', () => {
     expect(() => {
       ImageCard({
         imageUri: 'https://example.com/image.jpg',
-        onPhotoPress: jest.fn()
+        onPhotoPress: jest.fn(),
       });
     }).not.toThrow();
   });
-}); 
+});

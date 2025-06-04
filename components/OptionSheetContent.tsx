@@ -1,12 +1,13 @@
-import { YStack } from 'tamagui';
-import { Option, Product, Reservation, ReservationOption } from '~/types';
-import ProductOptionCard from './ProductOptionCard';
-import { Label } from 'tamagui';
-import ReservationCalendar from './ReservationCalendar';
-import OptionSelection from './OptionSelection';
-import { useLocale } from '~/hooks';
 import moment from 'moment';
+import { YStack, Label } from 'tamagui';
+
+import OptionSelection from './OptionSelection';
+import ProductOptionCard from './ProductOptionCard';
+import ReservationCalendar from './ReservationCalendar';
+
+import { useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
+import { Option, Product, Reservation, ReservationOption } from '~/types';
 
 const OptionSheetContent = ({
   productType,
@@ -87,7 +88,7 @@ const OptionSheetContent = ({
               <StyledButton
                 mx="$1"
                 h="$3"
-                bc={'#fff'}
+                bc="#fff"
                 pressStyle={{ bc: 'ghostwhite' }}
                 color="#000"
                 onPress={onAvailableReservationOptionPress}>

@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Formik } from 'formik';
 import Toast from 'react-native-toast-message';
-import { Input, Text } from 'tamagui';
-import { Form, Label, YStack } from 'tamagui';
+import { Input, Text, Form, Label, YStack } from 'tamagui';
 import * as Yup from 'yup';
+
 import { createUser } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
@@ -74,86 +74,86 @@ const Register = () => {
       }}>
       {({ errors, values, handleChange, handleSubmit }) => {
         return (
-          <Form flex={1} alignItems="center" onSubmit={handleSubmit}>
-            <YStack w="100%" p="$2" space="$4">
-              <YStack w="100%" alignItems="flex-start" space="$2">
+          <Form f={1} ai="center" onSubmit={handleSubmit}>
+            <YStack w="100%" p="$2" gap="$4">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('username')}</Label>
                 <Input
-                  autoCapitalize={'none'}
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.username}
                   placeholder={t('username')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('username')}
                 />
                 {errors.username ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.username}
                   </Text>
                 ) : null}
               </YStack>
-              <YStack w="100%" alignItems="flex-start" space="$2">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('email')}</Label>
                 <Input
-                  autoCapitalize={'none'}
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.email}
                   placeholder={t('email')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('email')}
                 />
                 {errors.email ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.email}
                   </Text>
                 ) : null}
               </YStack>
-              <YStack w="100%" alignItems="flex-start" space="$2">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('password')}</Label>
                 <Input
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
+                  secureTextEntry
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.password}
                   placeholder={t('password')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('password')}
                 />
                 {errors.password ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.password}
                   </Text>
                 ) : null}
               </YStack>
-              <YStack w="100%" alignItems="flex-start" space="$2">
+              <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('confirmPassword')}</Label>
                 <Input
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
+                  secureTextEntry
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
-                  borderWidth={2}
+                  bw={2}
                   disabled={isSubmitting}
                   value={values.confirmPassword}
                   placeholder={t('confirmPassword')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('confirmPassword')}
                 />
                 {errors.confirmPassword ? (
-                  <Text color="$red10" fontSize={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.confirmPassword}
                   </Text>
                 ) : null}

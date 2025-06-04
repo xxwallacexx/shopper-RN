@@ -1,33 +1,34 @@
 import React from 'react';
+
 import ActionSheet from '../ActionSheet';
 
 // Mock tamagui Sheet component
 jest.mock('tamagui', () => ({
   Sheet: Object.assign(
-    function MockSheet(props: Record<string, any>) { 
-      return { 
+    function MockSheet(props: Record<string, any>) {
+      return {
         type: 'Sheet',
         props,
-        children: props.children
-      }; 
+        children: props.children,
+      };
     },
     {
-      Overlay: function MockOverlay(props: Record<string, any>) { 
-        return { 
+      Overlay: function MockOverlay(props: Record<string, any>) {
+        return {
           type: 'Sheet.Overlay',
           props,
-          children: props.children
-        }; 
+          children: props.children,
+        };
       },
-      Frame: function MockFrame(props: Record<string, any>) { 
-        return { 
+      Frame: function MockFrame(props: Record<string, any>) {
+        return {
           type: 'Sheet.Frame',
           props,
-          children: props.children
-        }; 
-      }
+          children: props.children,
+        };
+      },
     }
-  )
+  ),
 }));
 
 describe('ActionSheet', () => {
@@ -45,7 +46,7 @@ describe('ActionSheet', () => {
   it('should render with default props', () => {
     const sheet = ActionSheet({
       ...defaultProps,
-      children: 'Test Content'
+      children: 'Test Content',
     });
     expect(sheet).toBeDefined();
   });
@@ -56,9 +57,9 @@ describe('ActionSheet', () => {
       isSheetOpen: true,
       bg: 'red',
       snapPoints: [50] as [number],
-      children: 'Test Content'
+      children: 'Test Content',
     };
     const sheet = ActionSheet(customProps);
     expect(sheet).toBeDefined();
   });
-}); 
+});

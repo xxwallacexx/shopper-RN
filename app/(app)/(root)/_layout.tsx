@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router';
 import { PRIMARY_COLOR } from '@env';
+import { Stack } from 'expo-router';
 
 const Layout = () => {
   return (

@@ -1,10 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import Constants from 'expo-constants';
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { AuthContext } from './useAuth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { createUserTemp, updateInstallation } from '~/api';
-import Constants from 'expo-constants';
-import messaging from '@react-native-firebase/messaging';
+
 const scheme = Constants.expoConfig?.scheme as string;
 
 export const AuthProvider = ({

@@ -1,7 +1,8 @@
 import { AntDesign } from '@expo/vector-icons';
 import { Label, SizableText, XStack, YStack } from 'tamagui';
-import { StyledButton } from '~/tamagui.config';
+
 import { useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 import { Product } from '~/types';
 
 const QuantitySelector = ({
@@ -24,7 +25,7 @@ const QuantitySelector = ({
   return (
     <YStack>
       <Label>{t('quantity')}</Label>
-      <XStack ml={2} gap={'$2'} ai="center">
+      <XStack ml={2} gap="$2" ai="center">
         <StyledButton
           disabled={quantity < minQuantity + 1 || quantity < 2}
           pressStyle={{ o: 0.5 }}

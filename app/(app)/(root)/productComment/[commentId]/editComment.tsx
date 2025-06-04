@@ -1,14 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Image, SizableText, YStack, ScrollView, Separator, TextArea } from 'tamagui';
-import { getProductComment, editProductComment, getSelf } from '~/api';
-import { useAuth, useLocale } from '~/hooks';
-import StarRating from 'react-native-star-rating-widget';
-import { ImageCard, ImageInput, ActionSheet } from '~/components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { StyledButton } from '~/tamagui.config';
+import StarRating from 'react-native-star-rating-widget';
 import Toast from 'react-native-toast-message';
+import { Image, SizableText, YStack, ScrollView, Separator, TextArea } from 'tamagui';
+
+import { getProductComment, editProductComment, getSelf } from '~/api';
+import { ImageCard, ImageInput, ActionSheet } from '~/components';
+import { useAuth, useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 
 const EditComment = () => {
   const { t } = useLocale();
@@ -33,7 +34,7 @@ const EditComment = () => {
   const { data: commentData } = useQuery({
     queryKey: ['comment', commentId],
     queryFn: async () => {
-      let res = await getProductComment(commentId);
+      const res = await getProductComment(commentId);
       setRating(res.rating);
       setPhotoObjects(res.photos);
       setComment(res.comment);
@@ -43,7 +44,7 @@ const EditComment = () => {
 
   const { isPending: isEditCommentSubmitting, mutate: editCommentMutate } = useMutation({
     mutationFn: async () => {
-      let formData = new FormData();
+      const formData = new FormData();
       for (const photoObject of photoObjects) {
         if (!photoObject._id) {
           const filename = photoObject.path.split('/').pop();
@@ -54,7 +55,7 @@ const EditComment = () => {
           formData.append('photos', {
             uri: photoObject.path,
             name: filename,
-            type: type,
+            type,
           });
         }
       }
@@ -91,14 +92,14 @@ const EditComment = () => {
   if (!commentData || !user) return <></>;
 
   const onImageInputChange = (value: string) => {
-    let _photoObjects = [...photoObjects];
+    const _photoObjects = [...photoObjects];
     _photoObjects.push({ path: value });
     setPhotoObjects(_photoObjects);
   };
 
   const onImageRemove = () => {
     if (selectedPhotoIndex == undefined) return;
-    let _photoObjects = [...photoObjects];
+    const _photoObjects = [...photoObjects];
     _photoObjects.splice(selectedPhotoIndex, 1);
     setPhotoObjects(_photoObjects);
     setIsActionSheetOpen(false);
@@ -108,17 +109,12 @@ const EditComment = () => {
     <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
       <ScrollView f={1} gap="$2" contentContainerStyle={{ ai: 'center' }}>
         <YStack w="100%" ai="center" gap="$2">
-          <Image
-            resizeMode="contain"
-            aspectRatio={1}
-            source={{ uri: user?.avatar }}
-            width={'20%'}
-          />
+          <Image resizeMode="contain" aspectRatio={1} source={{ uri: user?.avatar }} width="20%" />
           <SizableText>{user?.username}</SizableText>
         </YStack>
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <StarRating enableHalfStar={false} rating={rating} onChange={setRating} />
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <ScrollView
           w="100%"
           contentContainerStyle={{
@@ -141,12 +137,12 @@ const EditComment = () => {
           })}
           {photoObjects.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
         </ScrollView>
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <TextArea
           autoCorrect={false}
           autoCapitalize="none"
           w="90%"
-          size={'$4'}
+          size="$4"
           value={comment}
           onChangeText={(value) => {
             setComment(value);

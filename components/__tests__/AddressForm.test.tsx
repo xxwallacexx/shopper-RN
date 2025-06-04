@@ -1,11 +1,13 @@
 import React from 'react';
+
 import AddressForm from '../AddressForm';
+
 import { useLocale } from '~/hooks';
 
 // Mock dependencies
 jest.mock('~/hooks', () => ({
   useLocale: jest.fn(() => ({
-    t: jest.fn(key => key)
+    t: jest.fn((key) => key),
   })),
 }));
 
@@ -19,9 +21,9 @@ describe('AddressForm', () => {
   const mockAddress = {
     room: '101',
     street: '123 Main St',
-    district: 'Downtown'
+    district: 'Downtown',
   };
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -30,7 +32,7 @@ describe('AddressForm', () => {
     expect(() => {
       AddressForm({
         address: mockAddress,
-        onChange: jest.fn()
+        onChange: jest.fn(),
       });
     }).not.toThrow();
   });
@@ -38,8 +40,8 @@ describe('AddressForm', () => {
   it('should render without address data without errors', () => {
     expect(() => {
       AddressForm({
-        onChange: jest.fn()
+        onChange: jest.fn(),
       });
     }).not.toThrow();
   });
-}); 
+});

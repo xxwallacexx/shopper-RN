@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { Separator, SizableText, XStack, ScrollView, YStack } from 'tamagui';
+
 import { getOrder } from '~/api';
 import { OrderProductCard, OrderReservationCard, ActionSheet, Loader } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -56,15 +57,15 @@ const OrderDetail = () => {
 
   if (isOrderLoading) return <Loader />;
 
-  let totalProducts =
+  const totalProducts =
     order?.products.reduce((acc, f) => {
       return acc + f.quantity;
     }, 0) ?? 0;
-  let totalReservations = order?.reservations.length;
-  let price = order?.price ?? 0;
-  let shippingFee = order?.shippingFee ?? 0;
+  const totalReservations = order?.reservations.length;
+  const price = order?.price ?? 0;
+  const shippingFee = order?.shippingFee ?? 0;
 
-  let discount = order?.userCoupons.reduce((acc, f) => {
+  const discount = order?.userCoupons.reduce((acc, f) => {
     return acc + f.discount;
   }, 0);
 
@@ -91,12 +92,12 @@ const OrderDetail = () => {
     <ScrollView>
       <YStack
         f={1}
-        bc={'white'}
-        p={'$2'}
-        m={'$2'}
+        bc="white"
+        p="$2"
+        m="$2"
         gap="$1"
-        br={'$radius.3'}
-        shac={'black'}
+        br="$radius.3"
+        shac="black"
         shof={{
           height: 2,
           width: 0,
@@ -123,12 +124,12 @@ const OrderDetail = () => {
         </SizableText>
       </YStack>
       <YStack
-        backgroundColor={'white'}
-        p={'$2'}
-        m={'$2'}
+        backgroundColor="white"
+        p="$2"
+        m="$2"
         space="$1"
-        borderRadius={'$radius.3'}
-        shadowColor={'black'}
+        borderRadius="$radius.3"
+        shadowColor="black"
         shadowOffset={{
           height: 2,
           width: 0,

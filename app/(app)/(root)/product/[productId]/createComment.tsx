@@ -1,14 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Image, SizableText, YStack, ScrollView, Separator, TextArea } from 'tamagui';
-import { createProductComment, getSelf } from '~/api';
-import { useAuth, useLocale } from '~/hooks';
-import StarRating from 'react-native-star-rating-widget';
-import { ImageCard, ImageInput } from '~/components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { StyledButton } from '~/tamagui.config';
+import StarRating from 'react-native-star-rating-widget';
 import Toast from 'react-native-toast-message';
+import { Image, SizableText, YStack, ScrollView, Separator, TextArea } from 'tamagui';
+
+import { createProductComment, getSelf } from '~/api';
+import { ImageCard, ImageInput } from '~/components';
+import { useAuth, useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 
 const CreateProductComment = () => {
   const queryClient = useQueryClient();
@@ -24,7 +25,7 @@ const CreateProductComment = () => {
 
   const { isPending: isCreateCommentSubmitting, mutate: createCommentMutate } = useMutation({
     mutationFn: async () => {
-      let formData = new FormData();
+      const formData = new FormData();
       for (const photo of photos) {
         const filename = photo.split('/').pop();
         if (!filename) return;
@@ -34,7 +35,7 @@ const CreateProductComment = () => {
         formData.append('photos', {
           uri: photo,
           name: filename,
-          type: type,
+          type,
         });
       }
       formData.append('rating', rating.toString());
@@ -63,13 +64,13 @@ const CreateProductComment = () => {
   if (!user) return <></>;
 
   const onImageInputChange = (value: string) => {
-    let _photos = [...photos];
+    const _photos = [...photos];
     _photos.push(value);
     setPhotos(_photos);
   };
 
   const onImageRemove = (index: number) => {
-    let _photos = [...photos];
+    const _photos = [...photos];
     _photos.splice(index, 1);
     setPhotos(_photos);
   };
@@ -78,12 +79,12 @@ const CreateProductComment = () => {
     <KeyboardAwareScrollView extraHeight={140} style={{ flex: 1, width: '100%' }}>
       <ScrollView f={1} gap="$2" contentContainerStyle={{ ai: 'center' }}>
         <YStack w="100%" ai="center" gap="$2">
-          <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} width={'20%'} />
+          <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} width="20%" />
           <SizableText>{user?.username}</SizableText>
         </YStack>
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <StarRating enableHalfStar={false} rating={rating} onChange={setRating} />
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <ScrollView
           w="100%"
           contentContainerStyle={{
@@ -105,12 +106,12 @@ const CreateProductComment = () => {
           })}
           {photos.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
         </ScrollView>
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <TextArea
           autoCorrect={false}
           autoCapitalize="none"
           w="90%"
-          size={'$4'}
+          size="$4"
           value={comment}
           onChangeText={(value) => {
             setComment(value);

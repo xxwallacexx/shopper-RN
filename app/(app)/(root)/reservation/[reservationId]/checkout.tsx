@@ -1,12 +1,21 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   createPlatformPayToken,
   createToken,
   isPlatformPaySupported,
   PlatformPay,
 } from '@stripe/stripe-react-native';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as Calendar from 'expo-calendar';
+import { PermissionStatus } from 'expo-calendar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import moment from 'moment';
+import { Skeleton } from 'moti/skeleton';
 import { useEffect, useState } from 'react';
-import { useAuth, useCountdown, useLocale } from '~/hooks';
+import { FlatList, Platform, SafeAreaView } from 'react-native';
+import Toast from 'react-native-toast-message';
+import { H2, SizableText, YStack, XStack, ScrollView, Stack, Text, AlertDialog } from 'tamagui';
+
 import {
   checkIsVerified,
   getReservationTotalPrice,
@@ -19,11 +28,6 @@ import {
   getReservation,
   createReservationOrder,
 } from '~/api';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Contact, PaymentMethodEnum, ReservationContent, UserCoupon } from '~/types';
-import Toast from 'react-native-toast-message';
-import { FlatList, Platform, SafeAreaView } from 'react-native';
-import { H2, SizableText, YStack, XStack, ScrollView, Stack, Text, AlertDialog } from 'tamagui';
 import {
   CheckoutReservationCard,
   StoreCard,
@@ -33,12 +37,9 @@ import {
   Dialog,
   ActionSheet,
 } from '~/components';
+import { useAuth, useCountdown, useLocale } from '~/hooks';
 import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Skeleton } from 'moti/skeleton';
-import * as Calendar from 'expo-calendar';
-import { PermissionStatus } from 'expo-calendar';
-import moment from 'moment';
+import { Contact, PaymentMethodEnum, ReservationContent, UserCoupon } from '~/types';
 
 const Checkout = () => {
   const { productId, reservationId, reservationContentStr } = useLocalSearchParams<{
@@ -85,7 +86,7 @@ const Checkout = () => {
   const { data: user } = useQuery({
     queryKey: ['profile', token],
     queryFn: async () => {
-      let response = await getSelf(token);
+      const response = await getSelf(token);
       setName(response?.address?.name ?? '');
       setPhoneNumber(response?.address?.phoneNumber ?? '');
       return response;
@@ -203,7 +204,7 @@ const Checkout = () => {
         const { status: calendarStatus } = await Calendar.requestCalendarPermissionsAsync();
         await Calendar.requestRemindersPermissionsAsync();
         if (calendarStatus == PermissionStatus.GRANTED) {
-          let notesToken = [];
+          const notesToken = [];
           for (const reservation of res.reservations) {
             const { time, duration, options, product } = reservation.reservation;
             const option = options.find((f) => {
@@ -218,8 +219,8 @@ const Checkout = () => {
             if (calendarId) {
               const event = {
                 title: product.name,
-                startDate: startDate,
-                endDate: endDate,
+                startDate,
+                endDate,
                 timeZone: Platform.OS === 'ios' ? undefined : 'GMT+8',
                 notes: notesToken.join(),
               };
@@ -247,7 +248,7 @@ const Checkout = () => {
 
   const onCouponPress = (coupon: UserCoupon) => {
     setIsUserCouponSheetOpen(false);
-    let _selectedCoupon = selectedCoupon;
+    const _selectedCoupon = selectedCoupon;
     if (!_selectedCoupon) return setSelectedCoupon(coupon);
     if (selectedCoupon?._id == coupon._id) {
       setSelectedCoupon(undefined);
@@ -300,8 +301,8 @@ const Checkout = () => {
         text1: t('creditCardInfoError'),
       });
     }
-    let stripeTokenId = stripeToken.id;
-    let contact: Contact = { name, phoneNumber };
+    const stripeTokenId = stripeToken.id;
+    const contact: Contact = { name, phoneNumber };
 
     onCreateReservationOrderSubmit({
       stripeTokenId,
@@ -328,7 +329,7 @@ const Checkout = () => {
       },
     });
 
-    let contact: Contact = { name, phoneNumber };
+    const contact: Contact = { name, phoneNumber };
 
     if (!token) return;
     onCreateReservationOrderSubmit({
@@ -342,9 +343,9 @@ const Checkout = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <ScrollView f={1} p={'$3'} gap="$2">
+      <ScrollView f={1} p="$3" gap="$2">
         <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />
-        <H2 bc={'#fff'}>{t('orderDetail')}</H2>
+        <H2 bc="#fff">{t('orderDetail')}</H2>
         <CheckoutReservationCard
           product={product}
           reservationContent={reservationContent}
@@ -356,7 +357,7 @@ const Checkout = () => {
           onPress={() => setIsUserCouponSheetOpen(true)}>
           {selectedCoupon ? selectedCoupon.coupon.name : t('redeemCoupon')}
         </StyledButton>
-        <H2 bc={'#fff'}>{t('contactInfo')}</H2>
+        <H2 bc="#fff">{t('contactInfo')}</H2>
         <ContactForm
           name={name}
           onNameChange={setName}
@@ -387,7 +388,7 @@ const Checkout = () => {
       <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching ? (
-            <Skeleton width={'30%'} height={12} colorMode="light" />
+            <Skeleton width="30%" height={12} colorMode="light" />
           ) : (
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
@@ -424,7 +425,7 @@ const Checkout = () => {
           renderItem={({ item }) => {
             return (
               <StyledButton
-                my={'$2'}
+                my="$2"
                 bg={selectedCoupon?._id == item._id ? '$primary' : 'slategrey'}
                 onPress={() => onCouponPress(item)}>
                 {item.coupon.name}
@@ -450,7 +451,7 @@ const Checkout = () => {
                 <MaterialCommunityIcons
                   name="ticket-confirmation-outline"
                   size={120}
-                  color={'#666'}
+                  color="#666"
                 />
                 <Title>{t('noCoupon')}</Title>
               </Container>
@@ -460,12 +461,12 @@ const Checkout = () => {
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
         <YStack gap="$4">
-          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
+          <SizableText fos="$6">{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fow={'700'}>{t('myOrders')}</Text>
+              <Text fow="700">{t('myOrders')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

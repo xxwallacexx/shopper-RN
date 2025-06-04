@@ -22,6 +22,7 @@ import {
   XStack,
   YStack,
 } from 'tamagui';
+
 import {
   cartItemGetPriceDetail,
   cartItemGetTotalPrice,
@@ -81,7 +82,7 @@ const CartCheckout = () => {
   const { data: user } = useQuery({
     queryKey: ['profile', token],
     queryFn: async () => {
-      let response = await getSelf(token);
+      const response = await getSelf(token);
       setAddress(response.address);
       setName(response?.address?.name ?? '');
       setPhoneNumber(response?.address?.phoneNumber ?? '');
@@ -106,7 +107,7 @@ const CartCheckout = () => {
   const { data: shop, isLoading: isShopLoading } = useQuery({
     queryKey: ['shop'],
     queryFn: async () => {
-      let response = await getShop();
+      const response = await getShop();
       setSelectedDeliveryMethod(response.deliveryMethods[0]);
       setSelectedStore(response.stores[0]);
       return response;
@@ -225,7 +226,7 @@ const CartCheckout = () => {
 
   const onAddressChange = (field: keyof Address, value: string) => {
     setAddress((prevAddress) => {
-      let address = { ...prevAddress };
+      const address = { ...prevAddress };
       address[field] = value;
       return address;
     });
@@ -234,22 +235,22 @@ const CartCheckout = () => {
   const renderSectionHeader = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
       case 'deliveryMethod':
-        return <H2 bc={'#fff'}>{t('deliveryMethod')}</H2>;
+        return <H2 bc="#fff">{t('deliveryMethod')}</H2>;
       case 'contact':
-        return <H2 bc={'#fff'}>{t('contactInfo')}</H2>;
+        return <H2 bc="#fff">{t('contactInfo')}</H2>;
       case 'coupon':
-        return <H2 bc={'#fff'}>{t('coupon')}</H2>;
+        return <H2 bc="#fff">{t('coupon')}</H2>;
       case 'address':
         switch (selectedDeliveryMethod) {
           case DeliveryMethodEnum.SFEXPRESS:
-            return <H2 bc={'#fff'}>{t('address')}</H2>;
+            return <H2 bc="#fff">{t('address')}</H2>;
           case DeliveryMethodEnum.SELF_PICK_UP:
-            return <H2 bc={'#fff'}>{t('store')}</H2>;
+            return <H2 bc="#fff">{t('store')}</H2>;
           default:
             return <></>;
         }
       case 'paymentMethod':
-        return <H2 bc={'#fff'}>{t('paymentMethod')}</H2>;
+        return <H2 bc="#fff">{t('paymentMethod')}</H2>;
       default:
         return <></>;
     }
@@ -293,7 +294,7 @@ const CartCheckout = () => {
         return (
           <RadioGroup
             value={selectedDeliveryMethod}
-            name={'deliveryMethod'}
+            name="deliveryMethod"
             onValueChange={(value) =>
               setSelectedDeliveryMethod(value as keyof typeof DeliveryMethodEnum)
             }>
@@ -321,7 +322,7 @@ const CartCheckout = () => {
             return (
               <RadioGroup
                 value={selectedStore}
-                name={'store'}
+                name="store"
                 onValueChange={(value) => setSelectedStore(value)}>
                 <YStack w={300} ai="center" gap="$2">
                   {shop.stores.map((s) => {
@@ -408,8 +409,8 @@ const CartCheckout = () => {
         text1: t('creditCardInfoError'),
       });
     }
-    let stripeTokenId = stripeToken.id;
-    let contact: Contact = { name, phoneNumber };
+    const stripeTokenId = stripeToken.id;
+    const contact: Contact = { name, phoneNumber };
     if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
       contact.district = address?.district;
       contact.street = address?.street;
@@ -441,7 +442,7 @@ const CartCheckout = () => {
       },
     });
 
-    let contact: Contact = { name, phoneNumber };
+    const contact: Contact = { name, phoneNumber };
     if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
       contact.district = address?.district;
       contact.street = address?.street;
@@ -505,7 +506,7 @@ const CartCheckout = () => {
       <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching || totalPrice == undefined ? (
-            <Skeleton width={'30%'} height={12} colorMode="light" />
+            <Skeleton width="30%" height={12} colorMode="light" />
           ) : (
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
@@ -533,12 +534,12 @@ const CartCheckout = () => {
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
         <YStack gap="$4">
-          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
+          <SizableText fos="$6">{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fow={'700'}>{t('myOrders')}</Text>
+              <Text fow="700">{t('myOrders')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

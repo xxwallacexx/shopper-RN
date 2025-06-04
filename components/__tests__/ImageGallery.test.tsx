@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ImageGallery from '../ImageGallery';
 
 // Mock dependencies
@@ -11,8 +12,8 @@ jest.mock('@tamagui/animate-presence', () => ({
 }));
 
 jest.mock('tamagui', () => ({
-  Button: jest.fn(props => props),
-  Image: jest.fn(props => props),
+  Button: jest.fn((props) => props),
+  Image: jest.fn((props) => props),
   XStack: jest.fn(({ children }) => children),
   YStack: jest.fn(({ children }) => children),
   styled: jest.fn((component, styles) => component),
@@ -22,7 +23,7 @@ jest.mock('tamagui', () => ({
 const mockSetState = jest.fn();
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
-  useState: jest.fn(initialValue => [initialValue, mockSetState]),
+  useState: jest.fn((initialValue) => [initialValue, mockSetState]),
 }));
 
 describe('ImageGallery', () => {
@@ -45,4 +46,4 @@ describe('ImageGallery', () => {
     const gallery = ImageGallery({ photos: mockPhotos });
     expect(gallery).toBeDefined();
   });
-}); 
+});

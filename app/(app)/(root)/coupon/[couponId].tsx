@@ -8,8 +8,9 @@ import { RefreshControl, SectionList, SafeAreaView } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Toast from 'react-native-toast-message';
 import { AlertDialog, Image, Separator, SizableText, Text, XStack, YStack, Stack } from 'tamagui';
-import { Dialog } from '~/components';
+
 import { getCredit, getCoupon, createUserCoupon } from '~/api';
+import { Dialog } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
 import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
 
@@ -70,11 +71,11 @@ const CouponDetail = () => {
       case 'cover':
         return (
           <Image
-            bc={'white'}
+            bc="white"
             objectFit="contain"
             aspectRatio={16 / 9}
             source={{ uri: photo }}
-            w={'100%'}
+            w="100%"
           />
         );
       case 'shop':
@@ -83,7 +84,7 @@ const CouponDetail = () => {
             <YStack gap="$2">
               <XStack gap="$2" ai="center">
                 <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-                <Text col={'lightslategray'}>{shop.name}</Text>
+                <Text col="lightslategray">{shop.name}</Text>
               </XStack>
               <XStack gap="$2" ai="center">
                 <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
@@ -100,7 +101,7 @@ const CouponDetail = () => {
       case 'description':
         return (
           <Container gap="$2">
-            <Separator boc={'lightslategray'} />
+            <Separator boc="lightslategray" />
             <YStack gap="$4">
               <Title>{t('couponIntro')}</Title>
               <HTMLView value={detail} />
@@ -121,7 +122,7 @@ const CouponDetail = () => {
       case 'tnc':
         return (
           <Container gap="$2">
-            <Separator boc={'lightslategray'} />
+            <Separator boc="lightslategray" />
             <YStack gap="$4">
               <Title>{t('TnC')}</Title>
               <HTMLView value={terms} />
@@ -165,12 +166,12 @@ const CouponDetail = () => {
       </YStack>
       <Dialog isOpen={isSuccessDialogOpen}>
         <YStack gap="$4">
-          <SizableText fos={'$6'}>{t('addCouponSuccess')}</SizableText>
+          <SizableText fos="$6">{t('addCouponSuccess')}</SizableText>
           <Stack>
             <Text>{t('addCouponSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fow={'700'}>{t('myWallet')}</Text>
+              <Text fow="700">{t('myWallet')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

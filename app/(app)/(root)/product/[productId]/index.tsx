@@ -1,8 +1,15 @@
+import { PRIMARY_9_COLOR } from '@env';
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
+import * as Sharing from 'expo-sharing';
+import moment from 'moment';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
+import HTMLView from 'react-native-htmlview';
+import { StarRatingDisplay } from 'react-native-star-rating-widget';
+import Toast from 'react-native-toast-message';
 import {
   AlertDialog,
   ScrollView,
@@ -15,6 +22,7 @@ import {
   Stack,
   Image,
 } from 'tamagui';
+
 import {
   getProduct,
   listOptions,
@@ -39,16 +47,9 @@ import {
   ProductCommentCard,
   QuantitySelector,
 } from '~/components';
-import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
-import HTMLView from 'react-native-htmlview';
-import { useCallback, useLayoutEffect, useState } from 'react';
 import { useAuth, useLocale } from '~/hooks';
-import { PRIMARY_9_COLOR } from '@env';
-import * as Sharing from 'expo-sharing';
-import moment from 'moment';
+import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
 import { OrderContent, ReservationContent, ReservationOption } from '~/types';
-import Toast from 'react-native-toast-message';
-import { StarRatingDisplay } from 'react-native-star-rating-widget';
 
 const Price = ({ isLoading, price }: { isLoading: boolean; price: number }) => {
   return <>{isLoading ? <Spinner /> : <SizableText>HK$ {price}</SizableText>}</>;
@@ -333,8 +334,8 @@ const ProductDetail = () => {
     }
   };
 
-  let stock = getStock();
-  let minQuantity = getMinQuantity();
+  const stock = getStock();
+  const minQuantity = getMinQuantity();
   const onChoiceChange = (optionId: string, choiceId: string) => {
     let aSelectedChoices = [...selectedChoices];
     aSelectedChoices = [
@@ -477,7 +478,7 @@ const ProductDetail = () => {
           <TouchableOpacity testID="back-button" onPress={() => router.back()}>
             <Ionicons size={24} name="arrow-back" />
           </TouchableOpacity>
-          <SizableText fow={'700'} ml="$2" f={1}>
+          <SizableText fow="700" ml="$2" f={1}>
             {product.name}
           </SizableText>
           <TouchableOpacity onPress={onSharePress}>
@@ -505,30 +506,33 @@ const ProductDetail = () => {
             </Badge>
             <XStack gap="$2" ai="center">
               <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-              <Text fos={'$2'} col={'lightslategray'}>
+              <Text fos="$2" col="lightslategray">
                 {shop.name}
               </Text>
             </XStack>
             <XStack gap="$2" ai="center">
               <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-              <Text fos={'$2'} col="lightslategray">
+              <Text fos="$2" col="lightslategray">
                 {shop.address}
               </Text>
             </XStack>
           </Container>
           {productCommentsData.length && product.productRating.count ? (
             <Container w="100%" gap="$2">
-              <Separator boc={'lightslategray'} />
+              <Separator boc="lightslategray" />
               <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
                 <XStack jc="space-between">
-                  <StarRatingDisplay rating={Math.ceil(product.productRating.rating)} starSize={28} />
+                  <StarRatingDisplay
+                    rating={Math.ceil(product.productRating.rating)}
+                    starSize={28}
+                  />
                   <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
                 </XStack>
               </TouchableOpacity>
             </Container>
           ) : null}
           <Container w="100%" gap="$2">
-            <Separator boc={'lightslategray'} />
+            <Separator boc="lightslategray" />
             <YStack gap="$4">
               <Title>{t('productDetail')}</Title>
               <HTMLView value={product.description} />
@@ -600,8 +604,8 @@ const ProductDetail = () => {
                 onQuantityChange={onQuantityChange}
               />
             </ScrollView>
-            <Separator boc={'lightslategrey'} />
-            <XStack mih={'$6'} jc="space-between">
+            <Separator boc="lightslategrey" />
+            <XStack mih="$6" jc="space-between">
               <Price
                 isLoading={
                   product.productType == 'ORDER'
@@ -615,7 +619,10 @@ const ProductDetail = () => {
                 }
               />
               <XStack gap="$2">
-                <StyledButton testID="add-to-cart-button" onPress={onAddCartPress} disabled={disabled}>
+                <StyledButton
+                  testID="add-to-cart-button"
+                  onPress={onAddCartPress}
+                  disabled={disabled}>
                   {t('addToCart')}
                   <AntDesign name="shoppingcart" color="#fff" />
                 </StyledButton>
@@ -642,13 +649,13 @@ const ProductDetail = () => {
                 <Ionicons size={20} name="arrow-back" color="white" />
               </TouchableOpacity>
             </YStack>
-            <Stack aspectRatio={1} w={'100%'}>
+            <Stack aspectRatio={1} w="100%">
               <Image f={1} objectFit="contain" source={{ uri: selectedPhoto }} />
             </Stack>
           </YStack>
         </ActionSheet>
         <ActionSheet
-          bg={'white'}
+          bg="white"
           isSheetOpen={isCommentsSheetOpen}
           setIsSheetOpen={setIsCommentsSheetOpen}
           snapPoints={[60]}
@@ -682,7 +689,7 @@ const ProductDetail = () => {
             }}
             contentContainerStyle={{ backgroundColor: '#fff' }}
             ItemSeparatorComponent={() => {
-              return <Separator my={'$4'} />;
+              return <Separator my="$4" />;
             }}
             onEndReached={() => fetchMoreProductComments()}
             ListEmptyComponent={() => {
@@ -691,7 +698,7 @@ const ProductDetail = () => {
               }
               return (
                 <Container ai="center">
-                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <AntDesign name="folderopen" size={120} color="#666" />
                   <Title>{t('emptyContent')}</Title>
                 </Container>
               );
@@ -743,12 +750,12 @@ const ProductDetail = () => {
 
         <Dialog isOpen={isAddCartSuccessDialogOpen}>
           <YStack gap="$4">
-            <SizableText fos={'$6'}>{t('addSuccess')}</SizableText>
+            <SizableText fos="$6">{t('addSuccess')}</SizableText>
             <Stack>
               <Text>{t('addSuccessContent')}</Text>
               <XStack>
                 <Text>{t('pleaseGoTo')}</Text>
-                <Text fow={'700'}>{t('shoppingCart')}</Text>
+                <Text fow="700">{t('shoppingCart')}</Text>
                 <Text>{t('toCheck')}</Text>
               </XStack>
             </Stack>

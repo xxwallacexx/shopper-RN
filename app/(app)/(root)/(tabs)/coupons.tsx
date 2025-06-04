@@ -6,12 +6,13 @@ import moment from 'moment';
 import { useState } from 'react';
 import { RefreshControl, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Image, ScrollView, SizableText, XStack, YStack } from 'tamagui';
-import { Spinner } from '~/components';
+
 import { getCredit, getShop, listCoupons } from '~/api';
+import { Spinner } from '~/components';
+import ActionSheet from '~/components/ActionSheet';
 import { useAuth, useLocale } from '~/hooks';
 import { Badge, Container, StyledButton, Title } from '~/tamagui.config';
 import { Coupon } from '~/types';
-import ActionSheet from '~/components/ActionSheet';
 
 const Coupons = () => {
   const { t } = useLocale();
@@ -71,18 +72,18 @@ const Coupons = () => {
       <Link href={`/coupon/${item._id}`} asChild>
         <TouchableOpacity style={{ width: '48%' }}>
           <YStack
-            bc={'white'}
+            bc="white"
             f={1}
             p="$4"
-            br={'$radius.3'}
-            shac={'black'}
+            br="$radius.3"
+            shac="black"
             shof={{
               height: 2,
               width: 0,
             }}
             shop={0.25}
             shar={3.84}>
-            <Image objectFit="contain" aspectRatio={1} source={{ uri: item.photo }} w={'100%'} />
+            <Image objectFit="contain" aspectRatio={1} source={{ uri: item.photo }} w="100%" />
             <Badge pos="absolute" t={22} r={22}>
               <SizableText fos={8} col="#fff">
                 {t('couponCredit', { credit: item.credit })}
@@ -115,14 +116,14 @@ const Coupons = () => {
           return (
             <YStack>
               <YStack>
-                <Image aspectRatio={16 / 9} source={{ uri: shop.couponCover }} w={'100%'} />
+                <Image aspectRatio={16 / 9} source={{ uri: shop.couponCover }} w="100%" />
                 <Badge pos="absolute" b={22} l={22}>
                   <SizableText size={8} col="#fff">
                     {t('credit')}: {credit}
                   </SizableText>
                 </Badge>
               </YStack>
-              <YStack p={'$4'} f={1} ai="flex-end" jc="flex-end">
+              <YStack p="$4" f={1} ai="flex-end" jc="flex-end">
                 <StyledButton onPress={() => setIsSortingSheetOpen(true)}>
                   {
                     sortOptions.find((s) => {
@@ -168,7 +169,7 @@ const Coupons = () => {
         sheetPosition={sortingSheetPosition}
         setSheetPosition={setSortingSheetPoistion}>
         <ScrollView>
-          <YStack gap={'$4'}>
+          <YStack gap="$4">
             {sortOptions.map((option, index) => {
               const isSelected = option.value == selectedSortOption;
               return (
@@ -178,7 +179,7 @@ const Coupons = () => {
                     setSelectedSortOption(option.value);
                   }}
                   key={option.value + index.toString()}
-                  w={'100%'}
+                  w="100%"
                   bc={isSelected ? '$color.primary' : 'lightslategrey'}>
                   {option.label}
                 </StyledButton>

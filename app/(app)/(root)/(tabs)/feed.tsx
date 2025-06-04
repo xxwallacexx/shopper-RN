@@ -3,6 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import { XStack, SizableText, Spinner, YStack } from 'tamagui';
+
 import { listFeeds } from '~/api';
 import { FeedCard } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -66,7 +67,7 @@ const Feeds = () => {
             }
             return (
               <Container f={1} jc="center" ai="center">
-                <AntDesign name="folderopen" size={120} color={'#666'} />
+                <AntDesign name="folderopen" size={120} color="#666" />
                 <Title>{t('emptyContent')}</Title>
               </Container>
             );

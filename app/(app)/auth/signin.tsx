@@ -3,9 +3,8 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { Input } from 'tamagui';
-import { Form, Label, YStack } from 'tamagui';
-import { ScrollView } from 'tamagui';
+import { Input, Form, Label, YStack, ScrollView } from 'tamagui';
+
 import { login } from '~/api';
 import { Spinner } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -53,16 +52,16 @@ const Signin = () => {
             <Input
               autoCapitalize="none"
               disabled={isSubmitting}
-              boc={'lightgrey'}
-              bc={'whitesmoke'}
+              boc="lightgrey"
+              bc="whitesmoke"
               onChangeText={(value) => setEmail(value)}
             />
             <Label>{t('password')}</Label>
             <Input
               autoCapitalize="none"
               disabled={isSubmitting}
-              boc={'lightgrey'}
-              bc={'whitesmoke'}
+              boc="lightgrey"
+              bc="whitesmoke"
               onChangeText={(value) => setPassword(value)}
             />
             <Form.Trigger asChild disabled={isSubmitting}>

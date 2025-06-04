@@ -1,7 +1,17 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  createPlatformPayToken,
+  createToken,
+  isPlatformPaySupported,
+  PlatformPay,
+} from '@stripe/stripe-react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Skeleton } from 'moti/skeleton';
 import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, SectionList } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Toast from 'react-native-toast-message';
 import {
   H2,
   RadioGroup,
@@ -13,6 +23,7 @@ import {
   AlertDialog,
   Stack,
 } from 'tamagui';
+
 import {
   checkIsVerified,
   createProductOrder,
@@ -46,16 +57,6 @@ import {
   PaymentMethodEnum,
   UserCoupon,
 } from '~/types';
-import {
-  createPlatformPayToken,
-  createToken,
-  isPlatformPaySupported,
-  PlatformPay,
-} from '@stripe/stripe-react-native';
-import Toast from 'react-native-toast-message';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Skeleton } from 'moti/skeleton';
 
 const Checkout = () => {
   const { productId, orderContentStr } = useLocalSearchParams<{
@@ -105,7 +106,7 @@ const Checkout = () => {
   const { data: user } = useQuery({
     queryKey: ['profile', token],
     queryFn: async () => {
-      let response = await getSelf(token);
+      const response = await getSelf(token);
       setAddress(response.address);
       setName(response?.address?.name ?? '');
       setPhoneNumber(response?.address?.phoneNumber ?? '');
@@ -123,7 +124,7 @@ const Checkout = () => {
   const { data: shop, isLoading: isShopFetching } = useQuery({
     queryKey: ['shop'],
     queryFn: async () => {
-      let response = await getShop();
+      const response = await getShop();
       setSelectedDeliveryMethod(response.deliveryMethods[0]);
       setSelectedStore(response.stores[0]);
       return response;
@@ -271,7 +272,7 @@ const Checkout = () => {
 
   const onAddressChange = (field: keyof Address, value: string) => {
     setAddress((prevAddress) => {
-      let address = { ...prevAddress };
+      const address = { ...prevAddress };
       address[field] = value;
       return address;
     });
@@ -280,19 +281,19 @@ const Checkout = () => {
   const renderSectionHeader = ({ section }: { section: { key: string } }) => {
     switch (section.key) {
       case 'cartItems':
-        return <H2 bc={'#fff'}>{t('orderDetail')}</H2>;
+        return <H2 bc="#fff">{t('orderDetail')}</H2>;
       case 'deliveryMethod':
-        return <H2 bc={'#fff'}>{t('deliveryMethod')}</H2>;
+        return <H2 bc="#fff">{t('deliveryMethod')}</H2>;
       case 'contact':
-        return <H2 bc={'#fff'}>{t('contactInfo')}</H2>;
+        return <H2 bc="#fff">{t('contactInfo')}</H2>;
       case 'coupon':
-        return <H2 bc={'#fff'}>{t('coupon')}</H2>;
+        return <H2 bc="#fff">{t('coupon')}</H2>;
       case 'address':
         switch (selectedDeliveryMethod) {
           case DeliveryMethodEnum.SFEXPRESS:
-            return <H2 bc={'#fff'}>{t('address')}</H2>;
+            return <H2 bc="#fff">{t('address')}</H2>;
           case DeliveryMethodEnum.SELF_PICK_UP:
-            return <H2 bc={'#fff'}>{t('store')}</H2>;
+            return <H2 bc="#fff">{t('store')}</H2>;
           default:
             return <></>;
         }
@@ -327,7 +328,7 @@ const Checkout = () => {
         );
       case 'coupon':
         return (
-          <StyledButton bg={'$primary'} onPress={() => setIsUserCouponSheetOpen(true)}>
+          <StyledButton bg="$primary" onPress={() => setIsUserCouponSheetOpen(true)}>
             {selectedCoupon ? selectedCoupon.coupon.name : t('redeemCoupon')}
           </StyledButton>
         );
@@ -353,7 +354,7 @@ const Checkout = () => {
         return (
           <RadioGroup
             value={selectedDeliveryMethod}
-            name={'deliveryMethod'}
+            name="deliveryMethod"
             onValueChange={(value) =>
               setSelectedDeliveryMethod(value as keyof typeof DeliveryMethodEnum)
             }>
@@ -381,7 +382,7 @@ const Checkout = () => {
             return (
               <RadioGroup
                 value={selectedStore}
-                name={'store'}
+                name="store"
                 onValueChange={(value) => setSelectedStore(value)}>
                 <YStack w={300} ai="center" gap="$2">
                   {shop.stores.map((s) => {
@@ -468,8 +469,8 @@ const Checkout = () => {
         text1: t('creditCardInfoError'),
       });
     }
-    let stripeTokenId = stripeToken.id;
-    let contact: Contact = { name, phoneNumber };
+    const stripeTokenId = stripeToken.id;
+    const contact: Contact = { name, phoneNumber };
     if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
       contact.district = address?.district;
       contact.street = address?.street;
@@ -502,7 +503,7 @@ const Checkout = () => {
       },
     });
 
-    let contact: Contact = { name, phoneNumber };
+    const contact: Contact = { name, phoneNumber };
     if (selectedDeliveryMethod == DeliveryMethodEnum.SFEXPRESS) {
       contact.district = address?.district;
       contact.street = address?.street;
@@ -522,7 +523,7 @@ const Checkout = () => {
 
   const onCouponPress = (coupon: UserCoupon) => {
     setIsUserCouponSheetOpen(false);
-    let _selectedCoupon = selectedCoupon;
+    const _selectedCoupon = selectedCoupon;
     if (!_selectedCoupon) return setSelectedCoupon(coupon);
     if (selectedCoupon?._id == coupon._id) {
       setSelectedCoupon(undefined);
@@ -580,7 +581,7 @@ const Checkout = () => {
       <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching ? (
-            <Skeleton width={'30%'} height={12} colorMode="light" />
+            <Skeleton width="30%" height={12} colorMode="light" />
           ) : (
             <SizableText> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
@@ -616,7 +617,7 @@ const Checkout = () => {
           renderItem={({ item }) => {
             return (
               <StyledButton
-                my={'$2'}
+                my="$2"
                 bg={selectedCoupon?._id == item._id ? '$primary' : 'slategrey'}
                 onPress={() => onCouponPress(item)}>
                 {item.coupon.name}
@@ -642,7 +643,7 @@ const Checkout = () => {
                 <MaterialCommunityIcons
                   name="ticket-confirmation-outline"
                   size={120}
-                  color={'#666'}
+                  color="#666"
                 />
                 <Title>{t('noCoupon')}</Title>
               </Container>
@@ -652,12 +653,12 @@ const Checkout = () => {
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
         <YStack gap="$4">
-          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
+          <SizableText fos="$6">{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fow={'700'}>{t('myOrders')}</Text>
+              <Text fow="700">{t('myOrders')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

@@ -20,11 +20,12 @@ import {
   ScrollView,
   YStack,
 } from 'tamagui';
+
+import { createQRPayment, getShop } from '~/api';
 import { Dialog, PaymentSheetCard, ActionSheet } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
 import { BottomAction, StyledButton } from '~/tamagui.config';
 import { PaymentMethodEnum } from '~/types';
-import { createQRPayment, getShop } from '~/api';
 
 const QRPaymentCheckout = () => {
   const queryClient = useQueryClient();
@@ -92,7 +93,7 @@ const QRPaymentCheckout = () => {
         text1: t('creditCardInfoError'),
       });
     }
-    let stripeTokenId = stripeToken.id;
+    const stripeTokenId = stripeToken.id;
     onCreateQRPaymentSubmit({
       stripeTokenId,
       paymentMethod: 'CREDIT_CARD',
@@ -172,12 +173,12 @@ const QRPaymentCheckout = () => {
       </ActionSheet>
       <Dialog isOpen={isSuccessDialogOpen}>
         <YStack gap="$4">
-          <SizableText fos={'$6'}>{t('paymentSuccess')}</SizableText>
+          <SizableText fos="$6">{t('paymentSuccess')}</SizableText>
           <Stack>
             <Text>{t('paymentSuccessContent')}</Text>
             <XStack>
               <Text>{t('pleaseGoTo')}</Text>
-              <Text fow={'700'}>{t('QRPaymentHistory')}</Text>
+              <Text fow="700">{t('QRPaymentHistory')}</Text>
               <Text>{t('toCheck')}</Text>
             </XStack>
           </Stack>

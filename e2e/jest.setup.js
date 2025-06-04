@@ -5,4 +5,4 @@ jest.setTimeout(120000);
 beforeAll(async () => {
   // Additional global setup can go here
   console.log('Setting up E2E test environment');
-}); 
+});

@@ -1,4 +1,5 @@
 import { Image, SizableText, Text, YStack } from 'tamagui';
+
 import { useLocale } from '~/hooks';
 import { Badge } from '~/tamagui.config';
 import TestID from '~/utils/testID';
@@ -23,30 +24,30 @@ const ProductCard = ({
   return (
     <YStack
       testID={testID}
-      bc={'white'}
+      bc="white"
       f={1}
       p="$4"
-      br={'$radius.3'}
-      shac={'black'}
+      br="$radius.3"
+      shac="black"
       shof={{
         height: 2,
         width: 0,
       }}
       shop={0.25}
       shar={3.84}>
-      <Image 
+      <Image
         testID={`${testID}-image`}
-        aspectRatio={1} 
-        source={{ uri: imageUri }} 
-        objectFit="contain" 
-        borderRadius={4} 
+        aspectRatio={1}
+        source={{ uri: imageUri }}
+        objectFit="contain"
+        borderRadius={4}
       />
       <Badge pos="absolute" t={22} r={22}>
         <SizableText testID={`${testID}-price`} fos={8} col="#fff">
           $ {price.toFixed(2)} {t('up')}
         </SizableText>
       </Badge>
-      <SizableText testID={`${testID}-category`} size={'$1'} col="lightslategray">
+      <SizableText testID={`${testID}-category`} size="$1" col="lightslategray">
         {categoryName}
       </SizableText>
       <Text testID={`${testID}-name`} numberOfLines={1} ellipsizeMode="tail">

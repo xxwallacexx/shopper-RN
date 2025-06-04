@@ -1,11 +1,17 @@
 import React from 'react';
+
 import ReservationCalendar from '../ReservationCalendar';
+
 import { Reservation } from '~/types';
 
 // Mock dependencies - use a direct string instead of importing from @env
-jest.mock('@env', () => ({
-  PRIMARY_COLOR: '#ff0000',
-}), { virtual: true });
+jest.mock(
+  '@env',
+  () => ({
+    PRIMARY_COLOR: '#ff0000',
+  }),
+  { virtual: true }
+);
 
 jest.mock('react-native-calendars', () => ({
   Calendar: jest.fn(() => null),
@@ -38,7 +44,7 @@ describe('ReservationCalendar', () => {
         searchCover: '',
         mallDomainName: '',
         couponCover: '',
-        terms: ''
+        terms: '',
       },
       cost: 0,
       description: '',
@@ -54,15 +60,15 @@ describe('ReservationCalendar', () => {
       stock: 0,
       productType: 'RESERVATION',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
     duration: 60,
     time: new Date('2023-06-01T10:00:00Z'),
     userCountMax: 10,
     userCountMin: 1,
-    options: []
+    options: [],
   };
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -72,7 +78,7 @@ describe('ReservationCalendar', () => {
       ReservationCalendar({
         isLoading: false,
         reservations: [mockReservation],
-        onDayChange: jest.fn()
+        onDayChange: jest.fn(),
       });
     }).not.toThrow();
   });
@@ -82,7 +88,7 @@ describe('ReservationCalendar', () => {
       ReservationCalendar({
         isLoading: true,
         reservations: [],
-        onDayChange: jest.fn()
+        onDayChange: jest.fn(),
       });
     }).not.toThrow();
   });
@@ -93,8 +99,8 @@ describe('ReservationCalendar', () => {
         isLoading: false,
         reservations: [mockReservation],
         selectedDate: '2023-06-01',
-        onDayChange: jest.fn()
+        onDayChange: jest.fn(),
       });
     }).not.toThrow();
   });
-}); 
+});

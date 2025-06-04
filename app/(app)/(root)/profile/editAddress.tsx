@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from 'expo-router';
 import { useState } from 'react';
-import { Form, Input, Label, ScrollView, YStack } from 'tamagui';
-import { getSelf, updateSelf } from '~/api';
-import { useAuth, useLocale } from '~/hooks';
-import { StyledButton } from '~/tamagui.config';
-import { Spinner } from '~/components';
 import { SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useNavigation } from 'expo-router';
+import { Form, Input, Label, ScrollView, YStack } from 'tamagui';
+
+import { getSelf, updateSelf } from '~/api';
+import { Spinner } from '~/components';
+import { useAuth, useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 import { Address } from '~/types';
 
 const EditAddress = () => {
@@ -61,10 +62,10 @@ const EditAddress = () => {
   const onSubmit = async () => {
     const { username, email } = user;
     const address = {
-      phoneNumber: phoneNumber,
-      room: room,
-      street: street,
-      district: district,
+      phoneNumber,
+      room,
+      street,
+      district,
     };
     updateSelfMutate({ token, username, email, address });
   };
@@ -91,8 +92,8 @@ const EditAddress = () => {
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                boc={'lightgrey'}
-                bc={'whitesmoke'}
+                boc="lightgrey"
+                bc="whitesmoke"
                 defaultValue={user.address.phoneNumber}
                 onChangeText={(value) => setPhoneNumber(value)}
               />
@@ -104,8 +105,8 @@ const EditAddress = () => {
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                boc={'lightgrey'}
-                bc={'whitesmoke'}
+                boc="lightgrey"
+                bc="whitesmoke"
                 defaultValue={user.address.district}
                 onChangeText={(value) => setDistrict(value)}
               />
@@ -117,8 +118,8 @@ const EditAddress = () => {
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                boc={'lightgrey'}
-                bc={'whitesmoke'}
+                boc="lightgrey"
+                bc="whitesmoke"
                 defaultValue={user.address.street}
                 onChangeText={(value) => setStreet(value)}
               />
@@ -130,8 +131,8 @@ const EditAddress = () => {
                 size="$4"
                 autoCapitalize="none"
                 disabled={isSubmitting}
-                boc={'lightgrey'}
-                bc={'whitesmoke'}
+                boc="lightgrey"
+                bc="whitesmoke"
                 defaultValue={user.address.room}
                 onChangeText={(value) => setRoom(value)}
               />

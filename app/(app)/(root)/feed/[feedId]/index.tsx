@@ -1,7 +1,11 @@
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { Image, Separator, SizableText, Stack, XStack, YStack, ScrollView } from 'tamagui';
+
 import {
   createFeedLike,
   getFeed,
@@ -12,11 +16,8 @@ import {
   removeFeedComment,
 } from '~/api';
 import { CommentCard, Feed, Spinner, ActionSheet } from '~/components';
-import { Container, StyledButton, Title } from '~/tamagui.config';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useAuth, useLocale } from '~/hooks';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
+import { Container, StyledButton, Title } from '~/tamagui.config';
 
 const FeedDetail = () => {
   const { t } = useLocale();
@@ -162,7 +163,7 @@ const FeedDetail = () => {
           }
           return (
             <Container f={1} jc="center" ai="center">
-              <AntDesign name="folderopen" size={120} color={'#666'} />
+              <AntDesign name="folderopen" size={120} color="#666" />
               <Title>{t('emptyComment')}</Title>
             </Container>
           );
@@ -228,7 +229,7 @@ const FeedDetail = () => {
               <Ionicons size={20} name="arrow-back" color="white" />
             </TouchableOpacity>
           </YStack>
-          <Stack aspectRatio={1} w={'100%'}>
+          <Stack aspectRatio={1} w="100%">
             <Image f={1} objectFit="contain" source={{ uri: selectedPhoto }} />
           </Stack>
         </YStack>

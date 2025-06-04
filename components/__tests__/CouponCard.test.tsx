@@ -1,4 +1,5 @@
 import React from 'react';
+
 import CouponCard from '../CouponCard';
 
 // Mock dependencies
@@ -26,7 +27,7 @@ jest.mock('~/tamagui.config', () => ({
 
 // Mock moment - simplified to avoid TypeScript errors
 jest.mock('moment', () => () => ({
-  format: () => '2023-12-31 23:59'
+  format: () => '2023-12-31 23:59',
 }));
 
 describe('CouponCard', () => {
@@ -64,4 +65,4 @@ describe('CouponCard', () => {
       });
     }).not.toThrow();
   });
-}); 
+});

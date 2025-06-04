@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { API_URL, SHOP } from '@env';
+import axios from 'axios';
 const baseUrl = API_URL;
 const shop = SHOP;
 
@@ -15,7 +15,7 @@ const getNotificationUnreadCount = async (token: string) => {
       'destination[]': 'USER',
     },
   };
-  let res: number = await axios(options).then((res) => {
+  const res: number = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -35,7 +35,7 @@ const listNotifications = async (token: string, skip: number) => {
       'destination[]': 'USER',
     },
   };
-  let res: Notification[] = await axios(options).then((res) => {
+  const res: Notification[] = await axios(options).then((res) => {
     return res.data.notifications;
   });
   return res;

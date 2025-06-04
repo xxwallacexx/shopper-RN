@@ -1,5 +1,7 @@
 import React from 'react';
+
 import ContactForm from '../ContactForm';
+
 import { useLocale } from '~/hooks';
 
 // Mock dependencies
@@ -17,7 +19,7 @@ jest.mock('@tamagui/themes', () => ({
 }));
 
 jest.mock('tamagui', () => ({
-  Input: jest.fn(props => props),
+  Input: jest.fn((props) => props),
   Text: jest.fn(({ children }) => children),
   XStack: jest.fn(({ children }) => children),
   Label: jest.fn(({ children }) => children),
@@ -60,7 +62,7 @@ describe('ContactForm', () => {
     expect(form).toBeDefined();
     expect(useLocale).toHaveBeenCalled();
   });
-  
+
   it('should display verification UI when not verified', () => {
     const form = ContactForm({
       ...defaultProps,
@@ -69,7 +71,7 @@ describe('ContactForm', () => {
     expect(form).toBeDefined();
     expect(useLocale).toHaveBeenCalled();
   });
-  
+
   it('should display verified status when isVerified is true', () => {
     const form = ContactForm({
       ...defaultProps,
@@ -78,7 +80,7 @@ describe('ContactForm', () => {
     expect(form).toBeDefined();
     expect(useLocale).toHaveBeenCalled();
   });
-  
+
   it('should display countdown when seconds > 0', () => {
     const seconds = 30;
     const form = ContactForm({
@@ -88,4 +90,4 @@ describe('ContactForm', () => {
     expect(form).toBeDefined();
     expect(useLocale).toHaveBeenCalled();
   });
-}); 
+});

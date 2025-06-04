@@ -1,21 +1,23 @@
+import { PRIMARY_COLOR } from '@env';
+import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { QueryClient } from '@tanstack/react-query';
+import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { QueryClient } from '@tanstack/react-query';
-import Providers from './providers';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AntDesign } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
-import { createUserTemp, updateInstallation } from '~/api';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import messaging from '@react-native-firebase/messaging';
 import Toast, { ErrorToast } from 'react-native-toast-message';
+
+import Providers from './providers';
+
+import { createUserTemp, updateInstallation } from '~/api';
 SplashScreen.preventAutoHideAsync();
-import { PRIMARY_COLOR } from '@env';
-import Constants from 'expo-constants';
 const scheme = Constants.expoConfig?.scheme as string;
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -90,7 +92,7 @@ const RootLayout = () => {
                   onPress={() => {
                     return navigation.goBack();
                   }}>
-                  <AntDesign name="arrowleft" size={24} color={'#fff'} />
+                  <AntDesign name="arrowleft" size={24} color="#fff" />
                 </TouchableOpacity>
               );
             },

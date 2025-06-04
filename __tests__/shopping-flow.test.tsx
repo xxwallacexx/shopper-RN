@@ -1,9 +1,10 @@
-import React from 'react';
 import axios from 'axios';
-import * as productAPI from '../api/product';
+import React from 'react';
+
 import * as cartItemAPI from '../api/cartItem';
 import * as couponAPI from '../api/coupon';
 import * as orderAPI from '../api/order';
+import * as productAPI from '../api/product';
 
 // Mock axios
 jest.mock('axios');
@@ -40,7 +41,7 @@ describe('Shopping Flow Tests', () => {
   const mockProductId = 'product-123';
   const mockCartItemId = 'cart-item-123';
   const mockCouponId = 'coupon-123';
-  
+
   // Mock API responses
   const mockProducts = [
     {
@@ -60,7 +61,7 @@ describe('Shopping Flow Tests', () => {
       imageUri: 'https://example.com/product2.jpg',
     },
   ];
-  
+
   const mockProductDetail = {
     id: mockProductId,
     name: 'Test Product 1',
@@ -71,7 +72,7 @@ describe('Shopping Flow Tests', () => {
     imageUri: 'https://example.com/product1.jpg',
     images: ['https://example.com/product1-1.jpg', 'https://example.com/product1-2.jpg'],
   };
-  
+
   const mockOptions = [
     {
       id: 'option-1',
@@ -82,12 +83,12 @@ describe('Shopping Flow Tests', () => {
       ],
     },
   ];
-  
+
   const mockOrderContent = {
     quantity: 1,
     choices: ['option-1:suboption-2'],
   };
-  
+
   const mockCartItems = [
     {
       id: mockCartItemId,
@@ -100,7 +101,7 @@ describe('Shopping Flow Tests', () => {
       totalPrice: 109.99,
     },
   ];
-  
+
   const mockCoupons = [
     {
       id: mockCouponId,
@@ -110,7 +111,7 @@ describe('Shopping Flow Tests', () => {
       description: '10% off your order',
     },
   ];
-  
+
   const mockContact = {
     name: 'John Doe',
     email: 'john@example.com',
@@ -121,16 +122,16 @@ describe('Shopping Flow Tests', () => {
       district: 'Downtown',
     },
   };
-  
+
   const mockOrder = {
     id: 'order-123',
     status: 'PENDING',
     totalAmount: 109.99,
   };
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Mock the API responses
     (productAPI.listProducts as jest.Mock).mockResolvedValue(mockProducts);
     (productAPI.getProduct as jest.Mock).mockResolvedValue(mockProductDetail);
@@ -140,16 +141,16 @@ describe('Shopping Flow Tests', () => {
       optionsPrice: 10,
       totalPrice: 109.99,
     });
-    
+
     (cartItemAPI.listCartItems as jest.Mock).mockResolvedValue(mockCartItems);
     (cartItemAPI.productCreateCart as jest.Mock).mockResolvedValue({ success: true });
     (cartItemAPI.updateCartItem as jest.Mock).mockResolvedValue({ success: true });
     (cartItemAPI.removeCartItem as jest.Mock).mockResolvedValue({ success: true });
     (cartItemAPI.createCartItemOrder as jest.Mock).mockResolvedValue(mockOrder);
-    
+
     (couponAPI.listCoupons as jest.Mock).mockResolvedValue(mockCoupons);
     (couponAPI.createUserCoupon as jest.Mock).mockResolvedValue({ success: true });
-    
+
     (orderAPI.listOrders as jest.Mock).mockResolvedValue({ orders: [mockOrder] });
     (orderAPI.getOrder as jest.Mock).mockResolvedValue(mockOrder);
   });
@@ -159,7 +160,7 @@ describe('Shopping Flow Tests', () => {
     const products = await productAPI.listProducts(0);
     expect(products).toEqual(mockProducts);
     expect(productAPI.listProducts).toHaveBeenCalledWith(0);
-    
+
     // Step 2: Get product details
     const product = await productAPI.getProduct(mockProductId);
     expect(product).toEqual(mockProductDetail);
@@ -169,13 +170,17 @@ describe('Shopping Flow Tests', () => {
   it('should complete the cart and checkout flow', async () => {
     // Step 1: Add product to cart
     await cartItemAPI.productCreateCart(mockToken, mockProductId, mockOrderContent);
-    expect(cartItemAPI.productCreateCart).toHaveBeenCalledWith(mockToken, mockProductId, mockOrderContent);
-    
+    expect(cartItemAPI.productCreateCart).toHaveBeenCalledWith(
+      mockToken,
+      mockProductId,
+      mockOrderContent
+    );
+
     // Step 2: List cart items
     const cartItems = await cartItemAPI.listCartItems(mockToken);
     expect(cartItems).toEqual(mockCartItems);
     expect(cartItemAPI.listCartItems).toHaveBeenCalledWith(mockToken);
-    
+
     // Step 3: Create order from cart
     const order = await cartItemAPI.createCartItemOrder(
       mockToken,
@@ -185,7 +190,7 @@ describe('Shopping Flow Tests', () => {
       'CREDIT_CARD',
       [mockCouponId]
     );
-    
+
     expect(order).toEqual(mockOrder);
     expect(cartItemAPI.createCartItemOrder).toHaveBeenCalledWith(
       mockToken,
@@ -196,4 +201,4 @@ describe('Shopping Flow Tests', () => {
       [mockCouponId]
     );
   });
-}); 
+});

@@ -1,12 +1,14 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ScrollView, YStack } from 'tamagui';
-import ActionSheet from './ActionSheet';
-import { useState } from 'react';
-import { StyledButton } from '~/tamagui.config';
-import { useLocale } from '~/hooks';
 import * as ImagePicker from 'expo-image-picker';
-import Camera from './Camera';
+import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { ScrollView, YStack } from 'tamagui';
+
+import ActionSheet from './ActionSheet';
+import Camera from './Camera';
+
+import { useLocale } from '~/hooks';
+import { StyledButton } from '~/tamagui.config';
 
 const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
   const { t } = useLocale();
@@ -23,7 +25,7 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
       status !== ImagePicker.PermissionStatus.UNDETERMINED
     )
       return;
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
@@ -50,11 +52,11 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
     <YStack>
       <TouchableOpacity onPress={() => setIsActionSheetOpen(true)}>
         <YStack
-          bc={'white'}
+          bc="white"
           w="$14"
           h="$14"
-          br={'$radius.3'}
-          shac={'black'}
+          br="$radius.3"
+          shac="black"
           shof={{
             height: 2,
             width: 0,
@@ -73,7 +75,7 @@ const ImageInput = ({ onChange }: { onChange: (value: string) => void }) => {
         snapPoints={[40]}
         setSheetPosition={setActionSheetPosition}>
         <ScrollView>
-          <YStack gap={'$2'}>
+          <YStack gap="$2">
             <StyledButton onPress={onImagePickerPress}>{t('chooseFromAlbum')}</StyledButton>
             <StyledButton onPress={onCameraPress}>{t('uploadFromCamera')}</StyledButton>
           </YStack>

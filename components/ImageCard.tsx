@@ -6,11 +6,11 @@ const ImageCard = ({ imageUri, onPhotoPress }: { imageUri: string; onPhotoPress:
     <YStack>
       <TouchableOpacity onPress={() => onPhotoPress()}>
         <YStack
-          bc={'white'}
+          bc="white"
           w="$14"
           h="$14"
-          br={'$radius.3'}
-          shac={'black'}
+          br="$radius.3"
+          shac="black"
           shof={{
             height: 2,
             width: 0,
@@ -19,8 +19,8 @@ const ImageCard = ({ imageUri, onPhotoPress }: { imageUri: string; onPhotoPress:
           shar={3.84}
           jc="center"
           ai="center">
-          <YStack f={1} br={'$radius.3'} ov="hidden">
-            <Image aspectRatio={1} source={{ uri: imageUri }} w={'100%'} objectFit="contain" />
+          <YStack f={1} br="$radius.3" ov="hidden">
+            <Image aspectRatio={1} source={{ uri: imageUri }} w="100%" objectFit="contain" />
           </YStack>
         </YStack>
       </TouchableOpacity>

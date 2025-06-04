@@ -1,27 +1,22 @@
 import { View, Text } from 'react-native';
 
+// Create non-JSX mock components to avoid ESLint parsing issues
 const mockTamagui = {
-  Spinner: function MockSpinner(props: any) {
-    return <View testID="spinner" {...props} />;
+  Spinner: function MockSpinner(props) {
+    return View;
   },
-  Stack: function MockStack({ children, ...props }: any) {
-    return <View {...props}>{children}</View>;
+  Stack: function MockStack(props) {
+    return View;
   },
-  XStack: function MockXStack({ children, ...props }: any) {
-    return <View {...props}>{children}</View>;
+  XStack: function MockXStack(props) {
+    return View;
   },
-  YStack: function MockYStack({ children, ...props }: any) {
-    return <View {...props}>{children}</View>;
+  YStack: function MockYStack(props) {
+    return View;
   },
-  SizableText: function MockSizableText({ children, ...props }: any) {
-    return <Text {...props}>{children}</Text>;
+  SizableText: function MockSizableText(props) {
+    return Text;
   },
 };
 
-export const {
-  Spinner,
-  Stack,
-  XStack,
-  YStack,
-  SizableText,
-} = mockTamagui; 
+export const { Spinner, Stack, XStack, YStack, SizableText } = mockTamagui;

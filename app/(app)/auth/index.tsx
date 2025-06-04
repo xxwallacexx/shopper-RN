@@ -1,17 +1,17 @@
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { Link, useRouter } from 'expo-router';
 import { Platform, SafeAreaView } from 'react-native';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import FBAccessToken from 'react-native-fbsdk-next/lib/typescript/src/FBAccessToken';
 import HTMLView from 'react-native-htmlview';
-import { Button, H2, ScrollView } from 'tamagui';
+import Toast from 'react-native-toast-message';
+import { Button, H2, ScrollView, YStack } from 'tamagui';
+
 import { appleLogin, createUserTemp, facebookLogin, getShop, googleLogin } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { Container, StyledButton } from '~/tamagui.config';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import Toast from 'react-native-toast-message';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
-import FBAccessToken from 'react-native-fbsdk-next/lib/typescript/src/FBAccessToken';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
-import { YStack } from 'tamagui';
 
 const Auth = () => {
   const { t } = useLocale();
@@ -175,7 +175,7 @@ const Auth = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <Container gap="$5">
         <H2>{t('TnC')}</H2>
-        <ScrollView mah={'50%'}>
+        <ScrollView mah="50%">
           <HTMLView value={shop.terms} />
         </ScrollView>
         <Link disabled={disabled} href="/auth/signin" asChild>
@@ -204,7 +204,7 @@ const Auth = () => {
         ) : null}
         <YStack>
           <Link disabled={disabled} href="/auth/register" asChild>
-            <Button disabled={disabled} variant="outlined" color={'$primary'}>
+            <Button disabled={disabled} variant="outlined" color="$primary">
               {t('createAcc')}
             </Button>
           </Link>
@@ -214,7 +214,7 @@ const Auth = () => {
             }}
             disabled={disabled}
             variant="outlined"
-            color={'$primary'}>
+            color="$primary">
             {t('createVisitorAcc')}
           </Button>
         </YStack>

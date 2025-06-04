@@ -1,6 +1,7 @@
-import axios from 'axios';
-import { Address, User } from '~/types';
 import { API_URL, SHOP } from '@env';
+import axios from 'axios';
+
+import { Address, User } from '~/types';
 const baseUrl = API_URL;
 const shop = SHOP;
 
@@ -12,7 +13,7 @@ const getCredit = async (token: string) => {
     },
     url: `${baseUrl}/shop/${shop}/chainCredit`,
   };
-  let res: number = await axios(options).then((res) => {
+  const res: number = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -26,7 +27,7 @@ const getSelf = async (token: string) => {
     },
     url: `${baseUrl}/user/self`,
   };
-  let res: User = await axios(options).then((res) => {
+  const res: User = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -39,14 +40,14 @@ const updateSelf = async (token: string, username: string, email?: string, addre
       Authorization: `JWT ${token}`,
     },
     data: {
-      username: username,
-      email: email,
-      address: address,
+      username,
+      email,
+      address,
     },
     url: `${baseUrl}/user/self`,
   };
   return await axios(options).catch((e) => {
-    let error = new Error(e.response.data.errorCodes);
+    const error = new Error(e.response.data.errorCodes);
     throw error;
   });
 };

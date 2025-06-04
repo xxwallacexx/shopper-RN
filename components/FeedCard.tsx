@@ -1,9 +1,9 @@
 import moment from 'moment';
 import { SizableText, XStack, YStack } from 'tamagui';
-import { Feed } from '~/types';
 import BannerCarousel from './BannerCarousel';
-import { Title } from '~/tamagui.config';
 import { useLocale } from '~/hooks';
+import { Title } from '~/tamagui.config';
+import { Feed } from '~/types';
 
 const FeedCard = ({
   shopName,
@@ -24,10 +24,10 @@ const FeedCard = ({
   return (
     <YStack
       f={1}
-      bc={'white'}
+      bc="white"
       gap="$2"
-      br={'$radius.3'}
-      shac={'black'}
+      br="$radius.3"
+      shac="black"
       shof={{
         height: 2,
         width: 0,
@@ -46,10 +46,10 @@ const FeedCard = ({
       <YStack p="$2" gap="$2">
         <Title>{title}</Title>
         <XStack gap="$2">
-          <SizableText size={'$2'}>
+          <SizableText size="$2">
             {likeCount} {t('likeCount')}
           </SizableText>
-          <SizableText size={'$2'}>
+          <SizableText size="$2">
             {commentCount} {t('commentCount')}
           </SizableText>
         </XStack>

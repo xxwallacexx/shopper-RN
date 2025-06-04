@@ -1,11 +1,14 @@
-import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import axios from 'axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
 // Import the components we want to test
-import Home from '../index';
 import ProductDetail from '../../product/[productId]/index';
+import Home from '../index';
+
+// Import the API functions to mock them
+import { listProducts, getProduct, listOptions } from '~/api/product';
 
 // Mock axios
 jest.mock('axios');
@@ -26,9 +29,6 @@ jest.mock('~/api/product', () => ({
   getProduct: jest.fn(),
   listOptions: jest.fn(),
 }));
-
-// Import the API functions to mock them
-import { listProducts, getProduct, listOptions } from '~/api/product';
 
 describe('Product Flow Integration Tests', () => {
   // Create a new QueryClient for each test
@@ -95,7 +95,7 @@ describe('Product Flow Integration Tests', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    
+
     // Mock the API responses
     (listProducts as jest.Mock).mockResolvedValue(mockProducts);
     (getProduct as jest.Mock).mockResolvedValue(mockProductDetail);
@@ -202,7 +202,7 @@ describe('Product Flow Integration Tests', () => {
     jest.mock('~/api/cartItem', () => ({
       productCreateCart: jest.fn(),
     }));
-    
+
     // Mock the useCart hook
     const mockAddToCart = jest.fn();
     jest.mock('~/hooks', () => ({
@@ -231,4 +231,4 @@ describe('Product Flow Integration Tests', () => {
     // Check if addToCart was called with the correct parameters
     expect(mockAddToCart).toHaveBeenCalled();
   });
-}); 
+});

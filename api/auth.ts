@@ -1,6 +1,7 @@
-import axios from 'axios';
-import { Auth } from '~/types';
 import { API_URL, SHOP } from '@env';
+import axios from 'axios';
+
+import { Auth } from '~/types';
 const baseUrl = API_URL;
 const shop = SHOP;
 
@@ -14,12 +15,12 @@ const login = async (email: string, password: string) => {
       password,
     },
   };
-  let res: Auth = await axios(options)
+  const res: Auth = await axios(options)
     .then((res) => {
       return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
     })
     .catch((e) => {
-      let error = new Error(e.response.data.errorCodes);
+      const error = new Error(e.response.data.errorCodes);
       throw error;
     });
   return res;
@@ -34,12 +35,12 @@ const facebookLogin = async (token: string) => {
       shop,
     },
   };
-  let res: Auth = await axios(options)
+  const res: Auth = await axios(options)
     .then((res) => {
       return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
     })
     .catch((e) => {
-      let error = new Error(e.response.data.errorCodes);
+      const error = new Error(e.response.data.errorCodes);
       throw error;
     });
   return res;
@@ -62,12 +63,12 @@ const appleLogin = async (
       identityToken,
     },
   };
-  let res: Auth = await axios(options)
+  const res: Auth = await axios(options)
     .then((res) => {
       return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
     })
     .catch((e) => {
-      let error = new Error(e.response.data.errorCodes);
+      const error = new Error(e.response.data.errorCodes);
       throw error;
     });
   return res;
@@ -90,12 +91,12 @@ const googleLogin = async (
       identityToken,
     },
   };
-  let res: Auth = await axios(options)
+  const res: Auth = await axios(options)
     .then((res) => {
       return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
     })
     .catch((e) => {
-      let error = new Error(e.response.data.errorCodes);
+      const error = new Error(e.response.data.errorCodes);
       throw error;
     });
   return res;
@@ -112,12 +113,12 @@ const createUser = async (username: string, email: string, password: string) => 
       shop,
     },
   };
-  let res: Auth = await axios(options)
+  const res: Auth = await axios(options)
     .then((res) => {
       return { token: res.data.token, tokenExpAt: res.data.tokenExpAt };
     })
     .catch((e) => {
-      let error = new Error(e.response.data.errorCodes);
+      const error = new Error(e.response.data.errorCodes);
       throw error;
     });
   return res;
@@ -131,7 +132,7 @@ const createUserTemp = async () => {
       shop,
     },
   };
-  let res: Auth = await axios(options).then((res) => {
+  const res: Auth = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -144,7 +145,7 @@ const resetPassword = async (token: string, password: string) => {
       Authorization: `JWT ${token}`,
     },
     data: {
-      password: password,
+      password,
     },
     url: `${baseUrl}/user/resetPassword`,
   };

@@ -84,8 +84,8 @@ const AnimatedTabs = ({
       activationMode="manual"
       br="$4"
       pos="relative"
-      w={'100%'}
-      bc={'#fff'}>
+      w="100%"
+      bc="#fff">
       <YStack>
         <AnimatePresence>
           {intentAt && <TabsRovingIndicator w={intentAt.width} h="$0.5" x={intentAt.x} b={0} />}
@@ -112,7 +112,7 @@ const AnimatedTabs = ({
             return (
               <Tabs.Tab
                 key={t.value}
-                bc={'$colorTransparent'}
+                bc="$colorTransparent"
                 py="$2"
                 px="$3"
                 f={1}
