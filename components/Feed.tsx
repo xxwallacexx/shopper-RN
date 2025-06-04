@@ -1,13 +1,14 @@
+import { AntDesign, EvilIcons } from '@expo/vector-icons';
+import { tokens } from '@tamagui/themes';
 import moment from 'moment';
 import { TouchableOpacity } from 'react-native';
+import HTMLView from 'react-native-htmlview';
 import { Separator, SizableText, XStack, YStack } from 'tamagui';
+
 import { BannerCarousel } from '~/components';
+import { useLocale } from '~/hooks';
 import { Title } from '~/tamagui.config';
 import { Feed as TFeed } from '~/types';
-import HTMLView from 'react-native-htmlview';
-import { AntDesign, EvilIcons } from '@expo/vector-icons';
-import { useLocale } from '~/hooks';
-import { tokens } from '@tamagui/themes';
 
 const Feed = ({
   liked,

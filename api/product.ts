@@ -1,4 +1,6 @@
+import { API_URL, SHOP } from '@env';
 import axios from 'axios';
+
 import {
   Category,
   CheckoutCoupon,
@@ -13,7 +15,6 @@ import {
   ProductPriceDetail,
   UserCoupon,
 } from '~/types';
-import { API_URL, SHOP } from '@env';
 const baseUrl = API_URL;
 const shop = SHOP;
 
@@ -22,11 +23,11 @@ const listCategories = async () => {
     method: 'get',
     url: `${baseUrl}/category`,
     params: {
-      shop: shop,
+      shop,
       status: 'ACTIVE',
     },
   };
-  let res: Category[] = await axios(options)
+  const res: Category[] = await axios(options)
     .then((res) => {
       return res.data;
     })
@@ -49,8 +50,8 @@ const listProducts = async (
     method: 'get',
     url: `${baseUrl}/product`,
     params: {
-      shop: shop,
-      skip: skip,
+      shop,
+      skip,
       limit: 10,
       status: 'ACTIVE',
       isRecommended,
@@ -61,7 +62,7 @@ const listProducts = async (
       shopType,
     },
   };
-  let res: Product[] = await axios(options)
+  const res: Product[] = await axios(options)
     .then((res) => {
       return res.data.products;
     })
@@ -77,7 +78,7 @@ const getProduct = async (id: string) => {
     url: `${baseUrl}/product/${id}`,
   };
 
-  let res: Product = await axios(options).then((res) => {
+  const res: Product = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -93,7 +94,7 @@ const listOptions = async (id: string) => {
     url: `${baseUrl}/product/${id}/options`,
   };
 
-  let res: Option[] = await axios(options).then((res) => {
+  const res: Option[] = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -116,7 +117,7 @@ const getProductPriceDetail = async (
       currentCouponId,
     },
   };
-  let res: ProductPriceDetail = await axios(options).then((res) => {
+  const res: ProductPriceDetail = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -141,7 +142,7 @@ const getProductTotalPrice = async (
       currentCouponId,
     },
   };
-  let res = axios(options).then((res) => {
+  const res = axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -164,7 +165,7 @@ const getProductCheckoutItemsDetail = async (
       currentCouponId,
     },
   };
-  let res: { product: CheckoutProduct; coupon: CheckoutCoupon } = await axios(options).then(
+  const res: { product: CheckoutProduct; coupon: CheckoutCoupon } = await axios(options).then(
     (res) => {
       return res.data;
     }
@@ -183,7 +184,7 @@ const getProductStock = async (token: string, productId: string, choices?: strin
     },
     url: `${baseUrl}/product/${productId}/getStockByChoices`,
   };
-  let res = await axios(options).then((res) => {
+  const res = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -197,7 +198,7 @@ const getProductIsBookmarked = async (token: string, productId: string) => {
     },
     url: `${baseUrl}/product/${productId}/isBookmarked`,
   };
-  let res: boolean = await axios(options).then((res) => {
+  const res: boolean = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -252,10 +253,10 @@ const listProductAvailableCoupons = async (
     },
     url: `${baseUrl}/product/${id}/availableCoupons`,
     data: {
-      orderContent: orderContent,
+      orderContent,
     },
   };
-  let res: UserCoupon[] = await axios(options)
+  const res: UserCoupon[] = await axios(options)
     .then((res) => {
       return res.data;
     })
@@ -288,12 +289,12 @@ const listProductComments = async (id: string, skip: number) => {
   const options = {
     method: 'get',
     params: {
-      skip: skip,
+      skip,
       limit: 10,
     },
     url: `${baseUrl}/product/${id}/comment`,
   };
-  let res: ProductComment[] = await axios(options).then((res) => {
+  const res: ProductComment[] = await axios(options).then((res) => {
     return res.data.productComments;
   });
   return res;

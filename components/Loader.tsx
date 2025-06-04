@@ -1,4 +1,5 @@
 import { SizableText, Spinner, Stack, XStack, YStack } from 'tamagui';
+
 import { useLocale } from '~/hooks/useLocale';
 
 const Loader = ({ text }: { text?: string }) => {
@@ -6,8 +7,8 @@ const Loader = ({ text }: { text?: string }) => {
 
   return (
     <YStack ai="center">
-      <Stack w={'$12'}></Stack>
-      <XStack jc="center" w="100%" gap={'$2'}>
+      <Stack w="$12" />
+      <XStack jc="center" w="100%" gap="$2">
         <Spinner />
         <SizableText>{text ? text : t('loading')}</SizableText>
       </XStack>

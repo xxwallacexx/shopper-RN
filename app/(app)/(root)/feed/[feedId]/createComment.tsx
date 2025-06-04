@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-toast-message';
 import { SizableText, YStack, Image, Separator, ScrollView, TextArea } from 'tamagui';
+
 import { createFeedComment, getSelf } from '~/api';
 import { ImageCard, ImageInput } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -23,7 +23,7 @@ const CreateFeedComment = () => {
 
   const { isPending: isCreateCommentSubmitting, mutate: createCommentMutate } = useMutation({
     mutationFn: async () => {
-      let formData = new FormData();
+      const formData = new FormData();
       for (const photo of photos) {
         const filename = photo.split('/').pop();
         if (!filename) return;
@@ -33,7 +33,7 @@ const CreateFeedComment = () => {
         formData.append('photos', {
           uri: photo,
           name: filename,
-          type: type,
+          type,
         });
       }
       formData.append('comment', comment);
@@ -61,13 +61,13 @@ const CreateFeedComment = () => {
   if (!user) return <></>;
 
   const onImageInputChange = (value: string) => {
-    let _photos = [...photos];
+    const _photos = [...photos];
     _photos.push(value);
     setPhotos(_photos);
   };
 
   const onImageRemove = (index: number) => {
-    let _photos = [...photos];
+    const _photos = [...photos];
     _photos.splice(index, 1);
     setPhotos(_photos);
   };
@@ -78,10 +78,10 @@ const CreateFeedComment = () => {
       style={{ backgroundColor: 'white', flex: 1, width: '100%' }}>
       <ScrollView f={1} contentContainerStyle={{ ai: 'center' }}>
         <YStack w="100%" ai="center" gap="$2">
-          <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} w={'20%'} />
+          <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} w="20%" />
           <SizableText>{user?.username}</SizableText>
         </YStack>
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <ScrollView
           w="100%"
           contentContainerStyle={{
@@ -103,12 +103,12 @@ const CreateFeedComment = () => {
           })}
           {photos.length < 6 ? <ImageInput onChange={onImageInputChange} /> : null}
         </ScrollView>
-        <Separator w={'90%'} />
+        <Separator w="90%" />
         <TextArea
           autoCorrect={false}
           autoCapitalize="none"
           w="90%"
-          size={'$4'}
+          size="$4"
           value={comment}
           onChangeText={(value) => {
             setComment(value);

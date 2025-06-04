@@ -1,6 +1,6 @@
+import { API_URL, SHOP } from '@env';
 import axios from 'axios';
 
-import { API_URL, SHOP } from '@env';
 import {
   Reservation,
   UserCoupon,
@@ -26,15 +26,15 @@ const listReservations = async (
     },
     url: `${baseUrl}/reservation`,
     params: {
-      productId: productId,
-      skip: skip,
-      timeMin: timeMin,
-      timeMax: timeMax,
+      productId,
+      skip,
+      timeMin,
+      timeMax,
       limit: 0,
       'status[]': 'ACTIVE',
     },
   };
-  let res: Reservation[] = await axios(options).then((res) => {
+  const res: Reservation[] = await axios(options).then((res) => {
     return res.data.reservations;
   });
   return res;
@@ -55,7 +55,7 @@ const listReservationAvailableCoupons = async (
       reservationContent,
     },
   };
-  let res: UserCoupon[] = await axios(options)
+  const res: UserCoupon[] = await axios(options)
     .then((res) => {
       return res.data;
     })
@@ -82,7 +82,7 @@ const getReservationTotalPrice = async (
       currentCouponId,
     },
   };
-  let res: number = await axios(options).then((res) => {
+  const res: number = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -96,7 +96,7 @@ const getReservation = async (token: string, id: string) => {
     },
     url: `${baseUrl}/reservation/${id}`,
   };
-  let res: Reservation = await axios(options).then((res) => {
+  const res: Reservation = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -126,7 +126,7 @@ const createReservationOrder = async (
       paymentMethod,
     },
   };
-  let res: Order = await axios(options)
+  const res: Order = await axios(options)
     .then((res) => {
       return res.data;
     })

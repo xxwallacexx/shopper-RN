@@ -26,17 +26,17 @@ const ProductCommentCard = ({
   onActionPress: () => void;
 }) => {
   return (
-    <YStack p="$1" gap="$2" bg="white" br={'$radius.3'}>
+    <YStack p="$1" gap="$2" bg="white" br="$radius.3">
       <XStack jc="space-between">
         <XStack gap="$2">
           <YStack gap="$2" jc="center" ai="center">
             <Stack w="$6" h="$6">
-              <Image aspectRatio={1} source={{ uri: userAvatar }} w={'100%'} objectFit="contain" />
+              <Image aspectRatio={1} source={{ uri: userAvatar }} w="100%" objectFit="contain" />
             </Stack>
             <SizableText>{username}</SizableText>
           </YStack>
           <YStack gap="$2">
-            <SizableText size={'$2'}>{moment(createdAt).format('YYYY-MM-DD')}</SizableText>
+            <SizableText size="$2">{moment(createdAt).format('YYYY-MM-DD')}</SizableText>
             <StarRatingDisplay starSize={24} rating={rating} />
           </YStack>
         </XStack>
@@ -48,17 +48,17 @@ const ProductCommentCard = ({
       </XStack>
       <FlatList
         data={photos}
-        horizontal={true}
+        horizontal
         contentContainerStyle={{ gap: 16 }}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity onPress={() => onPhotoPress(item)}>
               <YStack
-                bc={'white'}
+                bc="white"
                 w="$14"
                 h="$14"
-                br={'$radius.3'}
-                shac={'black'}
+                br="$radius.3"
+                shac="black"
                 shof={{
                   height: 2,
                   width: 0,
@@ -67,13 +67,8 @@ const ProductCommentCard = ({
                 shar={3.84}
                 jc="center"
                 ai="center">
-                <YStack f={1} br={'$radius.3'} ov="hidden">
-                  <Image
-                    aspectRatio={1}
-                    source={{ uri: item }}
-                    width={'100%'}
-                    objectFit="contain"
-                  />
+                <YStack f={1} br="$radius.3" ov="hidden">
+                  <Image aspectRatio={1} source={{ uri: item }} width="100%" objectFit="contain" />
                 </YStack>
               </YStack>
             </TouchableOpacity>

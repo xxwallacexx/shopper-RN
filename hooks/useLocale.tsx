@@ -1,5 +1,5 @@
-import { Scope, TranslateOptions } from "i18n-js";
-import { createContext, useContext } from "react";
+import { Scope, TranslateOptions } from 'i18n-js';
+import { createContext, useContext } from 'react';
 
 export const LocaleContext = createContext<{
   t: <T = string>(scope: Scope, options?: TranslateOptions) => string | T;

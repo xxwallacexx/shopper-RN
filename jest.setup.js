@@ -151,7 +151,6 @@ jest.mock('tamagui', () => {
     getVariableName: () => '',
     getVariableValue: () => '',
     createFont: () => ({}),
-    createTamagui: () => ({}),
     createTokens: () => ({}),
     createVariables: () => ({}),
     isVariable: () => false,

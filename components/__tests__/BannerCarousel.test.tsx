@@ -1,4 +1,5 @@
 import React from 'react';
+
 import BannerCarousel from '../BannerCarousel';
 
 // Mock React hooks
@@ -51,14 +52,14 @@ jest.mock('../Video', () => jest.fn(() => null));
 
 describe('BannerCarousel', () => {
   const mockBanners = [
-    { 
-      type: 'IMAGE' as const, 
-      uri: 'https://example.com/banner1.jpg'
+    {
+      type: 'IMAGE' as const,
+      uri: 'https://example.com/banner1.jpg',
     },
-    { 
-      type: 'IMAGE' as const, 
-      uri: 'https://example.com/banner2.jpg'
-    }
+    {
+      type: 'IMAGE' as const,
+      uri: 'https://example.com/banner2.jpg',
+    },
   ];
 
   beforeEach(() => {
@@ -68,7 +69,7 @@ describe('BannerCarousel', () => {
   it('should render without errors', () => {
     expect(() => {
       BannerCarousel({
-        banners: mockBanners
+        banners: mockBanners,
       });
     }).not.toThrow();
   });
@@ -76,8 +77,8 @@ describe('BannerCarousel', () => {
   it('should render with empty banners without errors', () => {
     expect(() => {
       BannerCarousel({
-        banners: []
+        banners: [],
       });
     }).not.toThrow();
   });
-}); 
+});

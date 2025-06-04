@@ -1,4 +1,6 @@
+import { API_URL, SHOP } from '@env';
 import axios from 'axios';
+
 import {
   AvailabelCoupon,
   CartItem,
@@ -9,7 +11,6 @@ import {
   PriceDetail,
   ReservationContent,
 } from '~/types';
-import { API_URL, SHOP } from '@env';
 const baseUrl = API_URL;
 const shop = SHOP;
 
@@ -21,10 +22,10 @@ const listCartItems = async (token: string) => {
     },
     url: `${baseUrl}/cartItem`,
     params: {
-      shop: shop,
+      shop,
     },
   };
-  let res: CartItem[] = await axios(options).then((res) => {
+  const res: CartItem[] = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -39,7 +40,7 @@ const countCartitem = async (token: string) => {
     url: `${baseUrl}/cartItem/count`,
   };
 
-  let res: number = await axios(options).then((res) => {
+  const res: number = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -98,7 +99,7 @@ const cartItemGetTotalPrice = async (
       deliveryMethod,
     },
   };
-  let res: number = await axios(options).then((res) => {
+  const res: number = await axios(options).then((res) => {
     return res.data;
   });
 
@@ -123,7 +124,7 @@ const cartItemGetPriceDetail = async (
     },
   };
 
-  let res: PriceDetail = await axios(options).then((res) => {
+  const res: PriceDetail = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -136,7 +137,7 @@ const updateCartItem = async (token: string, id: string, orderContent: OrderCont
       Authorization: `JWT ${token}`,
     },
     data: {
-      orderContent: orderContent,
+      orderContent,
     },
     url: `${baseUrl}/cartItem/${id}`,
   };
@@ -162,10 +163,10 @@ const cartItemListAvailableCoupons = async (token: string, id: string, quantity:
     },
     url: `${baseUrl}/cartItem/${id}/availableCoupons`,
     params: {
-      quantity: quantity,
+      quantity,
     },
   };
-  let res: AvailabelCoupon[] = await axios(options).then((res) => {
+  const res: AvailabelCoupon[] = await axios(options).then((res) => {
     return res.data;
   });
   return res;

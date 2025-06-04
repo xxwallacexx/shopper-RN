@@ -1,6 +1,7 @@
-import axios from 'axios';
-import { ProductComment } from '~/types';
 import { API_URL } from '@env';
+import axios from 'axios';
+
+import { ProductComment } from '~/types';
 const baseUrl = API_URL;
 
 const getProductComment = async (id: string) => {
@@ -8,7 +9,7 @@ const getProductComment = async (id: string) => {
     method: 'get',
     url: `${baseUrl}/productComment/${id}`,
   };
-  let res: ProductComment = await axios(options).then((res) => {
+  const res: ProductComment = await axios(options).then((res) => {
     return res.data;
   });
   return res;

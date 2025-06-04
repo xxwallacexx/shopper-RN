@@ -15,24 +15,24 @@ const AddressForm = ({
       <Label>{t('room')}</Label>
       <Input
         autoCapitalize="none"
-        brc={'lightgrey'}
-        bc={'whitesmoke'}
+        brc="lightgrey"
+        bc="whitesmoke"
         value={address?.room}
         onChangeText={(value) => onChange('room', value)}
       />
       <Label>{t('streetName')}</Label>
       <Input
         autoCapitalize="none"
-        brc={'lightgrey'}
-        bc={'whitesmoke'}
+        brc="lightgrey"
+        bc="whitesmoke"
         value={address?.street}
         onChangeText={(value) => onChange('street', value)}
       />
       <Label>{t('district')}</Label>
       <Input
         autoCapitalize="none"
-        brc={'lightgrey'}
-        bc={'whitesmoke'}
+        brc="lightgrey"
+        bc="whitesmoke"
         value={address?.district}
         onChangeText={(value) => onChange('district', value)}
       />

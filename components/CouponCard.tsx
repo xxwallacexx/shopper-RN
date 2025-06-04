@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { Image, SizableText, Text, YStack } from 'tamagui';
+
 import { useLocale } from '~/hooks';
 import { Badge } from '~/tamagui.config';
 
@@ -18,11 +19,11 @@ const CouponCard = ({
 
   return (
     <YStack
-      bc={'white'}
+      bc="white"
       f={1}
       p="$4"
-      br={'$radius.3'}
-      shac={'black'}
+      br="$radius.3"
+      shac="black"
       shof={{
         height: 2,
         width: 0,
@@ -32,7 +33,7 @@ const CouponCard = ({
       <Image
         aspectRatio={1}
         source={{ uri: imageUri }}
-        w={'100%'}
+        w="100%"
         objectFit="contain"
         borderRadius={4}
       />
@@ -41,7 +42,7 @@ const CouponCard = ({
           {t('couponCredit', { credit })}
         </SizableText>
       </Badge>
-      <Text fos={'$2'} col="slategrey" numberOfLines={1} ellipsizeMode="tail">
+      <Text fos="$2" col="slategrey" numberOfLines={1} ellipsizeMode="tail">
         {moment(endDate).format('YYYY-MM-DD HH:mm')}
       </Text>
       <SizableText numberOfLines={1} ellipsizeMode="tail">

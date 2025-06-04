@@ -1,8 +1,9 @@
+import { PRIMARY_COLOR } from '@env';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 import { TouchableOpacity } from 'react-native';
+
 import { useLocale } from '~/hooks';
-import { PRIMARY_COLOR } from '@env';
 
 export default function Layout() {
   const { t } = useLocale();
@@ -24,7 +25,7 @@ export default function Layout() {
               onPress={() => {
                 return navigation.toggleDrawer();
               }}>
-              <MaterialIcons name="menu" size={24} color={'#fff'} />
+              <MaterialIcons name="menu" size={24} color="#fff" />
             </TouchableOpacity>
           );
         },

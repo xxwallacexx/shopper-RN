@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from 'expo-router';
+import { Formik } from 'formik';
+import Toast from 'react-native-toast-message';
 import { Form, Input, Label, Text, YStack } from 'tamagui';
+import * as Yup from 'yup';
+
 import { getSelf, updateSelf } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
-import Toast from 'react-native-toast-message';
-import { useNavigation } from 'expo-router';
 import { Address } from '~/types';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
 
 type Values = {
   username: string;
@@ -84,7 +85,7 @@ const EditUsername = () => {
               <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('username')}</Label>
                 <Input
-                  autoCapitalize={'none'}
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
@@ -92,11 +93,11 @@ const EditUsername = () => {
                   disabled={isSubmitting}
                   value={values.username}
                   placeholder={t('username')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('username')}
                 />
                 {errors.username ? (
-                  <Text col="$red10" fos={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.username}
                   </Text>
                 ) : null}

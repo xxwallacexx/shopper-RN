@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ProductCard from '../ProductCard';
 
 // Mock dependencies
@@ -46,4 +47,4 @@ describe('ProductCard', () => {
       });
     }).not.toThrow();
   });
-}); 
+});

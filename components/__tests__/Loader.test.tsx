@@ -1,5 +1,7 @@
 import React from 'react';
+
 import Loader from '../Loader';
+
 import { useLocale } from '~/hooks/useLocale';
 
 // Mock dependencies
@@ -20,7 +22,7 @@ describe('Loader', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useLocale as jest.Mock).mockReturnValue({
-      t: (key: string) => key === 'loading' ? 'Loading...' : key,
+      t: (key: string) => (key === 'loading' ? 'Loading...' : key),
     });
   });
 
@@ -38,4 +40,4 @@ describe('Loader', () => {
     // Since we're not rendering, just verify the component structure
     expect(useLocale).toHaveBeenCalled();
   });
-}); 
+});

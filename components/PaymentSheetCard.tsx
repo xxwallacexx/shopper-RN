@@ -2,6 +2,7 @@ import { CardField, PlatformPay, PlatformPayButton } from '@stripe/stripe-react-
 import { Details } from '@stripe/stripe-react-native/lib/typescript/src/types/components/CardFieldInput';
 import { Platform } from 'react-native';
 import { Separator, SizableText, Spinner, XStack, YStack } from 'tamagui';
+
 import { useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
 
@@ -45,7 +46,7 @@ const PaymentSheetCard = ({
       <StyledButton onPress={onCardPaymentPress} disabled={cardPaymentDisabled}>
         <XStack gap="$2">
           {isLoading ? <Spinner size="small" /> : null}
-          <SizableText col={'white'}>{t('confirm')}</SizableText>
+          <SizableText col="white">{t('confirm')}</SizableText>
         </XStack>
       </StyledButton>
 

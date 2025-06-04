@@ -1,5 +1,6 @@
-import axios from 'axios';
 import { API_URL, SHOP } from '@env';
+import axios from 'axios';
+
 import { Feed, FeedComment } from '~/types';
 const baseUrl = API_URL;
 const shop = SHOP;
@@ -15,7 +16,7 @@ const listFeeds = async (skip: number) => {
       'status[]': 'ACTIVE',
     },
   };
-  let res: Feed[] = await axios(options).then((res) => {
+  const res: Feed[] = await axios(options).then((res) => {
     return res.data.feeds;
   });
   return res;
@@ -26,7 +27,7 @@ const getFeed = async (id: string) => {
     method: 'get',
     url: `${baseUrl}/feed/${id}`,
   };
-  let res: Feed = await axios(options).then((res) => {
+  const res: Feed = await axios(options).then((res) => {
     return res.data;
   });
   return res;
@@ -41,7 +42,7 @@ const listFeedComments = async (id: string, skip: number) => {
     },
     url: `${baseUrl}/feed/${id}/comment`,
   };
-  let res: FeedComment[] = await axios(options).then((res) => {
+  const res: FeedComment[] = await axios(options).then((res) => {
     return res.data.feedComments;
   });
   return res;
@@ -56,7 +57,7 @@ const getFeedLike = async (token: string, id: string) => {
     url: `${baseUrl}/feed/${id}/like`,
   };
 
-  let res: boolean = await axios(options).then((res) => {
+  const res: boolean = await axios(options).then((res) => {
     return res.data;
   });
   return res;

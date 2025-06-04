@@ -1,6 +1,12 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
+import { Skeleton } from 'moti/skeleton';
+import { useEffect, useState } from 'react';
 import { FlatList, SectionList, SafeAreaView } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { YStack, SizableText, Text, Stack, XStack } from 'tamagui';
+
 import {
   cartItemGetTotalPrice,
   listCartItems,
@@ -10,17 +16,12 @@ import {
   removeCartItem,
   cartItemListAvailableCoupons,
 } from '~/api';
+import { OrderCartItemCard, Spinner, StoreCard } from '~/components';
+import ActionSheet from '~/components/ActionSheet';
+import ReservationCartItemCard from '~/components/ReservationCartItemCard';
 import { useAuth, useLocale } from '~/hooks';
 import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
-import { OrderCartItemCard, Spinner, StoreCard } from '~/components';
 import { AvailabelCoupon, CartItem, DeliveryMethodEnum, OrderContent } from '~/types';
-import Toast from 'react-native-toast-message';
-import ReservationCartItemCard from '~/components/ReservationCartItemCard';
-import ActionSheet from '~/components/ActionSheet';
-import { useEffect, useState } from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Skeleton } from 'moti/skeleton';
 
 const Carts = () => {
   const { t } = useLocale();
@@ -39,7 +40,7 @@ const Carts = () => {
   const { data: cartItems = [], refetch: refetchCartItems } = useQuery({
     queryKey: [`cartItems`, token],
     queryFn: async () => {
-      let res: CartItem[] = await listCartItems(token);
+      const res: CartItem[] = await listCartItems(token);
       checkCouponsAvailability(res);
       return res;
     },
@@ -180,7 +181,7 @@ const Carts = () => {
   if (!shop) return <></>;
 
   const onDeductPress = (itemId: string) => {
-    let cartItem = cartItems.find((c) => {
+    const cartItem = cartItems.find((c) => {
       return c._id == itemId;
     });
     if (!cartItem) return;
@@ -195,7 +196,7 @@ const Carts = () => {
   };
 
   const onAddPress = (itemId: string) => {
-    let cartItem = cartItems.find((c) => {
+    const cartItem = cartItems.find((c) => {
       return c._id == itemId;
     });
     if (!cartItem) return;
@@ -214,7 +215,7 @@ const Carts = () => {
   };
 
   const onAvailableCouponPress = (itemId: string) => {
-    let cartItem = cartItems.find((c) => {
+    const cartItem = cartItems.find((c) => {
       return c._id == itemId;
     });
     if (!cartItem) return;
@@ -264,7 +265,7 @@ const Carts = () => {
     }
 
     return (
-      <Stack m={'$2'}>
+      <Stack m="$2">
         <OrderCartItemCard
           testID={`cart-item-${index}`}
           photoUri={photos[0]}
@@ -297,7 +298,7 @@ const Carts = () => {
     if (!reservation) return;
     let totalPrice = 0;
     let singleItemPrice = 0;
-    let photos = item.product.photos.map((f) => {
+    const photos = item.product.photos.map((f) => {
       return f.path;
     });
 
@@ -313,7 +314,7 @@ const Carts = () => {
     //to-do
     //coupon discount
     return (
-      <Stack m={'$2'}>
+      <Stack m="$2">
         <ReservationCartItemCard
           photoUri={photos[0]}
           totalPrice={totalPrice}
@@ -369,22 +370,22 @@ const Carts = () => {
             <StoreCard logo={shop.logo} name={shop.name} address={shop.address} />
             {!cartItems.length ? (
               <Container pt="$8" ai="center">
-                <MaterialCommunityIcons name="cart-plus" size={120} color={'#666'} />
+                <MaterialCommunityIcons name="cart-plus" size={120} color="#666" />
                 <Title>{t('emptyCart')}</Title>
               </Container>
             ) : (
               <>
                 {orders.length ? (
-                  <YStack f={1} space={'$2'}>
+                  <YStack f={1} space="$2">
                     {includeDelivery && isPriceDetailFetching ? (
-                      <Skeleton height={46} colorMode="light" width={'100%'} />
+                      <Skeleton height={46} colorMode="light" width="100%" />
                     ) : (
                       <SizableText h={46}>{shippingFeeHints}</SizableText>
                     )}
-                    <Text fos={'$7'}>{t('orders')}</Text>
+                    <Text fos="$7">{t('orders')}</Text>
                     <FlatList
                       scrollEnabled={false}
-                      key={'orderList'}
+                      key="orderList"
                       data={orders}
                       renderItem={renderOrder}
                       keyExtractor={(item, index) => item._id + index.toString()}
@@ -393,10 +394,10 @@ const Carts = () => {
                 ) : null}
                 {reservations.length ? (
                   <YStack f={1}>
-                    <Text fos={'$7'}>{t('reservationOrders')}</Text>
+                    <Text fos="$7">{t('reservationOrders')}</Text>
                     <FlatList
                       scrollEnabled={false}
-                      key={'reservationList'}
+                      key="reservationList"
                       data={reservations}
                       renderItem={renderReservation}
                       keyExtractor={(item, index) => item._id + index.toString()}
@@ -414,7 +415,7 @@ const Carts = () => {
 
   const onCouponPress = (coupon: AvailabelCoupon) => {
     if (!selectedCartItemId) return;
-    let _selectedCoupons = [...selectedCoupons];
+    const _selectedCoupons = [...selectedCoupons];
 
     const index = _selectedCoupons.findIndex((c) => {
       return c.cartItemId == selectedCartItemId;
@@ -467,12 +468,15 @@ const Carts = () => {
       <BottomAction jc="space-between">
         <>
           {isTotalPriceFetching ? (
-            <Skeleton width={'30%'} height={12} colorMode="light" />
+            <Skeleton width="30%" height={12} colorMode="light" />
           ) : (
             <SizableText testID="cart-total-price"> {`HK$ ${totalPrice?.toFixed(1)}`}</SizableText>
           )}
         </>
-        <StyledButton testID="checkout-button" onPress={onCheckoutPress} disabled={cartItems.length == 0}>
+        <StyledButton
+          testID="checkout-button"
+          onPress={onCheckoutPress}
+          disabled={cartItems.length == 0}>
           {t('checkout')}
         </StyledButton>
       </BottomAction>
@@ -503,7 +507,7 @@ const Carts = () => {
             const selected = selectedCouponIds.includes(item._id);
             return (
               <StyledButton
-                my={'$2'}
+                my="$2"
                 bg={selected ? '$primary' : 'slategrey'}
                 onPress={() => onCouponPress(item)}>
                 {item.coupon.name}
@@ -529,7 +533,7 @@ const Carts = () => {
                 <MaterialCommunityIcons
                   name="ticket-confirmation-outline"
                   size={120}
-                  color={'#666'}
+                  color="#666"
                 />
                 <Title>{t('noCoupon')}</Title>
               </Container>

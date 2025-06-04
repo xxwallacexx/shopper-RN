@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useRouter } from 'expo-router';
 import { RefreshControl, SafeAreaView, SectionList, TouchableOpacity } from 'react-native';
 import { H2, SizableText, YStack, Image, XStack } from 'tamagui';
+
 import { getSelf, getShop, removeUser } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { DeliveryMethodEnum } from '~/types';
@@ -28,14 +29,14 @@ const Info = () => {
 
   let address = '';
   if (user?.address) {
-    let addressToken = [];
+    const addressToken = [];
     addressToken.push(user.address.room);
     addressToken.push(user.address.street);
     addressToken.push(user.address.district);
     address = addressToken.join(', ');
   }
 
-  let editList = [
+  const editList = [
     { label: t('username'), value: user?.username, screen: 'editUsername' },
     { label: t('email'), value: user?.email, screen: 'editEmail' },
     { label: t('changePassword'), value: null, screen: 'editPassword' },
@@ -69,7 +70,7 @@ const Info = () => {
       case 'main':
         return (
           <YStack gap="$2" p="$2" ai="center">
-            <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} w={'20%'} />
+            <Image objectFit="contain" aspectRatio={1} source={{ uri: user?.avatar }} w="20%" />
             <SizableText>{user?.username}</SizableText>
           </YStack>
         );
@@ -80,8 +81,8 @@ const Info = () => {
               return (
                 <Link key={l.label} href={`/profile/${l.screen}`} asChild>
                   <TouchableOpacity>
-                    <XStack jc="space-between" p="$2" bbw="$0.5" boc={'lightslategrey'}>
-                      <SizableText col={'lightslategrey'}>{l.label}</SizableText>
+                    <XStack jc="space-between" p="$2" bbw="$0.5" boc="lightslategrey">
+                      <SizableText col="lightslategrey">{l.label}</SizableText>
                       <SizableText col="lightslategrey">{l.value}</SizableText>
                     </XStack>
                   </TouchableOpacity>
@@ -92,13 +93,13 @@ const Info = () => {
               onPress={() => {
                 return removeUserMutate();
               }}>
-              <XStack jc="space-between" p="$2" bbw="$0.5" boc={'lightslategrey'}>
-                <SizableText col={'lightslategrey'}>{t('removeUser')}</SizableText>
+              <XStack jc="space-between" p="$2" bbw="$0.5" boc="lightslategrey">
+                <SizableText col="lightslategrey">{t('removeUser')}</SizableText>
               </XStack>
             </TouchableOpacity>
             <TouchableOpacity onPress={onSignout}>
-              <XStack jc="space-between" p="$2" bbw="$0.5" boc={'lightslategrey'}>
-                <SizableText col={'lightslategrey'}>{t('signout')}</SizableText>
+              <XStack jc="space-between" p="$2" bbw="$0.5" boc="lightslategrey">
+                <SizableText col="lightslategrey">{t('signout')}</SizableText>
               </XStack>
             </TouchableOpacity>
           </>

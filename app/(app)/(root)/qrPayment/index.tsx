@@ -1,6 +1,7 @@
 import { SHOP } from '@env';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+
 import { QRCodeScanner } from '~/components';
 
 const QRPayment = () => {

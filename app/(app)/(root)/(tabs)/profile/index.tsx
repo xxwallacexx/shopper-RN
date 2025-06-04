@@ -4,8 +4,8 @@ import { Link, useRouter } from 'expo-router';
 import moment from 'moment';
 import { useState } from 'react';
 import { FlatList, SafeAreaView, SectionList, TouchableOpacity } from 'react-native';
-import { ScrollView, Stack } from 'tamagui';
-import { Image, YStack, SizableText, AnimatePresence } from 'tamagui';
+import { ScrollView, Stack, Image, YStack, SizableText, AnimatePresence } from 'tamagui';
+
 import { getSelf, listBookmarks, listUserCoupon, listOrders } from '~/api';
 import { AnimatedTabs, CouponCard, ProductCard, ActionSheet, Loader } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -145,7 +145,7 @@ const Profile = () => {
 
   const renderOrder = ({ item }: { item: Order }) => {
     const { _id, products, createdAt, reservations, shippingFee, price } = item;
-    let totalProducts = products.reduce((acc, f) => {
+    const totalProducts = products.reduce((acc, f) => {
       return acc + f.quantity;
     }, 0);
     const ashippingFee = shippingFee ?? 0;
@@ -154,12 +154,12 @@ const Profile = () => {
         <TouchableOpacity>
           <YStack
             f={1}
-            bc={'white'}
-            p={'$2'}
-            m={'$2'}
+            bc="white"
+            p="$2"
+            m="$2"
             gap="$1"
-            br={'$radius.3'}
-            shac={'black'}
+            br="$radius.3"
+            shac="black"
             shof={{
               height: 2,
               width: 0,
@@ -171,7 +171,7 @@ const Profile = () => {
             </SizableText>
             <SizableText numberOfLines={1}>
               {t('orderSummary', {
-                totalProducts: totalProducts,
+                totalProducts,
                 totalReservations: reservations.length,
                 shippingFee: ashippingFee,
                 price,
@@ -210,7 +210,7 @@ const Profile = () => {
               }
               return (
                 <Container ai="center">
-                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <AntDesign name="folderopen" size={120} color="#666" />
                   <Title>{t('emptyBookmark')}</Title>
                 </Container>
               );
@@ -242,7 +242,7 @@ const Profile = () => {
               }
               return (
                 <Container ai="center">
-                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <AntDesign name="folderopen" size={120} color="#666" />
                   <Title>{t('emptyCoupon')}</Title>
                 </Container>
               );
@@ -268,7 +268,7 @@ const Profile = () => {
               }
               return (
                 <Container ai="center">
-                  <AntDesign name="folderopen" size={120} color={'#666'} />
+                  <AntDesign name="folderopen" size={120} color="#666" />
                   <Title>{t('emptyOrderHistory')}</Title>
                 </Container>
               );
@@ -291,8 +291,8 @@ const Profile = () => {
                 onPress={() => {
                   setIsGuestUserAlertSheetOpen(true);
                 }}
-                bc={'red'}
-                w={'80%'}>
+                bc="red"
+                w="80%">
                 <SizableText col="#fff">{t('tempAcc')}</SizableText>
               </StyledButton>
             ) : null}
@@ -304,7 +304,7 @@ const Profile = () => {
                   objectFit="contain"
                   aspectRatio={1}
                   source={{ uri: user?.avatar }}
-                  width={'20%'}
+                  width="20%"
                 />
                 <SizableText>{user?.username}</SizableText>
               </YStack>
@@ -369,7 +369,7 @@ const Profile = () => {
         sheetPosition={sheetPosition}
         setSheetPosition={setSheetPoistion}>
         <ScrollView>
-          <YStack gap={'$4'}>
+          <YStack gap="$4">
             <StyledButton onPress={onQRPaymentPress}>{t('QRPayment')}</StyledButton>
             <StyledButton onPress={onQRPaymentHistoryPress}>{t('QRPaymentHistory')}</StyledButton>
           </YStack>

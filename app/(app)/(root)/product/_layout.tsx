@@ -1,6 +1,6 @@
+import { PRIMARY_COLOR } from '@env';
 import { AntDesign } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
-import { PRIMARY_COLOR } from '@env';
 import { TouchableOpacity } from 'react-native';
 
 const Layout = () => {
@@ -15,7 +15,7 @@ const Layout = () => {
               onPress={() => {
                 return navigation.goBack();
               }}>
-              <AntDesign name="arrowleft" size={24} color={'#fff'} />
+              <AntDesign name="arrowleft" size={24} color="#fff" />
             </TouchableOpacity>
           );
         },

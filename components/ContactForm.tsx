@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { Text, Input, XStack, Label, YStack } from 'tamagui';
+
 import { useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
 
@@ -47,7 +48,7 @@ const ContactForm = ({
         {isVerified ? (
           <XStack gap="$1" ai="center">
             <AntDesign color={tokens.color.green9Light.val} name="checkcircleo" />
-            <Text col="$green9" fos={'$2'}>
+            <Text col="$green9" fos="$2">
               {t('verified')}
             </Text>
           </XStack>
@@ -65,7 +66,7 @@ const ContactForm = ({
         />
         {isVerified ? null : (
           <StyledButton
-            disabled={phoneNumber.length !== 8 || seconds > 0 ? true : false}
+            disabled={!!(phoneNumber.length !== 8 || seconds > 0)}
             w="35%"
             size="$4"
             onPress={onGetVerifyCodePress}>

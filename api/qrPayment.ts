@@ -1,6 +1,6 @@
+import { API_URL, SHOP } from '@env';
 import axios from 'axios';
 
-import { API_URL, SHOP } from '@env';
 import { PaymentMethodEnum, QRPayment } from '~/types';
 const baseUrl = API_URL;
 const shop = SHOP;
@@ -45,7 +45,7 @@ const listQRPayment = async (token: string, skip: number) => {
       skip,
     },
   };
-  let res: QRPayment[] = await axios(options).then((res) => {
+  const res: QRPayment[] = await axios(options).then((res) => {
     return res.data.qrPayments;
   });
   return res;

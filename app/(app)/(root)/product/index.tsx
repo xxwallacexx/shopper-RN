@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { Input, SizableText, Stack, XStack, YStack } from 'tamagui';
+
 import { listProducts } from '~/api';
 import { ProductCard, Spinner } from '~/components';
 import { useDebounce, useLocale } from '~/hooks';
@@ -89,7 +90,7 @@ const Products = () => {
       <Stack w="100%" p="$2" pos="relative">
         <Input
           autoCorrect={false}
-          autoFocus={true}
+          autoFocus
           autoCapitalize="none"
           value={search}
           placeholder={t('search')}
@@ -132,7 +133,7 @@ const Products = () => {
           }
           return (
             <Container ai="center">
-              <AntDesign name="folderopen" size={120} color={'#666'} />
+              <AntDesign name="folderopen" size={120} color="#666" />
               <Title>{t('emptyContent')}</Title>
             </Container>
           );

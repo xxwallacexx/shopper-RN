@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from '@tanstack/react-query';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { CameraType } from 'expo-image-picker';
+import * as Linking from 'expo-linking';
+import { useRef } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { SizableText, YStack } from 'tamagui';
 import { useLocale } from '~/hooks';
 import { Container, StyledButton } from '~/tamagui.config';
-import * as Linking from 'expo-linking';
-import { useRef } from 'react';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
-import { useMutation } from '@tanstack/react-query';
-import { TouchableOpacity } from 'react-native';
 
 const Camera = ({
   onBack,

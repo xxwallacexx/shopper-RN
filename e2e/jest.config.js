@@ -8,8 +8,5 @@ module.exports = {
   reporters: ['detox/runners/jest/reporter'],
   testEnvironment: 'detox/runners/jest/testEnvironment',
   verbose: true,
-  setupFilesAfterEnv: [
-    '<rootDir>/e2e/init.js',
-    '<rootDir>/e2e/jest.setup.js'
-  ],
+  setupFilesAfterEnv: ['<rootDir>/e2e/init.js', '<rootDir>/e2e/jest.setup.js'],
 };

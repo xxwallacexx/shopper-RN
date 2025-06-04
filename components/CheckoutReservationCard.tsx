@@ -21,17 +21,11 @@ const CheckoutReservationCard = ({
     return o._id == reservationContent.option;
   });
   return (
-    <XStack p={'$1'} gap="$2" bc={'lightslategrey'} br={'$radius.3'} bw={0.3}>
-      <YStack w={'40%'} br={'$radius.3'} ov="hidden">
-        <Image
-          bc={'white'}
-          objectFit="contain"
-          aspectRatio={1}
-          source={{ uri: photoUri }}
-          w={'100%'}
-        />
+    <XStack p="$1" gap="$2" bc="lightslategrey" br="$radius.3" bw={0.3}>
+      <YStack w="40%" br="$radius.3" ov="hidden">
+        <Image bc="white" objectFit="contain" aspectRatio={1} source={{ uri: photoUri }} w="100%" />
       </YStack>
-      <YStack py={'$2'} gap="$2" jc="space-between">
+      <YStack py="$2" gap="$2" jc="space-between">
         <YStack>
           <SizableText numberOfLines={1} ellipsizeMode="tail">
             {product.name}
@@ -47,7 +41,7 @@ const CheckoutReservationCard = ({
           </SizableText>
         </YStack>
         <XStack gap="$2">
-          <SizableText col={'$primary'}>{`HK$ ${price.toFixed(2)}`}</SizableText>
+          <SizableText col="$primary">{`HK$ ${price.toFixed(2)}`}</SizableText>
         </XStack>
       </YStack>
     </XStack>

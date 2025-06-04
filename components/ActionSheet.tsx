@@ -20,12 +20,12 @@ const ActionSheet = ({
 }) => {
   return (
     <Sheet
-      disableDrag={true}
+      disableDrag
       forceRemoveScrollEnabled={isSheetOpen}
-      modal={true}
+      modal
       open={isSheetOpen}
       onOpenChange={setIsSheetOpen}
-      snapPointsMode={'percent'}
+      snapPointsMode="percent"
       snapPoints={snapPoints}
       dismissOnSnapToBottom
       position={sheetPosition}

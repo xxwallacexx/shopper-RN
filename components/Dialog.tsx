@@ -30,7 +30,7 @@ const Dialog = ({ isOpen = false, children }: { isOpen: boolean; children: React
           scale={1}
           o={1}
           y={0}
-          miw={'70%'}>
+          miw="70%">
           {children}
         </AlertDialog.Content>
       </AlertDialog.Portal>

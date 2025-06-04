@@ -1,13 +1,15 @@
-import { ReactNode } from 'react';
-import { TamaguiProvider, Theme } from 'tamagui';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import config from '~/tamagui.config';
-import { AuthProvider } from '~/hooks/authProvider';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { LocaleProvider } from '~/hooks/localeProvider';
-import { StripeProvider } from '@stripe/stripe-react-native';
 import { STRIPE_PUBLISHABLE_KEY, STRIPE_MERCHANT_IDENTIFIER } from '@env';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import Constants from 'expo-constants';
+import { ReactNode } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { TamaguiProvider, Theme } from 'tamagui';
+
+import { AuthProvider } from '~/hooks/authProvider';
+import { LocaleProvider } from '~/hooks/localeProvider';
+import config from '~/tamagui.config';
+
 const scheme = Constants.expoConfig?.scheme as string;
 
 const Providers = ({

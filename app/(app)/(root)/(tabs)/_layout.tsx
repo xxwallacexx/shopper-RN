@@ -1,7 +1,7 @@
-import { Tabs } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
 import { PRIMARY_COLOR } from '@env';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Tabs } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialIcons>['name'];
@@ -46,22 +46,28 @@ const Layout = () => {
         options={{
           headerShown: false,
           headerTitle: '',
-          tabBarIcon: ({ color }) => <TabBarIcon testID="cart-tab" name="shopping-cart" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon testID="cart-tab" name="shopping-cart" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="coupons"
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon testID="coupons-tab" name="confirmation-number" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon testID="coupons-tab" name="confirmation-number" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name={'profile'}
+        name="profile"
         options={{
           tabBarLabel: 'profile',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon testID="profile-tab" name="person" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon testID="profile-tab" name="person" color={color} />
+          ),
         }}
       />
     </Tabs>

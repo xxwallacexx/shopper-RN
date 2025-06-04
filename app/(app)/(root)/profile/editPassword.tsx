@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Form, Input, Label, Text, YStack } from 'tamagui';
+import { useNavigation } from 'expo-router';
 import { Formik } from 'formik';
+import Toast from 'react-native-toast-message';
+import { Form, Input, Label, Text, YStack } from 'tamagui';
+import * as Yup from 'yup';
+
 import { getSelf, resetPassword } from '~/api';
 import { useAuth, useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
-import Toast from 'react-native-toast-message';
-import { useNavigation } from 'expo-router';
-import * as Yup from 'yup';
 
 type Values = {
   password: string;
@@ -78,8 +79,8 @@ const EditPassword = () => {
               <YStack w="100%" ai="flex-start" space="$2">
                 <Label>{t('password')}</Label>
                 <Input
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
+                  secureTextEntry
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
@@ -87,11 +88,11 @@ const EditPassword = () => {
                   disabled={isSubmitting}
                   value={values.password}
                   placeholder={t('password')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('password')}
                 />
                 {errors.password ? (
-                  <Text col="$red10" fos={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.password}
                   </Text>
                 ) : null}
@@ -99,8 +100,8 @@ const EditPassword = () => {
               <YStack w="100%" ai="flex-start" gap="$2">
                 <Label>{t('confirmPassword')}</Label>
                 <Input
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
+                  secureTextEntry
+                  autoCapitalize="none"
                   autoCorrect={false}
                   w="100%"
                   size="$4"
@@ -108,11 +109,11 @@ const EditPassword = () => {
                   disabled={isSubmitting}
                   value={values.confirmPassword}
                   placeholder={t('confirmPassword')}
-                  placeholderTextColor={'slategrey'}
+                  placeholderTextColor="slategrey"
                   onChangeText={handleChange('confirmPassword')}
                 />
                 {errors.confirmPassword ? (
-                  <Text col="$red10" fos={'$1'}>
+                  <Text col="$red10" fos="$1">
                     {errors.confirmPassword}
                   </Text>
                 ) : null}

@@ -1,13 +1,14 @@
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { Link, useNavigation } from 'expo-router';
 import { useLayoutEffect, useState } from 'react';
 import { FlatList, SectionList, TouchableOpacity } from 'react-native';
 import { YStack, XStack, ScrollView, SizableText, Circle } from 'tamagui';
+
 import { listCategories, listProducts, listAdsBanners, getNotificationUnreadCount } from '~/api';
 import { BannerCarousel, ProductCard, Spinner, ActionSheet } from '~/components';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth, useLocale } from '~/hooks';
 import { Container, StyledButton, Title } from '~/tamagui.config';
-import { Link, useNavigation } from 'expo-router';
 import { Product } from '~/types';
 
 const Home = () => {
@@ -57,17 +58,17 @@ const Home = () => {
       headerRight: () => {
         return (
           <XStack mx="$4" gap="$2">
-            <Link href={'/product'} asChild>
+            <Link href="/product" asChild>
               <TouchableOpacity>
                 <MaterialCommunityIcons name="magnify" size={24} color="#fff" />
               </TouchableOpacity>
             </Link>
-            <Link href={'/notification'} asChild>
+            <Link href="/notification" asChild>
               <TouchableOpacity>
                 <Ionicons name="notifications-outline" size={24} color="#fff" />
                 {notificationCount ? (
-                  <Circle size={'$1'} bg="$red6" pos="absolute" r={-10} t={-10}>
-                    <SizableText size={'$1'}>{notificationCount}</SizableText>
+                  <Circle size="$1" bg="$red6" pos="absolute" r={-10} t={-10}>
+                    <SizableText size="$1">{notificationCount}</SizableText>
                   </Circle>
                 ) : null}
               </TouchableOpacity>
@@ -86,12 +87,12 @@ const Home = () => {
       return c.value == selectedCategoryId;
     })?.children ?? [];
 
-  let categoriesQuery = () => {
+  const categoriesQuery = () => {
     let res = [];
 
     if (selectedSubCategoryId) {
       res.push(selectedSubCategoryId);
-      let subSubCategories =
+      const subSubCategories =
         categories
           .find((c) => {
             return c.value == selectedSubCategoryId;
@@ -105,7 +106,7 @@ const Home = () => {
       res.push(selectedCategoryId);
     }
 
-    let subCategories =
+    const subCategories =
       categories
         .find((c) => {
           return c.value == selectedCategoryId;
@@ -194,10 +195,10 @@ const Home = () => {
         return (
           <YStack gap="$4" p="$2">
             <XStack jc="space-between">
-              <Title maw={'60%'} numberOfLines={1} ellipsizeMode="tail">
+              <Title maw="60%" numberOfLines={1} ellipsizeMode="tail">
                 {categoryLabel}
               </Title>
-              <StyledButton onPress={() => setIsCategorySheetOpen(true)} maw={'$10'}>
+              <StyledButton onPress={() => setIsCategorySheetOpen(true)} maw="$10">
                 {categoryName}
               </StyledButton>
             </XStack>
@@ -246,7 +247,7 @@ const Home = () => {
               }
               return (
                 <Container ai="center">
-                  <MaterialCommunityIcons name="cart-plus" size={120} color={'#666'} />
+                  <MaterialCommunityIcons name="cart-plus" size={120} color="#666" />
                   <Title>{t('emptyItems')}</Title>
                 </Container>
               );
@@ -288,7 +289,7 @@ const Home = () => {
         sheetPosition={sheetPosition}
         setSheetPosition={setSheetPosition}>
         <ScrollView>
-          <YStack gap={'$4'}>
+          <YStack gap="$4">
             {categories
               .filter((c) => {
                 return !c.parent;
@@ -299,7 +300,7 @@ const Home = () => {
                   <StyledButton
                     onPress={() => onCategoryPress(category.value)}
                     key={category.value + index.toString()}
-                    w={'100%'}
+                    w="100%"
                     bc={isSelected ? '$color.primary' : 'lightslategrey'}>
                     {category.buttonText}
                   </StyledButton>

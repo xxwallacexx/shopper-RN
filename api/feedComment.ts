@@ -1,5 +1,6 @@
-import axios from 'axios';
 import { API_URL } from '@env';
+import axios from 'axios';
+
 import { FeedComment } from '~/types';
 const baseUrl = API_URL;
 
@@ -8,7 +9,7 @@ const getFeedComment = async (id: string) => {
     method: 'get',
     url: `${baseUrl}/feedComment/${id}`,
   };
-  let res: FeedComment = await axios(options).then((res) => {
+  const res: FeedComment = await axios(options).then((res) => {
     return res.data;
   });
   return res;

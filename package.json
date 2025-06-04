@@ -4,7 +4,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "android": "npx react-native run-android",
-    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
+    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --ignore-path .gitignore --fix --max-warnings=999 --quiet && prettier \"**/*.{js,jsx,ts,tsx,json}\" --ignore-path .prettierignore --write",
     "ios": "npx react-native run-ios",
     "start": "npx react-native start --reset-cache",
     "test": "jest",

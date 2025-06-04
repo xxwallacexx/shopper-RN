@@ -4,6 +4,7 @@ import moment from 'moment';
 import { FlatList, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { SizableText, YStack, XStack } from 'tamagui';
+
 import { listNotifications, updateNotificationStatus } from '~/api';
 import { Spinner } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
@@ -61,11 +62,11 @@ const Notification = () => {
         onPress={() => updateStatusMutate({ id: item._id })}>
         <YStack
           f={1}
-          bc={'white'}
-          p={'$4'}
+          bc="white"
+          p="$4"
           gap="$1"
-          br={'$radius.3'}
-          shac={'black'}
+          br="$radius.3"
+          shac="black"
           shof={{
             height: 2,
             width: 0,

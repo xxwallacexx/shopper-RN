@@ -1,9 +1,10 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEffect, useRef, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { YStack, Stack } from 'tamagui';
+
 import ActionSheet from './ActionSheet';
-import { useVideoPlayer, VideoView } from 'expo-video';
 
 const Video = ({ uri }: { uri: string }) => {
   const ref = useRef(null);
@@ -24,7 +25,7 @@ const Video = ({ uri }: { uri: string }) => {
     <YStack>
       <TouchableOpacity onPress={() => setIsSheetOpen(true)}>
         <Stack bg="black" h="100%" w="100%" jc="center" ai="center">
-          <AntDesign color={'white'} name="playcircleo" size={24} />
+          <AntDesign color="white" name="playcircleo" size={24} />
         </Stack>
       </TouchableOpacity>
       <ActionSheet

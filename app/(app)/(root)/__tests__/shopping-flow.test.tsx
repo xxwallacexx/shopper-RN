@@ -1,13 +1,19 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import axios from 'axios';
+import React from 'react';
 
 // Import the components we want to test
-import Home from '../(tabs)/index';
-import ProductDetail from '../product/[productId]/index';
 import Cart from '../(tabs)/carts';
+import Home from '../(tabs)/index';
 import Checkout from '../cartCheckout/index';
+import ProductDetail from '../product/[productId]/index';
+
+// Import the API functions
+import { listCartItems, productCreateCart, updateCartItem, removeCartItem } from '~/api/cartItem';
+import { listCoupons, createUserCoupon } from '~/api/coupon';
+import { listOrders, getOrder } from '~/api/order';
+import { listProducts, getProduct, listOptions, getProductPriceDetail } from '~/api/product';
 
 // Mock axios
 jest.mock('axios');
@@ -46,12 +52,6 @@ jest.mock('~/api/order', () => ({
   listOrders: jest.fn(),
   getOrder: jest.fn(),
 }));
-
-// Import the API functions
-import { listProducts, getProduct, listOptions, getProductPriceDetail } from '~/api/product';
-import { listCartItems, productCreateCart, updateCartItem, removeCartItem } from '~/api/cartItem';
-import { listCoupons, createUserCoupon } from '~/api/coupon';
-import { listOrders, getOrder } from '~/api/order';
 
 // Mock the auth hook
 jest.mock('~/hooks', () => ({
@@ -172,7 +172,7 @@ describe('End-to-End Shopping Flow', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    
+
     // Mock the API responses
     (listProducts as jest.Mock).mockResolvedValue(mockProducts);
     (getProduct as jest.Mock).mockResolvedValue(mockProductDetail);
@@ -188,12 +188,14 @@ describe('End-to-End Shopping Flow', () => {
     (updateCartItem as jest.Mock).mockResolvedValue({ success: true });
     (removeCartItem as jest.Mock).mockResolvedValue({ success: true });
     (createUserCoupon as jest.Mock).mockResolvedValue({ success: true });
-    (listOrders as jest.Mock).mockResolvedValue({ 
-      orders: [{
-        id: 'order-123', 
-        status: 'PENDING',
-        totalAmount: 109.99,
-      }]
+    (listOrders as jest.Mock).mockResolvedValue({
+      orders: [
+        {
+          id: 'order-123',
+          status: 'PENDING',
+          totalAmount: 109.99,
+        },
+      ],
     });
   });
 
@@ -363,4 +365,4 @@ describe('End-to-End Shopping Flow', () => {
     // Clean up the component
     unmountCheckout();
   });
-}); 
+});

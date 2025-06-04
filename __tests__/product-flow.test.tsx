@@ -1,7 +1,8 @@
-import React from 'react';
 import axios from 'axios';
-import * as productAPI from '../api/product';
+import React from 'react';
+
 import * as cartItemAPI from '../api/cartItem';
+import * as productAPI from '../api/product';
 
 // Mock axios
 jest.mock('axios');
@@ -79,7 +80,7 @@ describe('Product Flow Tests', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    
+
     // Mock the API responses
     (productAPI.listProducts as jest.Mock).mockResolvedValue(mockProducts);
     (productAPI.getProduct as jest.Mock).mockResolvedValue(mockProductDetail);
@@ -95,7 +96,7 @@ describe('Product Flow Tests', () => {
   it('should fetch product list', async () => {
     // Call the API function
     const products = await productAPI.listProducts(0);
-    
+
     // Verify the result
     expect(products).toEqual(mockProducts);
     expect(productAPI.listProducts).toHaveBeenCalledWith(0);
@@ -104,7 +105,7 @@ describe('Product Flow Tests', () => {
   it('should fetch product details', async () => {
     // Call the API function
     const product = await productAPI.getProduct('product-123');
-    
+
     // Verify the result
     expect(product).toEqual(mockProductDetail);
     expect(productAPI.getProduct).toHaveBeenCalledWith('product-123');
@@ -113,7 +114,7 @@ describe('Product Flow Tests', () => {
   it('should fetch product options', async () => {
     // Call the API function
     const options = await productAPI.listOptions('product-123');
-    
+
     // Verify the result
     expect(options).toEqual(mockOptions);
     expect(productAPI.listOptions).toHaveBeenCalledWith('product-123');
@@ -121,10 +122,18 @@ describe('Product Flow Tests', () => {
 
   it('should add product to cart', async () => {
     // Call the API function
-    const result = await cartItemAPI.productCreateCart('test-token', 'product-123', mockOrderContent);
-    
+    const result = await cartItemAPI.productCreateCart(
+      'test-token',
+      'product-123',
+      mockOrderContent
+    );
+
     // Verify the result
     expect(result).toEqual({ success: true });
-    expect(cartItemAPI.productCreateCart).toHaveBeenCalledWith('test-token', 'product-123', mockOrderContent);
+    expect(cartItemAPI.productCreateCart).toHaveBeenCalledWith(
+      'test-token',
+      'product-123',
+      mockOrderContent
+    );
   });
-}); 
+});
