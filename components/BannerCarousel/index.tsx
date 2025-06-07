@@ -1,16 +1,29 @@
-import { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Dimensions } from 'react-native';
+import { interpolate } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
-import { YStack, XStack, Circle } from 'tamagui';
-import { BannerCarouselProps } from '~/types/components';
-import { BannerItem } from './BannerItem';
-import { useCarouselAnimation } from './useCarouselAnimation';
+import { YStack } from 'tamagui';
+
+import { BannerCarouselProps } from '~/types/components/BannerCarousel';
+import { CarouselItem } from './CarouselItem';
+import { CarouselPagination } from './CarouselPagination';
 
 const { width } = Dimensions.get('window');
 
-const BannerCarousel = ({ banners }: BannerCarouselProps) => {
+const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
   const [slideIndex, setSlideIndex] = useState(0);
-  const animationStyle = useCarouselAnimation();
+
+  const animationStyle = useCallback((value: number) => {
+    'worklet';
+
+    const zIndex = Math.round(interpolate(value, [-1, 0, 1], [-1000, 0, 1000]));
+    const translateX = interpolate(value, [-1, 0, 1], [0, 0, width]);
+
+    return {
+      transform: [{ translateX }],
+      zIndex,
+    };
+  }, []);
 
   return (
     <YStack w="100%" aspectRatio={1.77} pos="relative">
@@ -24,22 +37,13 @@ const BannerCarousel = ({ banners }: BannerCarouselProps) => {
         scrollAnimationDuration={400}
         customAnimation={animationStyle}
         renderItem={({ item, animationValue }) => (
-          <BannerItem content={item} animationValue={animationValue} />
+          <CarouselItem content={item} animationValue={animationValue} />
         )}
         onSnapToItem={setSlideIndex}
       />
-      <XStack pos="absolute" b={10} l="20%" w="60%" jc="center" p="$2" gap="$4">
-        {banners.map((_, index) => (
-          <Circle
-            key={`activeSlide_${index}`}
-            size={10}
-            bc={index === slideIndex ? '$color.primary' : 'ghostwhite'}
-            elevation={4}
-          />
-        ))}
-      </XStack>
+      <CarouselPagination totalSlides={banners.length} activeIndex={slideIndex} />
     </YStack>
   );
 };
 
-export default BannerCarousel; 
+export default BannerCarousel;
