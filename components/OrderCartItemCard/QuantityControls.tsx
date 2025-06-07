@@ -15,7 +15,7 @@ export const QuantityControls: React.FC<QuantityControlsProps> = ({
 }) => (
   <XStack gap="$2" ai="center">
     <TouchableOpacity
-      testID={`decrease-quantity-button-${testID?.split('-').pop()}`}
+      testID={`decrease-quantity-button-${testID}`}
       disabled={quantity < 2}
       onPress={onDeductPress}>
       <Ionicons size={24} name="remove-circle-outline" />
@@ -23,12 +23,12 @@ export const QuantityControls: React.FC<QuantityControlsProps> = ({
     {isCartItemUpdating ? (
       <Skeleton height={8} colorMode="light" width={18} />
     ) : (
-      <SizableText testID={`item-quantity-${testID?.split('-').pop()}`} ta="center" w={18}>
+      <SizableText testID={`item-quantity-${testID}`} ta="center" w={18}>
         {quantity}
       </SizableText>
     )}
     <TouchableOpacity
-      testID={`increase-quantity-button-${testID?.split('-').pop()}`}
+      testID={`increase-quantity-button-${testID}`}
       disabled={quantity >= stock}
       onPress={onAddPress}>
       <Ionicons size={24} name="add-circle-outline" />
