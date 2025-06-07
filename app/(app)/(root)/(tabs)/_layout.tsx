@@ -1,19 +1,6 @@
 import { PRIMARY_COLOR } from '@env';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof MaterialIcons>['name'];
-  color: string;
-  testID?: string;
-}) {
-  return (
-    <View testID={props.testID}>
-      <MaterialIcons size={28} style={styles.tabBarIcon} {...props} />
-    </View>
-  );
-}
+import { TabBarIcon } from '~/components';
 
 const Layout = () => {
   return (
@@ -73,11 +60,5 @@ const Layout = () => {
     </Tabs>
   );
 };
-
-const styles = StyleSheet.create({
-  tabBarIcon: {
-    marginBottom: -3,
-  },
-});
 
 export default Layout;

@@ -1,17 +1,17 @@
+import React, { useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { tokens } from '@tamagui/themes';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { Link } from 'expo-router';
 import moment from 'moment';
-import { useState } from 'react';
 import { RefreshControl, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Image, ScrollView, SizableText, XStack, YStack } from 'tamagui';
 
 import { getCredit, getShop, listCoupons } from '~/api';
-import { Spinner } from '~/components';
+import { EmptyState, ListFooterLoader } from '~/components';
 import ActionSheet from '~/components/ActionSheet';
 import { useAuth, useLocale } from '~/hooks';
-import { Badge, Container, StyledButton, Title } from '~/tamagui.config';
+import { Badge, StyledButton } from '~/tamagui.config';
 import { Coupon } from '~/types';
 
 const Coupons = () => {
@@ -140,27 +140,17 @@ const Coupons = () => {
           padding: 12,
           justifyContent: 'space-between',
         }}
-        ListFooterComponent={() => {
-          if (!isCouponsFetching && !isFetchingMoreCoupons) {
-            return null;
-          }
-          return (
-            <XStack f={1} gap="$2" ai="center" jc="center">
-              <Spinner color="$color.primary" />
-              <SizableText col="slategrey">{t('loading')}</SizableText>
-            </XStack>
-          );
-        }}
+        ListFooterComponent={() => (
+          <ListFooterLoader
+            isLoading={isCouponsFetching || isFetchingMoreCoupons}
+            loadingText={t('loading')}
+          />
+        )}
         ListEmptyComponent={() => {
           if (isCouponsFetching || isFetchingMoreCoupons) {
             return null;
           }
-          return (
-            <Container ai="center">
-              <AntDesign name="folderopen" size={120} color="$666" />
-              <Title>{t('emptyContent')}</Title>
-            </Container>
-          );
+          return <EmptyState message={t('emptyContent')} />;
         }}
       />
       <ActionSheet

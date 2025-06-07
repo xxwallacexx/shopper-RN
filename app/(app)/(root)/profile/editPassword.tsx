@@ -1,13 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from 'expo-router';
 import { Formik } from 'formik';
-import Toast from 'react-native-toast-message';
-import { Form, Input, Label, Text, YStack } from 'tamagui';
-import * as Yup from 'yup';
+import { Form, Input, Label, ScrollView, YStack, Text } from 'tamagui';
 
 import { getSelf, resetPassword } from '~/api';
+import { Spinner } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
+import { useMutationWithErrorHandling } from '~/hooks/useMutationWithErrorHandling';
 import { StyledButton } from '~/tamagui.config';
+import { createChangePasswordSchema } from '~/utils/validationSchemas';
 
 type Values = {
   password: string;
@@ -19,7 +21,9 @@ const EditPassword = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const { token } = useAuth();
+  
   if (!token) return <></>;
+  
   const { data: user } = useQuery({
     queryKey: ['profile', token],
     queryFn: async () => {
@@ -27,7 +31,7 @@ const EditPassword = () => {
     },
   });
 
-  const { isPending: isSubmitting, mutate: updatePasswordMutate } = useMutation({
+  const { isPending: isSubmitting, mutate: updatePasswordMutate } = useMutationWithErrorHandling({
     mutationFn: ({ password }: { password: string }) => {
       return resetPassword(token, password);
     },
@@ -35,98 +39,65 @@ const EditPassword = () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       navigation.goBack();
     },
-    onError: (e) => {
-      const error = e as Error;
-      Toast.show({
-        type: 'error',
-        text1: t(error.message),
-      });
-    },
-  });
+  }, t);
 
   if (!user) {
     return <></>;
   }
-  const onSubmit = async ({ password }: { password: string }) => {
-    updatePasswordMutate({ password });
+  
+  // Use the pre-defined validation schema
+  const Schema = createChangePasswordSchema(t);
+  
+  const initialValues: Values = {
+    password: '',
+    confirmPassword: '',
   };
 
-  const Schema = Yup.object().shape({
-    password: Yup.string()
-      .min(4, t('regPasswordLengthMessage'))
-      .required(t('regPasswordPresenceMessage')),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], t('regRetypePasswordMessage'))
-      .required(t('regRetypePasswordMessage')),
-  });
-
   return (
-    <Formik
-      initialValues={{
-        password: '',
-        confirmPassword: '',
-      }}
-      validateOnMount={false}
-      validateOnChange={false}
-      validationSchema={Schema}
-      onSubmit={(values: Values) => {
-        onSubmit(values);
-      }}>
-      {({ errors, values, handleChange, handleSubmit }) => {
-        return (
-          <Form f={1} ai="center" onSubmit={handleSubmit}>
-            <YStack w="100%" p="$2" space="$4">
-              <YStack w="100%" ai="flex-start" space="$2">
-                <Label>{t('password')}</Label>
-                <Input
-                  secureTextEntry
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  w="100%"
-                  size="$4"
-                  bw={2}
-                  disabled={isSubmitting}
-                  value={values.password}
-                  placeholder={t('password')}
-                  placeholderTextColor="slategrey"
-                  onChangeText={handleChange('password')}
-                />
-                {errors.password ? (
-                  <Text col="$red10" fos="$1">
-                    {errors.password}
-                  </Text>
-                ) : null}
-              </YStack>
-              <YStack w="100%" ai="flex-start" gap="$2">
-                <Label>{t('confirmPassword')}</Label>
-                <Input
-                  secureTextEntry
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  w="100%"
-                  size="$4"
-                  bw={2}
-                  disabled={isSubmitting}
-                  value={values.confirmPassword}
-                  placeholder={t('confirmPassword')}
-                  placeholderTextColor="slategrey"
-                  onChangeText={handleChange('confirmPassword')}
-                />
-                {errors.confirmPassword ? (
-                  <Text col="$red10" fos="$1">
-                    {errors.confirmPassword}
-                  </Text>
-                ) : null}
-              </YStack>
-
-              <StyledButton onPress={() => handleSubmit()} disabled={isSubmitting} w="100%">
-                {t('confirm')}
-              </StyledButton>
+    <ScrollView f={1} bg="white">
+      <Formik
+        initialValues={initialValues}
+        validationSchema={Schema}
+        onSubmit={(values) => {
+          updatePasswordMutate({ password: values.password });
+        }}>
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          <Form onSubmit={handleSubmit} f={1} gap="$4" p="$4">
+            <YStack>
+              <Label htmlFor="password">{t('password')}</Label>
+              <Input
+                id="password"
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                placeholder={t('password')}
+                secureTextEntry
+              />
+              {errors.password && touched.password ? (
+                <Text col="red">{errors.password}</Text>
+              ) : null}
             </YStack>
+            <YStack>
+              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
+              <Input
+                id="confirmPassword"
+                value={values.confirmPassword}
+                onChangeText={handleChange('confirmPassword')}
+                onBlur={handleBlur('confirmPassword')}
+                placeholder={t('confirmPassword')}
+                secureTextEntry
+              />
+              {errors.confirmPassword && touched.confirmPassword ? (
+                <Text col="red">{errors.confirmPassword}</Text>
+              ) : null}
+            </YStack>
+            <StyledButton onPress={() => handleSubmit()} disabled={isSubmitting}>
+              {isSubmitting ? <Spinner /> : t('confirm')}
+            </StyledButton>
           </Form>
-        );
-      }}
-    </Formik>
+        )}
+      </Formik>
+    </ScrollView>
   );
 };
 

@@ -1,7 +1,4 @@
 import { PRIMARY_COLOR } from '@env';
-import { AntDesign } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import messaging from '@react-native-firebase/messaging';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { QueryClient } from '@tanstack/react-query';
 import Constants from 'expo-constants';
@@ -9,11 +6,13 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast, { ErrorToast } from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 import Providers from './providers';
+import { BackButton } from '~/components';
 
 import { createUserTemp, updateInstallation } from '~/api';
 SplashScreen.preventAutoHideAsync();
@@ -84,18 +83,9 @@ const RootLayout = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Providers queryClient={queryClient} initialLocale={locale} initialToken={token}>
         <Stack
-          screenOptions={({ navigation }) => ({
+          screenOptions={() => ({
             title: '',
-            headerLeft: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    return navigation.goBack();
-                  }}>
-                  <AntDesign name="arrowleft" size={24} color="#fff" />
-                </TouchableOpacity>
-              );
-            },
+            headerLeft: () => <BackButton />,
             headerStyle: { backgroundColor: PRIMARY_COLOR ?? '#fff' },
           })}>
           <Stack.Screen
