@@ -11,7 +11,7 @@ export function useMutationWithErrorHandling<
   TData = unknown,
   TError = unknown,
   TVariables = void,
-  TContext = unknown
+  TContext = unknown,
 >(
   options: UseMutationOptions<TData, TError, TVariables, TContext>,
   t: (key: string, options?: any) => string
@@ -21,11 +21,11 @@ export function useMutationWithErrorHandling<
     onError: (error, variables, context) => {
       // Call the default error handler
       createErrorHandler(t)(error);
-      
+
       // Call the provided onError if it exists
       if (options.onError) {
         options.onError(error, variables, context);
       }
     },
   });
-} 
+}

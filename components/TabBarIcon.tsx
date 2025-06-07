@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TabBarIcon; 
+export default TabBarIcon;

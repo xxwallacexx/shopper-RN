@@ -20,4 +20,4 @@ export const cropSquareImage = async ({
   ];
 
   return await manipulateAsync(uri, actionCrop, { format: SaveFormat.PNG });
-}; 
+};

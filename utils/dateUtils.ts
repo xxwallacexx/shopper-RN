@@ -15,7 +15,7 @@ export const getAvailableDates = (reservations: Reservation[]): string[] => {
 
 export const getMarkedDates = (availableDates: string[], selectedDate?: string) => {
   const markedDates: Record<string, any> = {};
-  
+
   if (selectedDate) {
     markedDates[selectedDate] = {
       customStyles: {
@@ -45,4 +45,4 @@ export const getMarkedDates = (availableDates: string[], selectedDate?: string) 
   }
 
   return markedDates;
-}; 
+};

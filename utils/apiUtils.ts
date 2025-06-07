@@ -7,7 +7,11 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
  * @param config Additional axios config
  * @returns Promise with the response data
  */
-export async function apiGet<T>(url: string, params?: any, config?: AxiosRequestConfig): Promise<T> {
+export async function apiGet<T>(
+  url: string,
+  params?: any,
+  config?: AxiosRequestConfig
+): Promise<T> {
   try {
     const response: AxiosResponse<T> = await axios({
       method: 'get',
@@ -70,7 +74,11 @@ export async function apiPut<T>(url: string, data?: any, config?: AxiosRequestCo
  * @param config Additional axios config
  * @returns Promise with the response data
  */
-export async function apiDelete<T>(url: string, params?: any, config?: AxiosRequestConfig): Promise<T> {
+export async function apiDelete<T>(
+  url: string,
+  params?: any,
+  config?: AxiosRequestConfig
+): Promise<T> {
   try {
     const response: AxiosResponse<T> = await axios({
       method: 'delete',
@@ -82,4 +90,4 @@ export async function apiDelete<T>(url: string, params?: any, config?: AxiosRequ
   } catch (error) {
     throw error;
   }
-} 
+}

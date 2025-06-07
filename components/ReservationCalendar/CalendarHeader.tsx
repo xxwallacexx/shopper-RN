@@ -14,10 +14,10 @@ export const CalendarHeader = ({ isLoading, direction }: CalendarHeaderProps) =>
   if (direction === 'left') {
     return <AntDesign name="arrowleft" />;
   }
-  
+
   if (direction === 'right') {
     return <AntDesign name="arrowright" />;
   }
 
   return null;
-}; 
+};

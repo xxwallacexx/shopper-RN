@@ -21,9 +21,9 @@ const EditPassword = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const { token } = useAuth();
-  
+
   if (!token) return <></>;
-  
+
   const { data: user } = useQuery({
     queryKey: ['profile', token],
     queryFn: async () => {
@@ -31,23 +31,26 @@ const EditPassword = () => {
     },
   });
 
-  const { isPending: isSubmitting, mutate: updatePasswordMutate } = useMutationWithErrorHandling({
-    mutationFn: ({ password }: { password: string }) => {
-      return resetPassword(token, password);
+  const { isPending: isSubmitting, mutate: updatePasswordMutate } = useMutationWithErrorHandling(
+    {
+      mutationFn: ({ password }: { password: string }) => {
+        return resetPassword(token, password);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['profile'] });
+        navigation.goBack();
+      },
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      navigation.goBack();
-    },
-  }, t);
+    t
+  );
 
   if (!user) {
     return <></>;
   }
-  
+
   // Use the pre-defined validation schema
   const Schema = createChangePasswordSchema(t);
-  
+
   const initialValues: Values = {
     password: '',
     confirmPassword: '',

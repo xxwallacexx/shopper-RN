@@ -14,7 +14,6 @@ import EmptyState from './EmptyState';
 import Feed from './Feed';
 import FeedCard from './FeedCard';
 import ImageCard from './ImageCard';
-import ImageGallery from './ImageGallery';
 import ImageInput from './ImageInput';
 import InfiniteList from './InfiniteList';
 import ListFooterLoader from './ListFooterLoader';
@@ -53,7 +52,6 @@ export {
   Feed,
   FeedCard,
   ImageCard,
-  ImageGallery,
   ImageInput,
   InfiniteList,
   ListFooterLoader,
