@@ -474,17 +474,6 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <YStack f={1} testID="product-detail-screen">
-        <XStack p="$2" ai="center">
-          <TouchableOpacity testID="back-button" onPress={() => router.back()}>
-            <Ionicons size={24} name="arrow-back" />
-          </TouchableOpacity>
-          <SizableText fow="700" ml="$2" f={1}>
-            {product.name}
-          </SizableText>
-          <TouchableOpacity onPress={onSharePress}>
-            <Ionicons size={24} name="share-outline" />
-          </TouchableOpacity>
-        </XStack>
         <ScrollView contentContainerStyle={{ fg: 1, ai: 'center' }}>
           <BannerCarousel
             banners={product.photos.map((p) => {
@@ -494,6 +483,10 @@ const ProductDetail = () => {
           <Container w="100%" gap="$2">
             <XStack jc="space-between">
               <Subtitle size="$4">{product.category.name}</Subtitle>
+              <StyledButton onPress={onSharePress}>
+                {t('shareProduct')}
+                <AntDesign name="link" color="#fff" />
+              </StyledButton>
             </XStack>
             <SizableText>{product.name}</SizableText>
             <SizableText numberOfLines={1} ellipsizeMode="tail">

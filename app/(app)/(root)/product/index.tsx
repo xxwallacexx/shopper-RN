@@ -1,143 +1,109 @@
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Link, useRouter } from 'expo-router';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { FlatList, TouchableOpacity } from 'react-native';
-import { Input, SizableText, Stack, XStack, YStack } from 'tamagui';
-
+import { Input, Stack, YStack } from 'tamagui';
+import { useDebounce } from '~/hooks';
+import { flattenInfiniteData } from '~/hooks/useInfiniteData';
 import { listProducts } from '~/api';
-import { ProductCard, Spinner } from '~/components';
-import { useDebounce, useLocale } from '~/hooks';
-import { Container, Title } from '~/tamagui.config';
+import { InfiniteList, ProductCard } from '~/components';
+import { useLocale } from '~/hooks';
 import { Product } from '~/types';
+import { layout } from '~/utils/styles';
 
 const Products = () => {
-  const router = useRouter();
   const { t } = useLocale();
   const [search, setSearch] = useState('');
-  const debounceSearch = useDebounce(search, 300);
+  const debouncedSearch = useDebounce(search, 500);
+
   const {
     data: products,
     isFetching: isProductFetching,
     isFetchingNextPage: isFetchingMoreProducts,
     fetchNextPage: fetchMoreProducts,
+    refetch: refetchProducts,
   } = useInfiniteQuery({
-    queryKey: ['products', debounceSearch],
+    queryKey: ['products', debouncedSearch],
     initialPageParam: 0,
-    queryFn: async ({ pageParam }: { pageParam: number }) => {
-      if (search == '') {
-        const res = await AsyncStorage.getItem('searchHistory');
-        return JSON.parse(res ?? '[]');
-      }
-      return await listProducts(
+    queryFn: ({ pageParam }: { pageParam: number }) => {
+      return listProducts(
         pageParam,
+        true,
         undefined,
         undefined,
-        undefined,
-        debounceSearch,
+        debouncedSearch,
         undefined,
         undefined
       );
     },
     getNextPageParam: (lastPage, pages) => {
-      if (search == '') return null;
-      if (!lastPage) return null;
-      if (!lastPage.length) return null;
-      return pages.flat().length;
+      if (!lastPage || lastPage.length === 0) return undefined;
+      return pages.length;
     },
   });
 
-  const productsData = products?.pages ? products.pages.flat() : [];
+  // Refetch when search changes
+  useEffect(() => {
+    refetchProducts();
+  }, [debouncedSearch, refetchProducts]);
 
-  const onProductPress = async (item: Product) => {
-    const storedSearchHistories = (await AsyncStorage.getItem('searchHistory')) ?? '[]';
-    let searchHistories: Product[] = JSON.parse(storedSearchHistories);
-    if (!searchHistories) {
-      searchHistories = [];
-    }
-    if (searchHistories.length >= 10) {
-      searchHistories.splice(9, searchHistories.length - 9);
-    }
-    searchHistories = searchHistories.filter((f) => {
-      return f._id !== item._id;
-    });
-    searchHistories.unshift(item);
-    await AsyncStorage.setItem('searchHistory', JSON.stringify(searchHistories));
-    return router.navigate({ pathname: '/product/[productId]', params: { productId: item._id } });
-  };
+  const productsData = flattenInfiniteData(products);
 
-  const renderRecommendedProducts = ({ item }: { item: Product }) => {
+  const renderProductItem = ({ item, index }: { item: Product; index: number }) => {
     const { _id, price, category, name, introduction } = item;
-
     const uri = item.photos[0].path;
 
     return (
-      <TouchableOpacity onPress={() => onProductPress(item)} style={{ width: '48%' }}>
-        <ProductCard
-          imageUri={uri}
-          price={price}
-          categoryName={category.name}
-          name={name}
-          introduction={introduction}
-        />
-      </TouchableOpacity>
+      <Link href={`/product/${_id}`} asChild>
+        <TouchableOpacity testID={`product-item-${index}`} style={{ width: '48%' }}>
+          <ProductCard
+            testID={`product-card-${index}`}
+            imageUri={uri}
+            price={price}
+            categoryName={category.name}
+            name={name}
+            introduction={introduction}
+          />
+        </TouchableOpacity>
+      </Link>
     );
   };
 
   return (
-    <YStack f={1} bg="white">
-      <Stack w="100%" p="$2" pos="relative">
+    <YStack style={layout.container}>
+      <Stack style={[layout.padding, { position: 'relative' }]}>
         <Input
           autoCorrect={false}
-          autoFocus
           autoCapitalize="none"
           value={search}
           placeholder={t('search')}
           onChangeText={setSearch}
         />
-        {search == '' ? null : (
-          <Stack pos="absolute" r="$4" t="$4">
+        {search !== '' && (
+          <Stack style={{ position: 'absolute', right: 16, top: 16 }}>
             <TouchableOpacity onPress={() => setSearch('')}>
               <AntDesign size={24} name="closecircleo" />
             </TouchableOpacity>
           </Stack>
         )}
       </Stack>
-      <FlatList
+
+      <InfiniteList
         data={productsData}
-        renderItem={renderRecommendedProducts}
+        renderItem={renderProductItem}
+        onLoadMore={fetchMoreProducts}
+        isLoading={isProductFetching}
+        isFetchingMore={isFetchingMoreProducts}
+        emptyStateMessage={t('emptyContent')}
+        loadingText={t('loading')}
         numColumns={2}
-        keyExtractor={(item, index) => index.toString()}
-        style={{ flex: 1 }}
-        onEndReached={() => fetchMoreProducts()}
         columnWrapperStyle={{
           flex: 1,
           padding: 12,
           justifyContent: 'space-between',
         }}
-        ListFooterComponent={() => {
-          if (!isProductFetching && !isFetchingMoreProducts) {
-            return null;
-          }
-          return (
-            <XStack f={1} gap="$2" ai="center" jc="center">
-              <Spinner color="$color.primary" />
-              <SizableText col="slategrey">{t('loading')}</SizableText>
-            </XStack>
-          );
-        }}
-        ListEmptyComponent={() => {
-          if (isProductFetching || isFetchingMoreProducts) {
-            return null;
-          }
-          return (
-            <Container ai="center">
-              <AntDesign name="folderopen" size={120} color="#666" />
-              <Title>{t('emptyContent')}</Title>
-            </Container>
-          );
-        }}
+        testID="products-list"
       />
     </YStack>
   );
