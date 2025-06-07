@@ -40,7 +40,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({
         <Skeleton height={18} colorMode="light" width={22} />
       ) : (
         <TouchableOpacity
-          testID={`remove-item-button-${testID?.split('-').pop()}`}
+          testID={`remove-item-button-${testID}`}
           onPress={onRemovePress}>
           <EvilIcons size={24} name="trash" />
         </TouchableOpacity>
