@@ -1,12 +1,13 @@
-import { EvilIcons, Ionicons } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons';
 import { Skeleton } from 'moti/skeleton';
 import { Pressable, TouchableOpacity } from 'react-native';
-import { XStack, YStack, Image, SizableText, Text, Separator } from 'tamagui';
+import { XStack, YStack, SizableText, Text, Separator } from 'tamagui';
 
 import { useLocale } from '~/hooks';
-import { Badge, StyledButton } from '~/tamagui.config';
-import { AvailabelCoupon, CartItemOrderContent, Product } from '~/types';
-import TestID from '~/utils/testID';
+import { StyledButton } from '~/tamagui.config';
+import { OrderCartItemCardProps } from '~/types/components';
+import { ProductImage } from './ProductImage';
+import { QuantityControls } from './QuantityControls';
 
 const OrderCartItemCard = ({
   photoUri,
@@ -24,25 +25,10 @@ const OrderCartItemCard = ({
   isCartItemUpdating,
   isCartItemRemoving,
   testID,
-}: {
-  photoUri: string;
-  totalPrice: number;
-  stock: number;
-  coupon?: AvailabelCoupon;
-  singleItemPrice: number;
-  product: Product;
-  orderContent: CartItemOrderContent;
-  onProductPress: () => void;
-  onDeductPress: () => void;
-  onAddPress: () => void;
-  onRemovePress: () => void;
-  onAvailableCouponPress: () => void;
-  isCartItemUpdating: boolean;
-  isCartItemRemoving: boolean;
-  testID?: string;
-}) => {
+}: OrderCartItemCardProps) => {
   const { t } = useLocale();
   const quantity = orderContent.quantity ?? 0;
+
   return (
     <YStack
       testID={testID}
@@ -61,32 +47,18 @@ const OrderCartItemCard = ({
       <Pressable testID={`${testID}-product-press`} onPress={onProductPress}>
         <XStack gap="$2" f={1}>
           <YStack w="40%" br="$radius.3" ov="hidden">
-            <Image
-              testID={`${testID}-image`}
-              bc="white"
-              objectFit="contain"
-              aspectRatio={1}
-              source={{ uri: photoUri }}
-              w="100%"
-            />
-            <Badge pos="absolute" t={8} r={8}>
-              <SizableText testID={`${testID}-price`} size="$1" col="#fff">
-                HK$ {singleItemPrice.toFixed(2)}
-              </SizableText>
-            </Badge>
+            <ProductImage photoUri={photoUri} singleItemPrice={singleItemPrice} testID={testID} />
           </YStack>
           <YStack f={1} py="$2" gap="$2" jc="space-between">
             <YStack>
               <SizableText testID={`${testID}-name`} numberOfLines={1} ellipsizeMode="tail">
                 {product.name} {product.introduction}
               </SizableText>
-              {orderContent.choices.map((c) => {
-                return (
-                  <Text key={c._id} fow="300" fos="$2">
-                    {t('option')}: {c.name}
-                  </Text>
-                );
-              })}
+              {orderContent.choices.map((c) => (
+                <Text key={c._id} fow="300" fos="$2">
+                  {t('option')}: {c.name}
+                </Text>
+              ))}
             </YStack>
             <XStack gap="$2" ai="center">
               {isCartItemUpdating ? (
@@ -106,27 +78,14 @@ const OrderCartItemCard = ({
 
       <Separator />
       <XStack px="$2" f={1} h="$3" ai="center" jc="space-between">
-        <XStack gap="$2" ai="center">
-          <TouchableOpacity
-            testID={`decrease-quantity-button-${testID?.split('-').pop()}`}
-            disabled={quantity < 2}
-            onPress={onDeductPress}>
-            <Ionicons size={24} name="remove-circle-outline" />
-          </TouchableOpacity>
-          {isCartItemUpdating ? (
-            <Skeleton height={8} colorMode="light" width={18} />
-          ) : (
-            <SizableText testID={`item-quantity-${testID?.split('-').pop()}`} ta="center" w={18}>
-              {quantity}
-            </SizableText>
-          )}
-          <TouchableOpacity
-            testID={`increase-quantity-button-${testID?.split('-').pop()}`}
-            disabled={quantity >= stock}
-            onPress={onAddPress}>
-            <Ionicons size={24} name="add-circle-outline" />
-          </TouchableOpacity>
-        </XStack>
+        <QuantityControls
+          quantity={quantity}
+          stock={stock}
+          isCartItemUpdating={isCartItemUpdating}
+          onDeductPress={onDeductPress}
+          onAddPress={onAddPress}
+          testID={testID}
+        />
         <StyledButton testID={`${testID}-coupon`} w="40%" onPress={onAvailableCouponPress}>
           {coupon ? coupon.coupon.name : t('redeemCoupon')}
         </StyledButton>
