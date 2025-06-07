@@ -5,4 +5,4 @@ export interface ReservationCalendarProps {
   reservations: Reservation[];
   selectedDate?: string;
   onDayChange: (value?: string) => void;
-} 
+}

@@ -10,17 +10,19 @@ interface EmptyStateProps {
   testID?: string;
 }
 
-const EmptyState = ({ 
-  message, 
-  iconName = 'folderopen', 
-  iconSize = 80, 
+const EmptyState = ({
+  message,
+  iconName = 'folderopen',
+  iconSize = 80,
   iconColor = '#666',
-  testID
+  testID,
 }: EmptyStateProps) => {
   return (
     <View testID={testID} style={styles.container}>
       <AntDesign name={iconName} size={iconSize} color={iconColor} />
-      <SizableText size="$5" style={styles.message}>{message}</SizableText>
+      <SizableText size="$5" style={styles.message}>
+        {message}
+      </SizableText>
     </View>
   );
 };
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
   message: {
     marginTop: 12,
     textAlign: 'center',
-  }
+  },
 });
 
-export default EmptyState; 
+export default EmptyState;

@@ -25,4 +25,4 @@ export const useCameraWithPermissions = (): UseCameraWithPermissionsResult => {
     hasPermission: permission?.granted ?? false,
     canAskAgain: permission?.canAskAgain ?? true,
   };
-}; 
+};

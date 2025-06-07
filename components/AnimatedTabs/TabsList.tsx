@@ -1,28 +1,25 @@
+import React from 'react';
 import { Tabs } from 'tamagui';
 import { Subtitle } from '~/tamagui.config';
-import { TabsTabProps } from 'tamagui';
+import { TabsListProps } from '~/types/components/AnimatedTabs';
 
-interface TabsListProps {
-  tabs: Array<{
-    label: string;
-    value: string;
-  }>;
-  onInteraction: TabsTabProps['onInteraction'];
-}
-
-export const TabsList = ({ tabs, onInteraction }: TabsListProps) => (
-  <Tabs.List disablePassBorderRadius loop={false} backgroundColor="transparent" borderBottomWidth={0.3}>
-    {tabs.map((t) => (
+export const TabsList: React.FC<TabsListProps> = ({ tabs, onInteraction }) => (
+  <Tabs.List
+    disablePassBorderRadius
+    loop={false}
+    backgroundColor="transparent"
+    borderBottomWidth={0.3}>
+    {tabs.map((tab) => (
       <Tabs.Tab
-        key={t.value}
+        key={tab.value}
         bc="$colorTransparent"
         py="$2"
         px="$3"
         f={1}
-        value={t.value}
+        value={tab.value}
         onInteraction={onInteraction}>
-        <Subtitle ta="center">{t.label}</Subtitle>
+        <Subtitle ta="center">{tab.label}</Subtitle>
       </Tabs.Tab>
     ))}
   </Tabs.List>
-); 
+);

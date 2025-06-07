@@ -13,4 +13,4 @@ export interface ReservationCartItemCardProps {
   onAvailableCouponPress: () => void;
   isCartItemUpdating: boolean;
   isCartItemRemoving: boolean;
-} 
+}

@@ -8,16 +8,14 @@ interface BackButtonProps {
   testID?: string;
 }
 
-const BackButton = ({ color = "#fff", size = 24, testID }: BackButtonProps) => {
+const BackButton = ({ color = '#fff', size = 24, testID }: BackButtonProps) => {
   const navigation = useNavigation();
-  
+
   return (
-    <TouchableOpacity
-      testID={testID}
-      onPress={() => navigation.goBack()}>
+    <TouchableOpacity testID={testID} onPress={() => navigation.goBack()}>
       <AntDesign name="arrowleft" size={size} color={color} />
     </TouchableOpacity>
   );
 };
 
-export default BackButton; 
+export default BackButton;

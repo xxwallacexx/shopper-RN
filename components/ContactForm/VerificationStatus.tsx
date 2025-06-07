@@ -9,7 +9,7 @@ import { VerificationStatusProps } from '~/types/components/ContactForm';
 export const VerificationStatus: React.FC<VerificationStatusProps> = ({ isVerified }) => {
   const { t } = useLocale();
   if (!isVerified) return null;
-  
+
   return (
     <XStack gap="$1" ai="center">
       <AntDesign color={tokens.color.green9Light.val} name="checkcircleo" />
@@ -18,4 +18,4 @@ export const VerificationStatus: React.FC<VerificationStatusProps> = ({ isVerifi
       </Text>
     </XStack>
   );
-}; 
+};

@@ -18,4 +18,4 @@ export interface GalleryContentProps {
   imageUri: string;
   going: number;
   page: number;
-} 
+}

@@ -37,8 +37,7 @@ export const ProductDetails = ({
           {t('quantity')}: {reservationContent.quantity}
         </Text>
         <Text fow="300" fos="$2">
-          {t('time')}:{' '}
-          {moment(reservationContent.reservation?.time).format('YYYY-MM-DD HH:mm')}
+          {t('time')}: {moment(reservationContent.reservation?.time).format('YYYY-MM-DD HH:mm')}
         </Text>
       </YStack>
       <XStack gap="$2" ai="center">
@@ -53,4 +52,4 @@ export const ProductDetails = ({
       </XStack>
     </YStack>
   );
-}; 
+};

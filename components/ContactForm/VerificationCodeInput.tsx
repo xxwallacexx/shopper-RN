@@ -14,9 +14,9 @@ export const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
   onVerifyCodePress,
 }) => {
   const { t } = useLocale();
-  
+
   if (isVerified) return null;
-  
+
   return (
     <>
       <Label>{t('verifyCode')}</Label>
@@ -33,11 +33,10 @@ export const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
           disabled={!verifyCode.length || isVerifyCodeSubmitting}
           w="35%"
           size="$4"
-          onPress={onVerifyCodePress}
-        >
+          onPress={onVerifyCodePress}>
           {t('verify')}
         </StyledButton>
       </XStack>
     </>
   );
-}; 
+};

@@ -20,4 +20,4 @@ export const BannerContent = ({ type, uri }: BannerContentType) => {
     default:
       return <></>;
   }
-}; 
+};

@@ -182,4 +182,4 @@ export const buttons = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-}); 
+});

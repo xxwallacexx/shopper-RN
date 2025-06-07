@@ -14,7 +14,10 @@ export function flattenInfiniteData<T>(data: InfiniteData<T[]> | undefined): T[]
  * @param lastPage The last page of data
  * @returns The next page param or undefined if no more pages
  */
-export function standardGetNextPageParam<T>(lastPage: T[] | undefined, pages: T[][]): number | undefined {
+export function standardGetNextPageParam<T>(
+  lastPage: T[] | undefined,
+  pages: T[][]
+): number | undefined {
   if (!lastPage || lastPage.length === 0) {
     return undefined;
   }
@@ -30,4 +33,4 @@ export function standardGetNextPageParam<T>(lastPage: T[] | undefined, pages: T[
 export function hasNextPage<T>(lastPage: T[] | undefined, pageSize: number = 10): boolean {
   if (!lastPage) return false;
   return lastPage.length >= pageSize;
-} 
+}

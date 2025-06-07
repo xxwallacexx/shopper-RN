@@ -13,4 +13,4 @@ export interface ProductCommentCardProps {
 export interface PhotoItemProps {
   uri: string;
   onPress: (uri: string) => void;
-} 
+}

@@ -24,4 +24,4 @@ export interface BannerCarouselProps {
 export interface CarouselPaginationProps {
   totalSlides: number;
   activeIndex: number;
-} 
+}

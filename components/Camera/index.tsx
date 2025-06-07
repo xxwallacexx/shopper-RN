@@ -12,7 +12,12 @@ import { Container, StyledButton } from '~/tamagui.config';
 import { CameraProps } from '~/types/components';
 import { cropSquareImage } from '~/utils/imageManipulation';
 
-const PermissionDeniedView = ({ onBack, onAction, message, actionText }: {
+const PermissionDeniedView = ({
+  onBack,
+  onAction,
+  message,
+  actionText,
+}: {
   onBack: () => void;
   onAction: () => void;
   message: string;
@@ -31,7 +36,8 @@ const PermissionDeniedView = ({ onBack, onAction, message, actionText }: {
 
 const Camera = ({ onBack, onPhotoChange }: CameraProps) => {
   const { t } = useLocale();
-  const { hasPermission, canAskAgain, requestPermission, openCameraSettings } = useCameraWithPermissions();
+  const { hasPermission, canAskAgain, requestPermission, openCameraSettings } =
+    useCameraWithPermissions();
   const camera = useRef<CameraView>(null);
 
   const { isPending: isCropping, mutate: cropImage } = useMutation({
@@ -95,4 +101,4 @@ const Camera = ({ onBack, onPhotoChange }: CameraProps) => {
   );
 };
 
-export default Camera; 
+export default Camera;

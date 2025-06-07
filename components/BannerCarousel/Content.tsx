@@ -21,4 +21,4 @@ export const Content: React.FC<ContentProps> = ({ type, uri }) => {
     default:
       return <></>;
   }
-}; 
+};

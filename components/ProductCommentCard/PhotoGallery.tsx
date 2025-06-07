@@ -13,4 +13,4 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, onPhotoPress
     keyExtractor={(item) => item}
     renderItem={({ item }) => <PhotoItem uri={item} onPress={onPhotoPress} />}
   />
-); 
+);

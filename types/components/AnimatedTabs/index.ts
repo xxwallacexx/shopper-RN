@@ -1,4 +1,4 @@
-import { StackProps, TabLayout } from 'tamagui';
+import { StackProps, TabLayout, TabsTabProps } from 'tamagui';
 
 export interface TabsRovingIndicatorProps extends StackProps {
   active?: boolean;
@@ -11,11 +11,18 @@ export interface TabState {
   prevActiveAt: TabLayout | null;
 }
 
+export interface Tab {
+  label: string;
+  value: string;
+}
+
+export interface TabsListProps {
+  tabs: Tab[];
+  onInteraction: TabsTabProps['onInteraction'];
+}
+
 export interface AnimatedTabsProps {
-  tabs: Array<{
-    label: string;
-    value: string;
-  }>;
+  tabs: Tab[];
   initialTab: string;
   onTabChanged: (value: string) => void;
-} 
+}

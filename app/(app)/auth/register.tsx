@@ -22,24 +22,27 @@ const Register = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { isPending: isSubmitting, mutate: registerMutate } = useMutationWithErrorHandling({
-    mutationFn: ({
-      username,
-      email,
-      password,
-    }: {
-      username: string;
-      email: string;
-      password: string;
-    }) => {
-      return createUser(username, email, password);
+  const { isPending: isSubmitting, mutate: registerMutate } = useMutationWithErrorHandling(
+    {
+      mutationFn: ({
+        username,
+        email,
+        password,
+      }: {
+        username: string;
+        email: string;
+        password: string;
+      }) => {
+        return createUser(username, email, password);
+      },
+      onSuccess: async (res) => {
+        await signin(res.token, res.tokenExpAt);
+        queryClient.invalidateQueries({ queryKey: ['profile'] });
+        router.replace('/(app)/(root)/(tabs)/profile');
+      },
     },
-    onSuccess: async (res) => {
-      await signin(res.token, res.tokenExpAt);
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      router.replace('/(app)/(root)/(tabs)/profile');
-    },
-  }, t);
+    t
+  );
 
   // Use the pre-defined validation schema
   const SignupSchema = createRegistrationSchema(t);
@@ -73,9 +76,7 @@ const Register = () => {
               onBlur={handleBlur('username')}
               placeholder={t('username')}
             />
-            {errors.username && touched.username ? (
-              <Text col="red">{errors.username}</Text>
-            ) : null}
+            {errors.username && touched.username ? <Text col="red">{errors.username}</Text> : null}
           </YStack>
           <YStack>
             <Label htmlFor="email">{t('email')}</Label>
@@ -100,9 +101,7 @@ const Register = () => {
               placeholder={t('password')}
               secureTextEntry
             />
-            {errors.password && touched.password ? (
-              <Text col="red">{errors.password}</Text>
-            ) : null}
+            {errors.password && touched.password ? <Text col="red">{errors.password}</Text> : null}
           </YStack>
           <YStack>
             <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>

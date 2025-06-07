@@ -22,7 +22,7 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
     onGetVerifyCodePress,
     onVerifyCodeChange,
   } = props;
-  
+
   const { t } = useLocale();
 
   return (
@@ -35,7 +35,7 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
         disabled={disabled}
         onChangeText={onNameChange}
       />
-      
+
       <XStack gap="$2" ai="center">
         <Label>{t('contactNumber')}</Label>
         <VerificationStatus isVerified={isVerified} />
@@ -62,4 +62,4 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
   );
 };
 
-export default ContactForm; 
+export default ContactForm;

@@ -1,25 +1,18 @@
+import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { XStack, SizableText } from 'tamagui';
 import { Skeleton } from 'moti/skeleton';
+import { QuantityControlsProps } from '~/types/components/OrderCartItemCard';
 
-interface QuantityControlsProps {
-  quantity: number;
-  stock: number;
-  isCartItemUpdating: boolean;
-  onDeductPress: () => void;
-  onAddPress: () => void;
-  testID?: string;
-}
-
-export const QuantityControls = ({
+export const QuantityControls: React.FC<QuantityControlsProps> = ({
   quantity,
   stock,
   isCartItemUpdating,
   onDeductPress,
   onAddPress,
   testID,
-}: QuantityControlsProps) => (
+}) => (
   <XStack gap="$2" ai="center">
     <TouchableOpacity
       testID={`decrease-quantity-button-${testID?.split('-').pop()}`}
@@ -41,4 +34,4 @@ export const QuantityControls = ({
       <Ionicons size={24} name="add-circle-outline" />
     </TouchableOpacity>
   </XStack>
-); 
+);

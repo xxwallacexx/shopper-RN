@@ -4,11 +4,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Input, Stack, YStack } from 'tamagui';
-import { useDebounce } from '~/hooks';
+import { useDebounce, useLocale } from '~/hooks';
 import { flattenInfiniteData } from '~/hooks/useInfiniteData';
 import { listProducts } from '~/api';
 import { InfiniteList, ProductCard } from '~/components';
-import { useLocale } from '~/hooks';
 import { Product } from '~/types';
 import { layout } from '~/utils/styles';
 

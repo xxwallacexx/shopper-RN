@@ -34,4 +34,4 @@ export const BannerItem = ({ content, animationValue }: BannerItemProps) => {
       />
     </Stack>
   );
-}; 
+};

@@ -14,7 +14,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   onGetVerifyCodePress,
 }) => {
   const { t } = useLocale();
-  
+
   return (
     <XStack w="100%" ai="flex-start" gap="$1">
       <Input
@@ -31,11 +31,10 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           disabled={phoneNumber.length !== 8 || seconds > 0}
           w="35%"
           size="$4"
-          onPress={onGetVerifyCodePress}
-        >
+          onPress={onGetVerifyCodePress}>
           {seconds > 0 ? `${t('verify')} (${seconds}s)` : t('getVerifyCode')}
         </StyledButton>
       )}
     </XStack>
   );
-}; 
+};

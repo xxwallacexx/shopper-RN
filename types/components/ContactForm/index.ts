@@ -17,20 +17,24 @@ export interface VerificationStatusProps {
   isVerified: boolean;
 }
 
-export interface PhoneNumberInputProps extends Pick<ContactFormProps, 
-  'phoneNumber' | 
-  'disabled' | 
-  'isVerified' | 
-  'onPhoneNumberChange' | 
-  'seconds' | 
-  'onGetVerifyCodePress'
-> {}
+export interface PhoneNumberInputProps
+  extends Pick<
+    ContactFormProps,
+    | 'phoneNumber'
+    | 'disabled'
+    | 'isVerified'
+    | 'onPhoneNumberChange'
+    | 'seconds'
+    | 'onGetVerifyCodePress'
+  > {}
 
-export interface VerificationCodeInputProps extends Pick<ContactFormProps,
-  'isVerified' | 
-  'verifyCode' | 
-  'disabled' | 
-  'onVerifyCodeChange' | 
-  'isVerifyCodeSubmitting' | 
-  'onVerifyCodePress'
-> {} 
+export interface VerificationCodeInputProps
+  extends Pick<
+    ContactFormProps,
+    | 'isVerified'
+    | 'verifyCode'
+    | 'disabled'
+    | 'onVerifyCodeChange'
+    | 'isVerifyCodeSubmitting'
+    | 'onVerifyCodePress'
+  > {}

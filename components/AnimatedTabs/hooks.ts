@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TabLayout } from 'tamagui';
-import { TabState } from '~/types/components';
+import { TabState } from '~/types/components/AnimatedTabs';
 
 export const useTabState = (initialTab: string) => {
   const [tabState, setTabState] = useState<TabState>({
@@ -11,10 +11,7 @@ export const useTabState = (initialTab: string) => {
   });
 
   const setCurrentTab = (currentTab: string) => setTabState({ ...tabState, currentTab });
-  
-  const setIntentIndicator = (intentAt: TabLayout | null) => 
-    setTabState({ ...tabState, intentAt });
-  
+  const setIntentIndicator = (intentAt: TabLayout | null) => setTabState({ ...tabState, intentAt });
   const setActiveIndicator = (activeAt: TabLayout | null) =>
     setTabState({ ...tabState, prevActiveAt: tabState.activeAt, activeAt });
 
@@ -24,4 +21,4 @@ export const useTabState = (initialTab: string) => {
     setIntentIndicator,
     setActiveIndicator,
   };
-}; 
+};

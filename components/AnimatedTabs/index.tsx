@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
-import { AnimatePresence, Tabs, YStack } from 'tamagui';
-import { TabsTabProps } from 'tamagui';
-import { AnimatedTabsProps } from '~/types/components';
+import React, { useEffect } from 'react';
+import { AnimatePresence, Tabs, YStack, TabsTabProps } from 'tamagui';
+import { AnimatedTabsProps } from '~/types/components/AnimatedTabs';
 import { TabsRovingIndicator } from './TabsRovingIndicator';
 import { TabsList } from './TabsList';
-import { useTabState } from './useTabState';
+import { useTabState } from './hooks';
 
-const AnimatedTabs = ({ tabs, initialTab, onTabChanged }: AnimatedTabsProps) => {
-  const { tabState, setCurrentTab, setIntentIndicator, setActiveIndicator } = useTabState(initialTab);
+const AnimatedTabs: React.FC<AnimatedTabsProps> = ({ tabs, initialTab, onTabChanged }) => {
+  const { tabState, setCurrentTab, setIntentIndicator, setActiveIndicator } =
+    useTabState(initialTab);
   const { activeAt, intentAt, currentTab } = tabState;
 
   const handleOnInteraction: TabsTabProps['onInteraction'] = (type, layout) => {
@@ -19,8 +19,8 @@ const AnimatedTabs = ({ tabs, initialTab, onTabChanged }: AnimatedTabsProps) => 
   };
 
   useEffect(() => {
-    onTabChanged(currentTab);
-  }, [currentTab, onTabChanged]);
+    onTabChanged(tabState.currentTab);
+  }, [tabState.currentTab, onTabChanged]);
 
   return (
     <Tabs
@@ -42,7 +42,7 @@ const AnimatedTabs = ({ tabs, initialTab, onTabChanged }: AnimatedTabsProps) => 
         <AnimatePresence>
           {activeAt && (
             <TabsRovingIndicator
-              active
+              theme="active"
               w={activeAt.width}
               h="$0.5"
               x={activeAt.x}
@@ -58,4 +58,4 @@ const AnimatedTabs = ({ tabs, initialTab, onTabChanged }: AnimatedTabsProps) => 
   );
 };
 
-export default AnimatedTabs; 
+export default AnimatedTabs;

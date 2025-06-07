@@ -1,7 +1,8 @@
+import React from 'react';
 import { YStack } from 'tamagui';
-import { TabsRovingIndicatorProps } from '~/types/components';
+import { TabsRovingIndicatorProps } from '~/types/components/AnimatedTabs';
 
-export const TabsRovingIndicator = ({ active, ...props }: TabsRovingIndicatorProps) => {
+export const TabsRovingIndicator: React.FC<TabsRovingIndicatorProps> = ({ active, ...props }) => {
   return (
     <YStack
       pos="absolute"
@@ -21,4 +22,4 @@ export const TabsRovingIndicator = ({ active, ...props }: TabsRovingIndicatorPro
       {...props}
     />
   );
-}; 
+};

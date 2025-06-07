@@ -24,4 +24,4 @@ export const PhotoItem: React.FC<PhotoItemProps> = ({ uri, onPress }) => (
       </YStack>
     </YStack>
   </TouchableOpacity>
-); 
+);

@@ -9,11 +9,11 @@ interface ListFooterLoaderProps {
   testID?: string;
 }
 
-const ListFooterLoader = ({ 
-  isLoading, 
-  loadingText = 'Loading...', 
+const ListFooterLoader = ({
+  isLoading,
+  loadingText = 'Loading...',
   spinnerColor = '$color.primary',
-  testID 
+  testID,
 }: ListFooterLoaderProps) => {
   if (!isLoading) {
     return null;
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 8,
     color: 'slategrey',
-  }
+  },
 });
 
-export default ListFooterLoader; 
+export default ListFooterLoader;

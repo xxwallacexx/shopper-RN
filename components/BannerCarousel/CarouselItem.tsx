@@ -35,4 +35,4 @@ export const CarouselItem: React.FC<ItemProps> = ({ content, animationValue }) =
       />
     </Stack>
   );
-}; 
+};

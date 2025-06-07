@@ -72,4 +72,4 @@ const ReservationCartItemCard = ({
   );
 };
 
-export default ReservationCartItemCard; 
+export default ReservationCartItemCard;

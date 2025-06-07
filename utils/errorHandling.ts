@@ -20,4 +20,4 @@ export const handleApiError = (error: unknown, t: (key: string, options?: any) =
  */
 export const createErrorHandler = (t: (key: string, options?: any) => string) => {
   return (error: unknown) => handleApiError(error, t);
-}; 
+};

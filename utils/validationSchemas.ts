@@ -6,9 +6,7 @@ import * as Yup from 'yup';
  * @returns Yup schema for email validation
  */
 export const createEmailSchema = (t: (key: string, options?: any) => string) => {
-  return Yup.string()
-    .email(t('regEmailEmailMessage'))
-    .required(t('regEmailPresenceMessage'));
+  return Yup.string().email(t('regEmailEmailMessage')).required(t('regEmailPresenceMessage'));
 };
 
 /**
@@ -70,4 +68,4 @@ export const createChangePasswordSchema = (t: (key: string, options?: any) => st
     password: createPasswordSchema(t),
     confirmPassword: createConfirmPasswordSchema(t),
   });
-}; 
+};

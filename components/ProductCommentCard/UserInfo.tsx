@@ -4,14 +4,12 @@ import { StarRatingDisplay } from 'react-native-star-rating-widget';
 import { Image, SizableText, Stack, XStack, YStack } from 'tamagui';
 import { ProductCommentCardProps } from './types';
 
-type UserInfoProps = Pick<ProductCommentCardProps, 'username' | 'userAvatar' | 'createdAt' | 'rating'>;
+type UserInfoProps = Pick<
+  ProductCommentCardProps,
+  'username' | 'userAvatar' | 'createdAt' | 'rating'
+>;
 
-export const UserInfo: React.FC<UserInfoProps> = ({
-  username,
-  userAvatar,
-  createdAt,
-  rating,
-}) => (
+export const UserInfo: React.FC<UserInfoProps> = ({ username, userAvatar, createdAt, rating }) => (
   <XStack gap="$2">
     <YStack gap="$2" jc="center" ai="center">
       <Stack w="$6" h="$6">
@@ -24,4 +22,4 @@ export const UserInfo: React.FC<UserInfoProps> = ({
       <StarRatingDisplay starSize={24} rating={rating} />
     </YStack>
   </XStack>
-); 
+);

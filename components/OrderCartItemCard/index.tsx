@@ -1,15 +1,13 @@
-import { EvilIcons } from '@expo/vector-icons';
-import { Skeleton } from 'moti/skeleton';
-import { Pressable, TouchableOpacity } from 'react-native';
-import { XStack, YStack, SizableText, Text, Separator } from 'tamagui';
+import React from 'react';
+import { Pressable } from 'react-native';
+import { XStack, YStack, Separator } from 'tamagui';
 
-import { useLocale } from '~/hooks';
-import { StyledButton } from '~/tamagui.config';
-import { OrderCartItemCardProps } from '~/types/components';
+import { OrderCartItemCardProps } from '~/types/components/OrderCartItemCard';
 import { ProductImage } from './ProductImage';
-import { QuantityControls } from './QuantityControls';
+import { ProductDetails } from './ProductDetails';
+import { ActionBar } from './ActionBar';
 
-const OrderCartItemCard = ({
+const OrderCartItemCard: React.FC<OrderCartItemCardProps> = ({
   photoUri,
   totalPrice,
   stock,
@@ -25,8 +23,7 @@ const OrderCartItemCard = ({
   isCartItemUpdating,
   isCartItemRemoving,
   testID,
-}: OrderCartItemCardProps) => {
-  const { t } = useLocale();
+}) => {
   const quantity = orderContent.quantity ?? 0;
 
   return (
@@ -49,56 +46,31 @@ const OrderCartItemCard = ({
           <YStack w="40%" br="$radius.3" ov="hidden">
             <ProductImage photoUri={photoUri} singleItemPrice={singleItemPrice} testID={testID} />
           </YStack>
-          <YStack f={1} py="$2" gap="$2" jc="space-between">
-            <YStack>
-              <SizableText testID={`${testID}-name`} numberOfLines={1} ellipsizeMode="tail">
-                {product.name} {product.introduction}
-              </SizableText>
-              {orderContent.choices.map((c) => (
-                <Text key={c._id} fow="300" fos="$2">
-                  {t('option')}: {c.name}
-                </Text>
-              ))}
-            </YStack>
-            <XStack gap="$2" ai="center">
-              {isCartItemUpdating ? (
-                <Skeleton height={12} colorMode="light" width={80} />
-              ) : (
-                <SizableText testID={`${testID}-total-price`} col="$primary">
-                  HK$ {totalPrice.toFixed(2)}
-                </SizableText>
-              )}
-              <Text fow="300" fos="$2">
-                {t('stock')}: {stock}
-              </Text>
-            </XStack>
-          </YStack>
+          <ProductDetails
+            product={product}
+            orderContent={orderContent}
+            totalPrice={totalPrice}
+            stock={stock}
+            isCartItemUpdating={isCartItemUpdating}
+            testID={testID}
+          />
         </XStack>
       </Pressable>
 
       <Separator />
-      <XStack px="$2" f={1} h="$3" ai="center" jc="space-between">
-        <QuantityControls
-          quantity={quantity}
-          stock={stock}
-          isCartItemUpdating={isCartItemUpdating}
-          onDeductPress={onDeductPress}
-          onAddPress={onAddPress}
-          testID={testID}
-        />
-        <StyledButton testID={`${testID}-coupon`} w="40%" onPress={onAvailableCouponPress}>
-          {coupon ? coupon.coupon.name : t('redeemCoupon')}
-        </StyledButton>
-        {isCartItemRemoving ? (
-          <Skeleton height={18} colorMode="light" width={22} />
-        ) : (
-          <TouchableOpacity
-            testID={`remove-item-button-${testID?.split('-').pop()}`}
-            onPress={onRemovePress}>
-            <EvilIcons size={24} name="trash" />
-          </TouchableOpacity>
-        )}
-      </XStack>
+      
+      <ActionBar
+        quantity={quantity}
+        stock={stock}
+        coupon={coupon}
+        isCartItemUpdating={isCartItemUpdating}
+        isCartItemRemoving={isCartItemRemoving}
+        onDeductPress={onDeductPress}
+        onAddPress={onAddPress}
+        onAvailableCouponPress={onAvailableCouponPress}
+        onRemovePress={onRemovePress}
+        testID={testID}
+      />
     </YStack>
   );
 };
