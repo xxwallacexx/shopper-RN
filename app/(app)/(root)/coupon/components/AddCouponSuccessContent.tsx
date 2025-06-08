@@ -3,16 +3,16 @@ import { XStack } from 'tamagui';
 import { Text } from 'tamagui';
 import { useLocale } from '~/hooks';
 
-const AddCartSuccessContent = () => {
+const AddCouponSuccessContent = () => {
   const { t } = useLocale();
   return (
     <>
-      <SizableText fos="$6">{t('addSuccess')}</SizableText>
+      <SizableText fos="$6">{t('addCouponSuccess')}</SizableText>
       <Stack>
-        <Text>{t('addSuccessContent')}</Text>
+        <Text>{t('addCouponSuccessContent')}</Text>
         <XStack>
           <Text>{t('pleaseGoTo')}</Text>
-          <Text fow="700">{t('shoppingCart')}</Text>
+          <Text fow="700">{t('myWallet')}</Text>
           <Text>{t('toCheck')}</Text>
         </XStack>
       </Stack>
@@ -20,4 +20,4 @@ const AddCartSuccessContent = () => {
   );
 };
 
-export default AddCartSuccessContent;
+export default AddCouponSuccessContent;

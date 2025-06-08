@@ -477,12 +477,14 @@ const ProductDetail = () => {
         />
 
         <Dialog isOpen={isAddCartSuccessDialogOpen}>
-          <AddCartSuccessContent />
-          <AlertDialog.Action asChild>
-            <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
-              {t('confirm')}
-            </StyledButton>
-          </AlertDialog.Action>
+          <YStack gap="$4">
+            <AddCartSuccessContent />
+            <AlertDialog.Action asChild>
+              <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
+                {t('confirm')}
+              </StyledButton>
+            </AlertDialog.Action>
+          </YStack>
         </Dialog>
       </YStack>
     </SafeAreaView>
