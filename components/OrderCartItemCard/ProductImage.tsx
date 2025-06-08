@@ -3,7 +3,11 @@ import { Image, Stack, SizableText } from 'tamagui';
 import { Badge } from '~/tamagui.config';
 import { ProductImageProps } from '~/types/components/OrderCartItemCard';
 
-export const ProductImage: React.FC<ProductImageProps> = ({ photoUri, singleItemPrice, testID }) => {
+export const ProductImage: React.FC<ProductImageProps> = ({
+  photoUri,
+  singleItemPrice,
+  testID,
+}) => {
   return (
     <Stack f={1}>
       <Image

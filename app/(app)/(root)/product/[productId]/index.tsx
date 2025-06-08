@@ -1,59 +1,30 @@
 import { PRIMARY_9_COLOR } from '@env';
-import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { tokens } from '@tamagui/themes';
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import moment from 'moment';
 import { useCallback, useLayoutEffect, useState } from 'react';
-import { FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
-import HTMLView from 'react-native-htmlview';
-import { StarRatingDisplay } from 'react-native-star-rating-widget';
+import { SafeAreaView, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
-import {
-  AlertDialog,
-  ScrollView,
-  Separator,
-  SizableText,
-  Spinner,
-  Text,
-  XStack,
-  YStack,
-  Stack,
-  Image,
-} from 'tamagui';
+import { AlertDialog, YStack } from 'tamagui';
 
 import {
-  getProduct,
-  listOptions,
-  getProductPriceDetail,
-  getProductIsBookmarked,
   removeBookmark,
   createBookmark,
   getShop,
-  listReservations,
   reservationCreateCart,
   productCreateCart,
-  getReservationTotalPrice,
-  listProductComments,
   removeProductComment,
   getSelf,
 } from '~/api';
-import {
-  ActionSheet,
-  BannerCarousel,
-  Dialog,
-  OptionSheetContent,
-  ProductCommentCard,
-  QuantitySelector,
-} from '~/components';
+import { Dialog, ProductDetailSection } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
-import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
+import { useProductData } from '~/hooks/useProductData';
+import { BottomAction, StyledButton } from '~/tamagui.config';
 import { OrderContent, ReservationContent, ReservationOption } from '~/types';
-
-const Price = ({ isLoading, price }: { isLoading: boolean; price: number }) => {
-  return <>{isLoading ? <Spinner /> : <SizableText>HK$ {price}</SizableText>}</>;
-};
+import ProductActionSheetContainer from './components/ProductActionSheetsContainer';
+import AddCartSuccessContent from './components/AddCartSuccessContent';
 
 const ProductDetail = () => {
   const { productId } = useLocalSearchParams<{ productId: string }>();
@@ -152,37 +123,31 @@ const ProductDetail = () => {
     },
   });
 
-  const { data: product, isFetching: isProductFetching } = useQuery({
-    queryKey: ['product', productId],
-    queryFn: async () => {
-      return await getProduct(productId);
-    },
-  });
-
-  const { data: options = [], isFetching: isOptionsFetching } = useQuery({
-    queryKey: ['productOption', productId],
-    queryFn: async () => {
-      return await listOptions(productId);
-    },
-  });
-
   const {
-    data: productComments,
-    isFetching: isProductCommentsFetching,
-    isFetchingNextPage: isFetchingMoreProductComments,
-    fetchNextPage: fetchMoreProductComments,
-    refetch: refetchProductComments,
-  } = useInfiniteQuery({
-    queryKey: ['productComments', productId],
-    initialPageParam: 0,
-    queryFn: async ({ pageParam }: { pageParam: number }) => {
-      return await listProductComments(productId, pageParam);
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (!lastPage) return null;
-      if (!lastPage.length) return null;
-      return pages.flat().length;
-    },
+    product,
+    isProductFetching,
+    options,
+    isOptionsFetching,
+    productComments,
+    isProductCommentsFetching,
+    fetchMoreProductComments,
+    refetchProductComments,
+    isFetchingMoreProductComments,
+    reservations,
+    isReservationsFetching,
+    priceDetail,
+    isPriceDetailFetching,
+    reservationTotalPrice,
+    isReservationTotalPriceFetching,
+    isBookmarked,
+    refetchIsBookmarked,
+  } = useProductData({
+    token,
+    productId,
+    selectedChoices,
+    quantity,
+    selectedTime,
+    selectedReservationOption,
   });
 
   const productCommentsData = productComments?.pages ? productComments.pages.flat() : [];
@@ -193,39 +158,6 @@ const ProductDetail = () => {
     }),
     quantity,
   };
-
-  const { data: priceDetail, isFetching: isPriceDetailFetching } = useQuery({
-    queryKey: ['priceDetail', productId, selectedChoices, quantity],
-    queryFn: async () => {
-      return await getProductPriceDetail(token, productId, orderContent);
-    },
-    enabled: product?.productType == 'ORDER',
-  });
-
-  const { data: reservationTotalPrice, isFetching: isReservationTotalPriceFetching } = useQuery({
-    queryKey: ['reservationTotalPrice', selectedTime, selectedReservationOption, quantity],
-    queryFn: async () => {
-      const reservation = reservations.find((f) => {
-        return moment(f.time).toISOString() == moment(selectedTime).toISOString();
-      });
-      if (!reservation || !selectedReservationOption) throw new Error('no reservation');
-      const reservationContent = {
-        reservation: reservation._id,
-        option: selectedReservationOption,
-        quantity,
-      };
-
-      return await getReservationTotalPrice(token, reservation._id, reservationContent);
-    },
-    enabled: product?.productType == 'RESERVATION',
-  });
-
-  const { data: isBookmarked, refetch: refetchIsBookmarked } = useQuery({
-    queryKey: ['productBookmark', productId],
-    queryFn: async () => {
-      return await getProductIsBookmarked(token, `${productId}`);
-    },
-  });
 
   const { mutate: updateBookmarked } = useMutation({
     mutationFn: async () => {
@@ -239,20 +171,6 @@ const ProductDetail = () => {
       refetchIsBookmarked();
       queryClient.resetQueries({ queryKey: ['bookmarks'] });
     },
-  });
-
-  const { data: reservations = [], isFetching: isReservationsFetching } = useQuery({
-    queryKey: ['reservations', productId],
-    queryFn: async () => {
-      return await listReservations(
-        token,
-        productId,
-        moment().valueOf(),
-        moment().endOf('month').valueOf(),
-        0
-      );
-    },
-    enabled: product?.productType == 'RESERVATION',
   });
 
   const { isPending: isRemoveCommentSubmiting, mutate: removeCommentMutate } = useMutation({
@@ -474,67 +392,13 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <YStack f={1} testID="product-detail-screen">
-        <ScrollView contentContainerStyle={{ fg: 1, ai: 'center' }}>
-          <BannerCarousel
-            banners={product.photos.map((p) => {
-              return { type: 'IMAGE', uri: p.path };
-            })}
-          />
-          <Container w="100%" gap="$2">
-            <XStack jc="space-between">
-              <Subtitle size="$4">{product.category.name}</Subtitle>
-              <StyledButton onPress={onSharePress}>
-                {t('shareProduct')}
-                <AntDesign name="link" color="#fff" />
-              </StyledButton>
-            </XStack>
-            <SizableText>{product.name}</SizableText>
-            <SizableText numberOfLines={1} ellipsizeMode="tail">
-              {product.introduction}
-            </SizableText>
-            <Badge>
-              <SizableText fos={8} col="#fff">
-                $ {product.price.toFixed(2)} {t('up')}
-              </SizableText>
-            </Badge>
-            <XStack gap="$2" ai="center">
-              <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-              <Text fos="$2" col="lightslategray">
-                {shop.name}
-              </Text>
-            </XStack>
-            <XStack gap="$2" ai="center">
-              <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-              <Text fos="$2" col="lightslategray">
-                {shop.address}
-              </Text>
-            </XStack>
-          </Container>
-          {productCommentsData.length && product.productRating.count ? (
-            <Container w="100%" gap="$2">
-              <Separator boc="lightslategray" />
-              <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
-                <XStack jc="space-between">
-                  <StarRatingDisplay
-                    rating={Math.ceil(product.productRating.rating)}
-                    starSize={28}
-                  />
-                  <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
-                </XStack>
-              </TouchableOpacity>
-            </Container>
-          ) : null}
-          <Container w="100%" gap="$2">
-            <Separator boc="lightslategray" />
-            <YStack gap="$4">
-              <Title>{t('productDetail')}</Title>
-              <HTMLView value={product.description} />
-              <Title>{t('TnC')}</Title>
-              <HTMLView value={product.logisticDescription} />
-            </YStack>
-          </Container>
-        </ScrollView>
-
+        <ProductDetailSection
+          product={product}
+          shop={shop}
+          productComments={productCommentsData}
+          onSharePress={onSharePress}
+          onCommentPress={() => setIsCommentsSheetOpen(true)}
+        />
         <BottomAction jc="flex-end">
           <StyledButton
             onPress={() => {
@@ -544,221 +408,81 @@ const ProductDetail = () => {
             <AntDesign name="shoppingcart" color="#fff" />
           </StyledButton>
         </BottomAction>
-        <ActionSheet
-          isSheetOpen={isReservationOptionSheetOpen}
-          setIsSheetOpen={setIsReservationOptionSheetOpen}
-          sheetPosition={reservationOptionsSheetPosition}
-          snapPoints={[40]}
-          setSheetPosition={setReservationOptionsSheetPosition}>
-          <ScrollView gap="$4">
-            {availableReservationOptions.map((o) => {
-              const selected = o._id == selectedReservationOption;
-              return (
-                <StyledButton
-                  bc={selected ? '$primary' : 'slategray'}
-                  key={o._id}
-                  onPress={() => onReservationOptionChange(o._id)}>
-                  <SizableText col="white">{o.name}</SizableText>
-                </StyledButton>
-              );
-            })}
-          </ScrollView>
-        </ActionSheet>
-        <ActionSheet
-          isSheetOpen={isOptionSheetOpen}
-          setIsSheetOpen={setIsOptionSheetOpen}
+
+        <ProductActionSheetContainer
+          isReservationOptionSheetOpen={isReservationOptionSheetOpen}
+          setIsReservationOptionSheetOpen={setIsReservationOptionSheetOpen}
+          reservationOptionsSheetPosition={reservationOptionsSheetPosition}
+          setReservationOptionsSheetPosition={setReservationOptionsSheetPosition}
+          availableReservationOptions={availableReservationOptions}
+          selectedReservationOption={selectedReservationOption}
+          onReservationOptionChange={onReservationOptionChange}
+          isOptionSheetOpen={isOptionSheetOpen}
+          setIsOptionSheetOpen={setIsOptionSheetOpen}
           sheetPosition={sheetPosition}
-          snapPoints={[80]}
-          setSheetPosition={setSheetPosition}>
-          <YStack f={1} gap="$2" jc="space-between">
-            <ScrollView>
-              <OptionSheetContent
-                productType={product.productType}
-                options={options}
-                selectedChoices={selectedChoices}
-                onChoiceChange={onChoiceChange}
-                isReservationsFetching={isReservationsFetching}
-                reservations={reservations}
-                selectedDate={selectedDate}
-                onDayChange={onDayChange}
-                availableTimes={availableTimes}
-                selectedTime={selectedTime}
-                onTimeChange={onTimeChange}
-                availableReservationOptions={availableReservationOptions}
-                onAvailableReservationOptionPress={() => setIsReservationOptionSheetOpen(true)}
-                selectedReservationOption={selectedReservationOption}
-              />
-              <QuantitySelector
-                productType={product.productType}
-                quantity={quantity}
-                stock={stock}
-                minQuantity={minQuantity}
-                selectedReservationOption={selectedReservationOption}
-                onQuantityChange={onQuantityChange}
-              />
-            </ScrollView>
-            <Separator boc="lightslategrey" />
-            <XStack mih="$6" jc="space-between">
-              <Price
-                isLoading={
-                  product.productType == 'ORDER'
-                    ? isPriceDetailFetching
-                    : isReservationTotalPriceFetching
-                }
-                price={
-                  product.productType == 'ORDER'
-                    ? parseFloat(priceDetail?.subtotal ?? '0')
-                    : (reservationTotalPrice ?? 0)
-                }
-              />
-              <XStack gap="$2">
-                <StyledButton
-                  testID="add-to-cart-button"
-                  onPress={onAddCartPress}
-                  disabled={disabled}>
-                  {t('addToCart')}
-                  <AntDesign name="shoppingcart" color="#fff" />
-                </StyledButton>
-                <StyledButton onPress={onCheckoutPress} disabled={disabled}>
-                  {product.productType == 'RESERVATION' ? t('reservation') : t('checkout')}
-                  <Ionicons name="cash-outline" color="#fff" />
-                </StyledButton>
-              </XStack>
-            </XStack>
-          </YStack>
-        </ActionSheet>
-        <ActionSheet
-          isSheetOpen={isPhotoSheetOpen}
-          setIsSheetOpen={setIsPhotoSheetOpen}
-          snapPoints={[100]}
-          sheetPosition={photoSheetPosition}
-          setSheetPosition={setPhotoSheetPosition}>
-          <YStack bg="black" f={1} jc="center" ai="center">
-            <YStack pos="absolute" l="$4" t="$10">
-              <TouchableOpacity
-                onPress={() => {
-                  setIsPhotoSheetOpen(false);
-                }}>
-                <Ionicons size={20} name="arrow-back" color="white" />
-              </TouchableOpacity>
-            </YStack>
-            <Stack aspectRatio={1} w="100%">
-              <Image f={1} objectFit="contain" source={{ uri: selectedPhoto }} />
-            </Stack>
-          </YStack>
-        </ActionSheet>
-        <ActionSheet
-          bg="white"
-          isSheetOpen={isCommentsSheetOpen}
-          setIsSheetOpen={setIsCommentsSheetOpen}
-          snapPoints={[60]}
-          sheetPosition={commentsSheetPosition}
-          setSheetPosition={setCommentsSheetPosition}>
-          <FlatList
-            data={productCommentsData}
-            scrollIndicatorInsets={{ right: 0 }}
-            renderItem={({ item }) => {
-              return (
-                <ProductCommentCard
-                  username={item.user.username}
-                  userAvatar={item.user.avatar}
-                  isSelf={Boolean(item.user._id == user._id)}
-                  rating={item.rating}
-                  photos={item.photos.map((p) => {
-                    return p.path;
-                  })}
-                  comment={item.comment}
-                  createdAt={item.createdAt}
-                  onPhotoPress={(photo) => {
-                    setSelectedPhoto(photo);
-                    setIsPhotoSheetOpen(true);
-                  }}
-                  onActionPress={() => {
-                    setSelectedCommentId(item._id);
-                    setIsCommentActionSheetOpen(true);
-                  }}
-                />
-              );
-            }}
-            contentContainerStyle={{ backgroundColor: '#fff' }}
-            ItemSeparatorComponent={() => {
-              return <Separator my="$4" />;
-            }}
-            onEndReached={() => fetchMoreProductComments()}
-            ListEmptyComponent={() => {
-              if (isProductCommentsFetching || isFetchingMoreProductComments) {
-                return null;
-              }
-              return (
-                <Container ai="center">
-                  <AntDesign name="folderopen" size={120} color="#666" />
-                  <Title>{t('emptyContent')}</Title>
-                </Container>
-              );
-            }}
-            ListFooterComponent={() => {
-              if (!isProductCommentsFetching && !isFetchingMoreProductComments) {
-                return null;
-              }
-              return (
-                <XStack f={1} gap="$2" ai="center" jc="center">
-                  <Spinner color="$color.primary" />
-                  <SizableText col="slategrey">{t('loading')}</SizableText>
-                </XStack>
-              );
-            }}
-          />
-        </ActionSheet>
-        <ActionSheet
-          isSheetOpen={isCommentActionSheetOpen}
-          setIsSheetOpen={setIsCommentActionSheetOpen}
-          snapPoints={[60]}
-          sheetPosition={commentActionSheetPosition}
-          setSheetPosition={setCommentActionSheetPosition}>
-          <ScrollView>
-            <YStack gap="$4">
-              <StyledButton
-                onPress={() => {
-                  setIsCommentsSheetOpen(false);
-                  setIsCommentActionSheetOpen(false);
-                  router.navigate({
-                    pathname: '/productComment/[commentId]/editComment',
-                    params: { commentId: selectedCommentId },
-                  });
-                }}
-                disabled={isRemoveCommentSubmiting}>
-                {t('editComment')}
-              </StyledButton>
-              <StyledButton
-                onPress={() => {
-                  if (!selectedCommentId) return;
-                  removeCommentMutate({ commentId: selectedCommentId });
-                }}
-                disabled={isRemoveCommentSubmiting}>
-                {t('removeComment')}
-              </StyledButton>
-            </YStack>
-          </ScrollView>
-        </ActionSheet>
+          setSheetPosition={setSheetPosition}
+          product={product}
+          options={options}
+          selectedChoices={selectedChoices}
+          onChoiceChange={onChoiceChange}
+          isReservationsFetching={isReservationsFetching}
+          reservations={reservations}
+          onDayChange={onDayChange}
+          availableTimes={availableTimes}
+          onTimeChange={onTimeChange}
+          quantity={quantity}
+          stock={stock}
+          minQuantity={minQuantity}
+          onQuantityChange={onQuantityChange}
+          isPriceDetailFetching={isPriceDetailFetching}
+          isReservationTotalPriceFetching={isReservationTotalPriceFetching}
+          onAddCartPress={onAddCartPress}
+          onCheckoutPress={onCheckoutPress}
+          disabled={disabled}
+          isPhotoSheetOpen={isPhotoSheetOpen}
+          setIsPhotoSheetOpen={setIsPhotoSheetOpen}
+          photoSheetPosition={photoSheetPosition}
+          setPhotoSheetPosition={setPhotoSheetPosition}
+          selectedPhoto={selectedPhoto}
+          isCommentsSheetOpen={isCommentsSheetOpen}
+          setIsCommentsSheetOpen={setIsCommentsSheetOpen}
+          commentsSheetPosition={commentsSheetPosition}
+          productCommentsData={productCommentsData}
+          setCommentsSheetPosition={setCommentsSheetPosition}
+          user={user}
+          setSelectedPhoto={setSelectedPhoto}
+          setSelectedCommentId={setSelectedCommentId}
+          setIsCommentActionSheetOpen={setIsCommentActionSheetOpen}
+          fetchMoreProductComments={fetchMoreProductComments}
+          isProductCommentsFetching={isProductCommentsFetching}
+          isFetchingMoreProductComments={isFetchingMoreProductComments}
+          isCommentActionSheetOpen={isCommentActionSheetOpen}
+          commentActionSheetPosition={commentActionSheetPosition}
+          setCommentActionSheetPosition={setCommentActionSheetPosition}
+          isRemoveCommentSubmiting={isRemoveCommentSubmiting}
+          selectedCommentId={selectedCommentId}
+          onEditCommentPress={(commentId: string) => {
+            return router.navigate({
+              pathname: '/productComment/[commentId]/editComment',
+              params: { commentId },
+            });
+          }}
+          onRemoveCommentPress={(commentId: string) => {
+            return removeCommentMutate({ commentId });
+          }}
+          priceDetail={priceDetail}
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          reservationTotalPrice={reservationTotalPrice}
+        />
 
         <Dialog isOpen={isAddCartSuccessDialogOpen}>
-          <YStack gap="$4">
-            <SizableText fos="$6">{t('addSuccess')}</SizableText>
-            <Stack>
-              <Text>{t('addSuccessContent')}</Text>
-              <XStack>
-                <Text>{t('pleaseGoTo')}</Text>
-                <Text fow="700">{t('shoppingCart')}</Text>
-                <Text>{t('toCheck')}</Text>
-              </XStack>
-            </Stack>
-
-            <AlertDialog.Action asChild>
-              <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
-                {t('confirm')}
-              </StyledButton>
-            </AlertDialog.Action>
-          </YStack>
+          <AddCartSuccessContent />
+          <AlertDialog.Action asChild>
+            <StyledButton onPress={() => setIsAddCartSuccessDialogOpen(false)}>
+              {t('confirm')}
+            </StyledButton>
+          </AlertDialog.Action>
         </Dialog>
       </YStack>
     </SafeAreaView>

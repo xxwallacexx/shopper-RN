@@ -34,6 +34,7 @@ import Spinner from './Spinner';
 import StoreCard from './StoreCard';
 import TabBarIcon from './TabBarIcon';
 import Video from './Video';
+import ProductDetailSection from './ProductDetailSection';
 
 export {
   ActionSheet,
@@ -55,6 +56,7 @@ export {
   ImageInput,
   InfiniteList,
   ListFooterLoader,
+  ProductDetailSection,
   Loader,
   OptionSelection,
   OptionSheetContent,

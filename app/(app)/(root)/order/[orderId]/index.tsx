@@ -124,20 +124,20 @@ const OrderDetail = () => {
         </SizableText>
       </YStack>
       <YStack
-        backgroundColor="white"
+        bc="white"
         p="$2"
         m="$2"
-        space="$1"
-        borderRadius="$radius.3"
-        shadowColor="black"
-        shadowOffset={{
+        gap="$1"
+        br="$radius.3"
+        shac="black"
+        shof={{
           height: 2,
           width: 0,
         }}
-        shadowOpacity={0.25}
-        shadowRadius={3.84}>
+        shop={0.25}
+        shar={3.84}>
         <SizableText>{t('orderNumber', { orderId: order?.orderId })}</SizableText>
-        <XStack space="$2">
+        <XStack gap="$2">
           <SizableText>{t('orderTotal', { amount: order?.price.toFixed(1) })}</SizableText>
           <SizableText>{t('orderDiscount', { discount })}</SizableText>
         </XStack>
