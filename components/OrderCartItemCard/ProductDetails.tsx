@@ -41,4 +41,4 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
       </XStack>
     </YStack>
   );
-}; 
+};

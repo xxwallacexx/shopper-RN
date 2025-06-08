@@ -1,14 +1,11 @@
 import { PRIMARY_9_COLOR } from '@env';
-import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { tokens } from '@tamagui/themes';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useNavigation, useFocusEffect, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import moment from 'moment';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import { FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
-import HTMLView from 'react-native-htmlview';
-import { StarRatingDisplay } from 'react-native-star-rating-widget';
 import Toast from 'react-native-toast-message';
 import {
   AlertDialog,
@@ -41,14 +38,14 @@ import {
 } from '~/api';
 import {
   ActionSheet,
-  BannerCarousel,
   Dialog,
   OptionSheetContent,
   ProductCommentCard,
+  ProductDetailSection,
   QuantitySelector,
 } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
-import { Badge, BottomAction, Container, StyledButton, Subtitle, Title } from '~/tamagui.config';
+import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
 import { OrderContent, ReservationContent, ReservationOption } from '~/types';
 
 const Price = ({ isLoading, price }: { isLoading: boolean; price: number }) => {
@@ -474,67 +471,13 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <YStack f={1} testID="product-detail-screen">
-        <ScrollView contentContainerStyle={{ fg: 1, ai: 'center' }}>
-          <BannerCarousel
-            banners={product.photos.map((p) => {
-              return { type: 'IMAGE', uri: p.path };
-            })}
-          />
-          <Container w="100%" gap="$2">
-            <XStack jc="space-between">
-              <Subtitle size="$4">{product.category.name}</Subtitle>
-              <StyledButton onPress={onSharePress}>
-                {t('shareProduct')}
-                <AntDesign name="link" color="#fff" />
-              </StyledButton>
-            </XStack>
-            <SizableText>{product.name}</SizableText>
-            <SizableText numberOfLines={1} ellipsizeMode="tail">
-              {product.introduction}
-            </SizableText>
-            <Badge>
-              <SizableText fos={8} col="#fff">
-                $ {product.price.toFixed(2)} {t('up')}
-              </SizableText>
-            </Badge>
-            <XStack gap="$2" ai="center">
-              <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-              <Text fos="$2" col="lightslategray">
-                {shop.name}
-              </Text>
-            </XStack>
-            <XStack gap="$2" ai="center">
-              <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-              <Text fos="$2" col="lightslategray">
-                {shop.address}
-              </Text>
-            </XStack>
-          </Container>
-          {productCommentsData.length && product.productRating.count ? (
-            <Container w="100%" gap="$2">
-              <Separator boc="lightslategray" />
-              <TouchableOpacity onPress={() => setIsCommentsSheetOpen(true)}>
-                <XStack jc="space-between">
-                  <StarRatingDisplay
-                    rating={Math.ceil(product.productRating.rating)}
-                    starSize={28}
-                  />
-                  <SizableText>{`${product.productRating.count} ${t('commentCount')}`}</SizableText>
-                </XStack>
-              </TouchableOpacity>
-            </Container>
-          ) : null}
-          <Container w="100%" gap="$2">
-            <Separator boc="lightslategray" />
-            <YStack gap="$4">
-              <Title>{t('productDetail')}</Title>
-              <HTMLView value={product.description} />
-              <Title>{t('TnC')}</Title>
-              <HTMLView value={product.logisticDescription} />
-            </YStack>
-          </Container>
-        </ScrollView>
-
+        <ProductDetailSection
+          product={product}
+          shop={shop}
+          productComments={productCommentsData}
+          onSharePress={onSharePress}
+          onCommentPress={() => setIsCommentsSheetOpen(true)}
+        />
         <BottomAction jc="flex-end">
           <StyledButton
             onPress={() => {

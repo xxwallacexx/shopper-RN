@@ -58,7 +58,7 @@ const OrderCartItemCard: React.FC<OrderCartItemCardProps> = ({
       </Pressable>
 
       <Separator />
-      
+
       <ActionBar
         quantity={quantity}
         stock={stock}
