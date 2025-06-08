@@ -1,8 +1,6 @@
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { tokens } from '@tamagui/themes';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import moment from 'moment';
 import { useState } from 'react';
 import { RefreshControl, SectionList, SafeAreaView } from 'react-native';
 import HTMLView from 'react-native-htmlview';
@@ -13,6 +11,10 @@ import { getCredit, getCoupon, createUserCoupon } from '~/api';
 import { Dialog } from '~/components';
 import { useAuth, useLocale } from '~/hooks';
 import { BottomAction, Container, StyledButton, Title } from '~/tamagui.config';
+import AddCartSuccessContent from '../product/[productId]/components/AddCartSuccessContent';
+import CouponShopSection from './components/CouponShopSection';
+import CouponDescriptionSection from './components/CouponDescriptionSection';
+import CouponDetailSection from './components/CouponDetailSection';
 
 const CouponDetail = () => {
   const { couponId } = useLocalSearchParams<{ couponId: string }>();
@@ -80,44 +82,22 @@ const CouponDetail = () => {
         );
       case 'shop':
         return (
-          <Container gap="$2">
-            <YStack gap="$2">
-              <XStack gap="$2" ai="center">
-                <AntDesign name="isv" color={tokens.color.gray10Dark.val} />
-                <Text col="lightslategray">{shop.name}</Text>
-              </XStack>
-              <XStack gap="$2" ai="center">
-                <MaterialIcons name="location-pin" color={tokens.color.gray10Dark.val} />
-                <Text col="lightslategray">{shop.address}</Text>
-              </XStack>
-            </YStack>
-            <XStack gap={4} ai="center">
-              <AntDesign name="clockcircleo" />
-              <SizableText>{moment(endDate).format('YYYY-MM-DD HH:mm')}</SizableText>
-            </XStack>
-            <Text>{name}</Text>
-          </Container>
+          <CouponShopSection
+            name={shop.name}
+            address={shop.address}
+            couponName={name}
+            endDate={endDate}
+          />
         );
       case 'description':
-        return (
-          <Container gap="$2">
-            <Separator boc="lightslategray" />
-            <YStack gap="$4">
-              <Title>{t('couponIntro')}</Title>
-              <HTMLView value={detail} />
-            </YStack>
-          </Container>
-        );
+        return <CouponDescriptionSection detail={detail} />;
       case 'detail':
         return (
-          <Container gap="$2">
-            <YStack gap="$4">
-              <Title>{t('userCouponDetail')}</Title>
-              <Text>{t('minPriceRequired', { minPriceRequired })}</Text>
-              <Text>{t('maxPurchase', { maxPurchase })}</Text>
-              <Text>{t('discount', { discount })}</Text>
-            </YStack>
-          </Container>
+          <CouponDetailSection
+            minPriceRequired={minPriceRequired}
+            maxPurchase={maxPurchase}
+            discount={discount}
+          />
         );
       case 'tnc':
         return (
@@ -166,16 +146,7 @@ const CouponDetail = () => {
       </YStack>
       <Dialog isOpen={isSuccessDialogOpen}>
         <YStack gap="$4">
-          <SizableText fos="$6">{t('addCouponSuccess')}</SizableText>
-          <Stack>
-            <Text>{t('addCouponSuccessContent')}</Text>
-            <XStack>
-              <Text>{t('pleaseGoTo')}</Text>
-              <Text fow="700">{t('myWallet')}</Text>
-              <Text>{t('toCheck')}</Text>
-            </XStack>
-          </Stack>
-
+          <AddCartSuccessContent />
           <AlertDialog.Action asChild>
             <StyledButton onPress={() => setIsSuccessDialogOpen(false)}>
               {t('confirm')}
