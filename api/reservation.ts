@@ -34,6 +34,7 @@ const listReservations = async (
       'status[]': 'ACTIVE',
     },
   };
+  console.log('diu on79', options);
   const res: Reservation[] = await axios(options).then((res) => {
     return res.data.reservations;
   });

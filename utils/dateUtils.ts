@@ -1,4 +1,4 @@
-import { PRIMARY_COLOR } from '@env';
+import { PRIMARY_COLOR, PRIMARY_9_COLOR } from '@env';
 import moment from 'moment';
 import { Reservation } from '~/types';
 
@@ -37,7 +37,7 @@ export const getMarkedDates = (availableDates: string[], selectedDate?: string) 
             backgroundColor: 'white',
           },
           text: {
-            color: PRIMARY_COLOR,
+            color: PRIMARY_9_COLOR,
           },
         },
       };

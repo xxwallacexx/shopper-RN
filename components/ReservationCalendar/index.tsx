@@ -7,7 +7,9 @@ const ReservationCalendar = ({
   isLoading,
   reservations,
   selectedDate,
+  selectedCalendarMonth,
   onDayChange,
+  onMonthChange,
 }: ReservationCalendarProps) => {
   const availableDates = getAvailableDates(reservations);
   const markedDates = getMarkedDates(availableDates, selectedDate);
@@ -18,15 +20,18 @@ const ReservationCalendar = ({
 
   return (
     <Calendar
-      customHeaderTitle={<CalendarHeader isLoading={isLoading} />}
+      customHeaderTitle={
+        <CalendarHeader title={selectedCalendarMonth.format('MMM YYYY')} isLoading={isLoading} />
+      }
+      current={selectedCalendarMonth.format('YYYY-MM-DD')}
       onDayPress={(day) => handleDayPress(day.dateString)}
       monthFormat="MMM yyyy"
-      onMonthChange={(month) => {
-        console.log('Month changed:', month);
-      }}
+      onMonthChange={onMonthChange}
       hideArrows={false}
       renderArrow={(direction) => <CalendarHeader direction={direction} isLoading={false} />}
       hideExtraDays
+      disableArrowLeft={isLoading}
+      disableArrowRight={isLoading}
       disableMonthChange={false}
       firstDay={1}
       hideDayNames={false}

@@ -1,5 +1,7 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Moment } from 'moment';
 import { FlatList, TouchableOpacity } from 'react-native';
+import { DateData } from 'react-native-calendars';
 import { ScrollView, Separator, SizableText, Spinner, XStack, YStack, Stack, Image } from 'tamagui';
 
 import {
@@ -44,7 +46,9 @@ const ProductActionSheetContainer = ({
   reservations,
   onDayChange,
   availableTimes,
+  selectedCalendarMonth,
   onTimeChange,
+  onMonthChange,
   quantity,
   stock,
   minQuantity,
@@ -102,7 +106,9 @@ const ProductActionSheetContainer = ({
   reservations: Reservation[];
   onDayChange: (value?: string) => void;
   availableTimes: Date[];
+  selectedCalendarMonth: Moment;
   onTimeChange: (value?: string) => void;
+  onMonthChange: (value: DateData) => void;
   quantity: number;
   stock: number;
   minQuantity: number;
@@ -145,26 +151,6 @@ const ProductActionSheetContainer = ({
   return (
     <>
       <ActionSheet
-        isSheetOpen={isReservationOptionSheetOpen}
-        setIsSheetOpen={setIsReservationOptionSheetOpen}
-        sheetPosition={reservationOptionsSheetPosition}
-        snapPoints={[40]}
-        setSheetPosition={setReservationOptionsSheetPosition}>
-        <ScrollView gap="$4">
-          {availableReservationOptions.map((o) => {
-            const selected = o._id == selectedReservationOption;
-            return (
-              <StyledButton
-                bc={selected ? '$primary' : 'slategray'}
-                key={o._id}
-                onPress={() => onReservationOptionChange(o._id)}>
-                <SizableText col="white">{o.name}</SizableText>
-              </StyledButton>
-            );
-          })}
-        </ScrollView>
-      </ActionSheet>
-      <ActionSheet
         isSheetOpen={isOptionSheetOpen}
         setIsSheetOpen={setIsOptionSheetOpen}
         sheetPosition={sheetPosition}
@@ -183,7 +169,9 @@ const ProductActionSheetContainer = ({
               onDayChange={onDayChange}
               availableTimes={availableTimes}
               selectedTime={selectedTime}
+              selectedCalendarMonth={selectedCalendarMonth}
               onTimeChange={onTimeChange}
+              onMonthChange={onMonthChange}
               availableReservationOptions={availableReservationOptions}
               onAvailableReservationOptionPress={() => setIsReservationOptionSheetOpen(true)}
               selectedReservationOption={selectedReservationOption}
@@ -226,6 +214,26 @@ const ProductActionSheetContainer = ({
             </XStack>
           </XStack>
         </YStack>
+      </ActionSheet>
+      <ActionSheet
+        isSheetOpen={isReservationOptionSheetOpen}
+        setIsSheetOpen={setIsReservationOptionSheetOpen}
+        sheetPosition={reservationOptionsSheetPosition}
+        snapPoints={[40]}
+        setSheetPosition={setReservationOptionsSheetPosition}>
+        <ScrollView gap="$4">
+          {availableReservationOptions.map((o) => {
+            const selected = o._id == selectedReservationOption;
+            return (
+              <StyledButton
+                bc={selected ? '$primary' : 'slategray'}
+                key={o._id}
+                onPress={() => onReservationOptionChange(o._id)}>
+                <SizableText col="white">{o.name}</SizableText>
+              </StyledButton>
+            );
+          })}
+        </ScrollView>
       </ActionSheet>
       <ActionSheet
         isSheetOpen={isPhotoSheetOpen}

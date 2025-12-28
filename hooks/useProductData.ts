@@ -1,5 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import moment from 'moment';
+import { useCallback, useState } from 'react';
+import { DateData } from 'react-native-calendars';
 import {
   getProduct,
   getProductIsBookmarked,
@@ -25,6 +27,8 @@ export const useProductData = ({
   selectedTime?: Date;
   selectedReservationOption?: string;
 }) => {
+  const [selectedCalendarMonth, setSelectedCalendarMonth] = useState(moment().startOf('month'));
+
   const { data: product, isFetching: isProductFetching } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
@@ -59,13 +63,13 @@ export const useProductData = ({
   });
 
   const { data: reservations = [], isFetching: isReservationsFetching } = useQuery({
-    queryKey: ['reservations', productId],
+    queryKey: ['reservations', productId, selectedCalendarMonth],
     queryFn: async () => {
       return await listReservations(
         token,
         productId,
-        moment().valueOf(),
-        moment().endOf('month').valueOf(),
+        selectedCalendarMonth.valueOf(),
+        moment(selectedCalendarMonth).endOf('month').valueOf(),
         0
       );
     },
@@ -112,6 +116,10 @@ export const useProductData = ({
     },
   });
 
+  const onCalendarMonthChange = useCallback((value: DateData) => {
+    setSelectedCalendarMonth(moment.utc(value.dateString, 'YYYY-MM-DD').startOf('month'));
+  }, []);
+
   return {
     product,
     isProductFetching,
@@ -130,5 +138,7 @@ export const useProductData = ({
     isReservationTotalPriceFetching,
     isBookmarked,
     refetchIsBookmarked,
+    onCalendarMonthChange,
+    selectedCalendarMonth,
   };
 };

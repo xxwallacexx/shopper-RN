@@ -1,12 +1,13 @@
 import { AntDesign } from '@expo/vector-icons';
-import { Spinner } from 'tamagui';
+import { Spinner, Text } from 'tamagui';
 
 interface CalendarHeaderProps {
   isLoading: boolean;
+  title?: string;
   direction?: 'left' | 'right';
 }
 
-export const CalendarHeader = ({ isLoading, direction }: CalendarHeaderProps) => {
+export const CalendarHeader = ({ isLoading, title, direction }: CalendarHeaderProps) => {
   if (isLoading) {
     return <Spinner />;
   }
@@ -19,5 +20,5 @@ export const CalendarHeader = ({ isLoading, direction }: CalendarHeaderProps) =>
     return <AntDesign name="arrowright" />;
   }
 
-  return null;
+  return <Text>{title}</Text>;
 };

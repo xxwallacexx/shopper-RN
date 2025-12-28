@@ -141,6 +141,8 @@ const ProductDetail = () => {
     isReservationTotalPriceFetching,
     isBookmarked,
     refetchIsBookmarked,
+    onCalendarMonthChange,
+    selectedCalendarMonth,
   } = useProductData({
     token,
     productId,
@@ -427,7 +429,9 @@ const ProductDetail = () => {
           onChoiceChange={onChoiceChange}
           isReservationsFetching={isReservationsFetching}
           reservations={reservations}
+          selectedCalendarMonth={selectedCalendarMonth}
           onDayChange={onDayChange}
+          onMonthChange={onCalendarMonthChange}
           availableTimes={availableTimes}
           onTimeChange={onTimeChange}
           quantity={quantity}

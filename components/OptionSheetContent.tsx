@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { YStack, Label } from 'tamagui';
 
 import OptionSelection from './OptionSelection';
@@ -8,6 +8,7 @@ import ReservationCalendar from './ReservationCalendar';
 import { useLocale } from '~/hooks';
 import { StyledButton } from '~/tamagui.config';
 import { Option, Product, Reservation, ReservationOption } from '~/types';
+import { DateData } from 'react-native-calendars';
 
 const OptionSheetContent = ({
   productType,
@@ -18,8 +19,10 @@ const OptionSheetContent = ({
   reservations,
   selectedDate,
   onDayChange,
+  onMonthChange,
   availableTimes,
   selectedTime,
+  selectedCalendarMonth,
   onTimeChange,
   availableReservationOptions,
   onAvailableReservationOptionPress,
@@ -33,7 +36,9 @@ const OptionSheetContent = ({
   reservations: Reservation[];
   selectedDate?: string;
   onDayChange: (value?: string) => void;
+  onMonthChange: (value: DateData) => void;
   availableTimes: Date[];
+  selectedCalendarMonth: Moment;
   selectedTime?: Date;
   onTimeChange: (value?: string) => void;
   availableReservationOptions: ReservationOption[];
@@ -70,7 +75,9 @@ const OptionSheetContent = ({
             isLoading={isReservationsFetching}
             reservations={reservations}
             selectedDate={selectedDate}
+            selectedCalendarMonth={selectedCalendarMonth}
             onDayChange={onDayChange}
+            onMonthChange={onMonthChange}
           />
           {availableTimes.length ? (
             <OptionSelection
