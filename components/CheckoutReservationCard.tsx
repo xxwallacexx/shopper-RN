@@ -21,7 +21,7 @@ const CheckoutReservationCard = ({
     return o._id == reservationContent.option;
   });
   return (
-    <XStack p="$1" gap="$2" bc="lightslategrey" br="$radius.3" bw={0.3}>
+    <XStack p="$1" gap="$2" boc="lightslategrey" br="$radius.3" bw={0.3}>
       <YStack w="40%" br="$radius.3" ov="hidden">
         <Image bc="white" objectFit="contain" aspectRatio={1} source={{ uri: photoUri }} w="100%" />
       </YStack>
