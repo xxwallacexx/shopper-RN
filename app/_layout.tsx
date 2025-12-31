@@ -4,6 +4,8 @@ import { QueryClient } from '@tanstack/react-query';
 import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
+
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -63,6 +65,8 @@ const RootLayout = () => {
       }
       setToken(storedToken);
       setIsInitializing(false);
+
+      await requestTrackingPermissionsAsync();
 
       //fcm
       const authStatus = await messaging().hasPermission();

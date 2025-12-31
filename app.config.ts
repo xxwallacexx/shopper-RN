@@ -3,10 +3,10 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'sansuibeefbrisket',
-  slug: 'sansuibeefbrisket',
-  version: '1.0.2',
-  scheme: 'sansuibeefbrisket',
+  name: 'ingenious',
+  slug: 'ingenious',
+  version: '1.0.0',
+  scheme: 'ingenious',
   web: {
     bundler: 'metro',
     output: 'static',
@@ -18,7 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       '@stripe/stripe-react-native',
       {
-        merchantIdentifier: 'merchant.com.sansuibeefbrisket',
+        merchantIdentifier: 'merchant.com.ingenious',
         enableGooglePay: false,
       },
     ],
@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         appID: process.env.FB_APP_ID,
         clientToken: process.env.FB_CLIENT_TOKEN,
-        displayName: '山水清湯腩',
+        displayName: '智研樂動',
         scheme: 'fb' + process.env.FB_APP_ID,
         advertiserIDCollectionEnabled: false,
         autoLogAppEventsEnabled: false,
@@ -65,6 +65,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    [
+      'expo-tracking-transparency',
+      {
+        userTrackingPermission: '允許上傳報錯以改善應用程式質素',
+      },
+    ],
     ['expo-apple-authentication'],
   ],
   experiments: {
@@ -96,11 +102,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       NSPhotoLibraryUsageDescription: '允許存取以上傳商品評價圖片及頭像',
       NSUserTrackingUsageDescription: '允許上傳報錯以改善應用程式質素',
     },
-    bundleIdentifier: 'com.sansuibeefbrisket.v1',
+    bundleIdentifier: 'com.ingenious.v1',
     config: {
       googleSignIn: {
-        reservedClientId:
-          'com.googleusercontent.apps.1096191344260-rccbu6aimk88odjiv0f647jg7ddmg0as',
+        reservedClientId: 'com.googleusercontent.apps.78407987324-p5u5a95sp5ds36fvt39g5rmoa0lj6ria',
       },
     },
     googleServicesFile: './GoogleService-Info.plist',
@@ -110,7 +115,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: './assets/icon.png',
       backgroundColor: '#ffffff',
     },
-    package: 'com.sansuibeefbrisket.v1',
+    package: 'com.ingenious.v1',
     googleServicesFile: './google-services.json',
   },
 });
